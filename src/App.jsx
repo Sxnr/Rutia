@@ -314,21 +314,15 @@ export default function App() {
                   <div className="bg-white border border-[#E6EEF7] rounded-2xl p-5 shadow-sm">
                     <div className="flex items-center gap-3">
                       <img src="https://i.pravatar.cc/100?img=12" className="w-14 h-14 rounded-full border-2 border-[#E6EEF7]" alt="avatar"/>
-                      <div><p className="font-extrabold text-[#0F305B]">{perfil.nombre}</p><p className="text-xs text-[#5A7896]">{perfil.correo}</p><p className="text-xs text-[#5A7896]">Explorador nivel 3 • 12 rutas completadas</p></div>
+                      <div><p className="font-extrabold text-[#0F305B]">{perfil.nombre}</p></div>
                     </div>
                     <div className="mt-4 grid grid-cols-2 gap-2 text-xs">
-                      <div className="bg-[#F8FAFC] border border-[#E6EEF7] rounded-xl p-3"><p className="font-bold text-[#0F305B]">Presupuesto favorito</p><p className="text-[#5A7896]">${preferencias.presupuesto.toLocaleString('es-CL')} CLP</p></div>
-                      <div className="bg-[#F8FAFC] border border-[#E6EEF7] rounded-xl p-3"><p className="font-bold text-[#0F305B]">Tiempo medio</p><p className="text-[#5A7896]">{preferencias.tiempo}h</p></div>
-                    </div>
-                    <div className="mt-4 bg-[#F1F5F9] border border-[#E6EEF7] rounded-xl p-3">
-                      <p className="text-xs font-extrabold text-[#0F305B]">Tu progreso</p>
-                      <div className="mt-2 flex items-center gap-2">
-                        <div className="flex-1 h-2 bg-white border border-[#E6EEF7] rounded-full overflow-hidden"><div className="h-full bg-[#0F305B] rounded-full" style={{ width: rutaGuardada ? "75%" : "30%" }}/></div>
-                        <span className="text-xs font-bold text-[#0F305B]">{rutaGuardada ? "3/4" : "0/4"} rutas</span>
-                      </div>
-                      <p className="text-xs text-[#5A7896] mt-1">{rutaGuardada ? "¡Ruta guardada! Sigue explorando para subir de nivel." : "Genera tu primera ruta para empezar."}</p>
                     </div>
                     <button onClick={() => setPantalla('DATOS')} className="mt-4 w-full bg-[#0F305B] text-white font-extrabold py-3 rounded-full text-sm flex items-center justify-center gap-2"><span>⚙</span> Editar mis datos</button>
+                    <button className="mt-4 w-full bg-[#0F305B] text-white font-extrabold py-3 rounded-full text-sm flex items-center justify-center gap-2"><span></span> Terminos y condiciones </button>
+                    <button className="mt-4 w-full bg-[#0F305B] text-white font-extrabold py-3 rounded-full text-sm flex items-center justify-center gap-2"><span></span> Politicas y privacidad </button>
+                    <button className="mt-4 w-full bg-[#0F305B] text-white font-extrabold py-3 rounded-full text-sm flex items-center justify-center gap-2"><span></span> Ayuda y Contacto </button>
+                       
                   </div>
                 </div>
               </motion.div>
@@ -625,7 +619,6 @@ export default function App() {
                   <div className="absolute bottom-0 left-0 right-0 px-5 pb-4">
                     <span className="bg-white/95 text-[#0F305B] text-xs font-bold px-2.5 py-1 rounded-full border border-white">{poiFicha.categoria}</span>
                     <h1 className="text-lg font-extrabold text-white mt-2 leading-tight">{poiFicha.nombre}</h1>
-                    <p className="text-white/90 text-xs mt-1">{poiFicha.horario} • {poiFicha.costoLabel}</p>
                   </div>
                 </div>
                 <div className="px-5 mt-5 space-y-4">
@@ -649,50 +642,12 @@ export default function App() {
                           <p className="text-xs font-bold text-[#5A7896]">Entrada</p><p className="text-xs font-extrabold text-[#0F305B] mt-1">{poiFicha.costoLabel}</p>
                         </div>
                       </div>
-                      <div className="bg-[#FFFBEB] border border-[#FDE68A] rounded-xl p-3 flex gap-2">
-                        <span className="text-sm">💡</span>
-                        <p className="text-xs text-[#92400E] font-medium">{getDatoAmigable(poiFicha.id).tip}</p>
-                      </div>
                       <div className="flex items-center justify-between bg-[#F8FAFC] border border-[#E6EEF7] rounded-xl px-3 py-2">
                         <span className="text-xs font-bold text-[#0F305B]">Estado de visita</span>
                         <span className={`text-xs font-extrabold px-2.5 py-1 rounded-full border ${visitados.has(poiFicha.id) ? 'bg-emerald-100 text-emerald-700 border-emerald-200' : 'bg-amber-100 text-amber-700 border-amber-200'}`}>{visitados.has(poiFicha.id) ? '✓ Visitado' : 'Pendiente'}</span>
                       </div>
                     </div>
                   </div>
-
-                  {/* Reseña con estrellas */}
-                  <div className="bg-white border border-[#E6EEF7] rounded-2xl p-4 shadow-sm">
-                    <h3 className="font-extrabold text-[#0F305B]">Deja tu reseña</h3>
-                    <p className="text-xs text-[#5A7896] mt-1">Califica y comenta — ambos obligatorios</p>
-                    <div className="mt-3 flex gap-1">
-                      {[1,2,3,4,5].map(n=> (
-                        <button key={n} onClick={()=> { setRating(n); setErrorResena(null)}} className={`w-10 h-10 rounded-full grid place-items-center border-2 transition ${rating>=n ? 'bg-[#FFC727] border-[#FFC727] text-[#0F305B]' : 'bg-white border-[#E6EEF7] text-[#CBD5E1] hover:border-[#FFC727]'}`}>
-                          <svg width="20" height="20" viewBox="0 0 24 24" fill={rating>=n ? "#0F305B" : "none"} stroke="currentColor" strokeWidth="1.5"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
-                        </button>
-                      ))}
-                      <span className="ml-2 text-sm font-bold text-[#0F305B] self-center">{rating>0 ? `${rating}/5` : "Elige"}</span>
-                    </div>
-                    <textarea value={comentario} onChange={e=> { setComentario(e.target.value); setErrorResena(null)}} placeholder="¿Qué te pareció? Cuéntanos tu experiencia (mín. 10 caracteres)" rows={3} className="mt-3 w-full bg-[#F8FAFC] border border-[#E6EEF7] rounded-xl px-3 py-2.5 text-sm text-[#0F305B] placeholder:text-[#8AA0B8] outline-none focus:border-[#0F305B] resize-none" />
-                    {errorResena && <p className="text-xs text-red-600 font-bold mt-2">⚠ {errorResena}</p>}
-                    <button onClick={handleEnviarResena} className="mt-3 w-full bg-[#0F305B] text-white font-extrabold py-2.5 rounded-full text-sm hover:bg-[#0A2540] transition">Enviar reseña</button>
-                    {/* Lista reseñas */}
-                    {(reviews[poiFicha.id]||[]).length > 0 && (
-                      <div className="mt-4 space-y-2">
-                        <p className="text-xs font-extrabold text-[#0F305B]">Reseñas ({reviews[poiFicha.id].length})</p>
-                        {reviews[poiFicha.id].map((r,i)=> (
-                          <div key={i} className="bg-[#F8FAFC] border border-[#E6EEF7] rounded-xl p-3">
-                            <div className="flex items-center gap-1">
-                              {[1,2,3,4,5].map(s=> <span key={s} className={s<=r.rating ? "text-[#FFC727]" : "text-[#E6EEF7]"}>★</span>)}
-                              <span className="text-xs text-[#8AA0B8] ml-2">{r.fecha}</span>
-                              <span className="text-xs font-bold text-[#0F305B] ml-auto">{r.autor}</span>
-                            </div>
-                            <p className="text-sm text-[#3A5A7A] mt-1 leading-relaxed">{r.comentario}</p>
-                          </div>
-                        ))}
-                      </div>
-                    )}
-                  </div>
-
                   <button onClick={()=> setPantalla('HOME')} className="w-full bg-[#0F305B] text-white font-extrabold py-3 rounded-full text-sm">Volver al inicio</button>
                 </div>
               </motion.div>

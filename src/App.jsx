@@ -107,7 +107,7 @@ export default function App() {
   const [guardadosTab, setGuardadosTab] = useState('rutas')
   const [lugarExtraId, setLugarExtraId] = useState('')
 
-  const { preferencias, setPreferencias, itinerario, setItinerario, generarRuta, guardarRuta, rutaGuardada, cargarPoi, loading } = useRouteStore()
+  const { preferencias, setPreferencias, itinerario, setItinerario, generarRuta, guardarRuta, rutaGuardada, cargarPoi, loading, reordenarParadas } = useRouteStore()
 
   const categorias = ['Museos', 'Gastronomía', 'Histórico', 'Parques', 'Shopping', 'Vida Nocturna']
   const filtrosRapidos = ['Todos', 'Museos', 'Gastronomía', 'Parques']
@@ -410,20 +410,23 @@ export default function App() {
                             {i < (itinerario?.paradas?.length-1) && <div className={`w-0.5 flex-1 mt-1 ${hecho ? 'bg-emerald-200' : 'bg-[#E6EEF7]'}`} style={{ minHeight: 32 }}/>}
                           </div>
                           <div className={`flex-1 border rounded-2xl p-3 flex gap-3 shadow-sm text-left transition relative ${hecho ? 'bg-emerald-50 border-emerald-200' : 'bg-white border-[#E6EEF7] hover:border-[#0F305B]'}`}>
-                            <button onClick={()=> abrirFichaPoi(p)} className="flex gap-3 flex-1 text-left">
+                            <button onClick={()=> abrirFichaPoi(p)} className="flex gap-3 flex-1 text-left min-w-0">
                               <img src={p.imagen} alt={p.nombre} onError={(e)=>{ if(p.fallback && e.currentTarget.src!==p.fallback) e.currentTarget.src=p.fallback }} className={`w-16 h-16 rounded-xl object-cover border flex-shrink-0 ${hecho ? 'border-emerald-200 opacity-70' : 'border-[#E6EEF7]'}`} />
                               <div className="flex-1 min-w-0">
                                 <p className={`text-sm font-extrabold leading-tight truncate ${hecho ? 'text-emerald-700 line-through' : 'text-[#0F305B]'}`}>{p.nombre}</p>
-                                <p className="text-xs text-[#5A7896] mt-0.5 font-medium">{p.hora} • {p.tiempoMin} min</p>
+                                <p className="text-xs text-[#5A7896] mt-0.5 font-medium">{p.hora}</p>
                                 <div className="flex items-center gap-2 mt-1.5">
                                   <span className={`text-xs font-bold border px-2 py-0.5 rounded-full ${hecho ? 'bg-emerald-100 text-emerald-700 border-emerald-200' : 'bg-[#E6EEF7] text-[#0F305B] border-[#D6E3F3]'}`}>{hecho ? 'Visitado' : p.costoLabel}</span>
-                                  <span className="text-xs text-[#5A7896]">{hecho ? '¡Hecho!' : p.distanciaSig}</span>
                                 </div>
                               </div>
                             </button>
-                            <button onClick={()=> handleEliminarParada(p.id)} className="w-8 h-8 rounded-full bg-white border border-[#FECACA] text-red-500 hover:bg-red-50 grid place-items-center flex-shrink-0 self-center" title="Quitar de la ruta">
-                              <IconTrash/>
-                            </button>
+                            <div className="flex flex-col gap-1 flex-shrink-0 self-center">
+                              <button onClick={()=> reordenarParadas(i, i - 1)} disabled={i === 0} className="w-8 h-7 rounded-full bg-white border border-[#E6EEF7] text-[#0F305B] grid place-items-center text-xs disabled:opacity-30" title="Subir lugar">↑</button>
+                              <button onClick={()=> reordenarParadas(i, i + 1)} disabled={i === (itinerario?.paradas?.length - 1)} className="w-8 h-7 rounded-full bg-white border border-[#E6EEF7] text-[#0F305B] grid place-items-center text-xs disabled:opacity-30" title="Bajar lugar">↓</button>
+                              <button onClick={()=> handleEliminarParada(p.id)} className="w-8 h-8 rounded-full bg-white border border-[#FECACA] text-red-500 hover:bg-red-50 grid place-items-center" title="Quitar de la ruta">
+                                <IconTrash/>
+                              </button>
+                            </div>
                             <button onClick={()=> abrirFichaPoi(p)} className="absolute -right-1 top-1/2 -translate-y-1/2 w-6 h-6 hidden">›</button>
                           </div>
                         </div>
@@ -478,12 +481,16 @@ export default function App() {
                           <div className="mt-4 bg-[#F8FAFC] border border-[#E6EEF7] rounded-xl p-3">
                             <p className="text-xs font-extrabold text-[#0F305B]">Checklist de esta ruta</p>
                             <div className="mt-2 space-y-1.5">
-                              {rutaGuardada.paradas.map(p=> (
-                                <label key={p.id} className="flex items-center gap-2 text-xs cursor-pointer">
-                                  <input type="checkbox" checked={visitados.has(p.id)} onChange={()=> toggleVisitado(p.id)} className="w-4 h-4 rounded border-[#CBD5E1] text-[#0F305B] focus:ring-[#0F305B]" />
-                                  <span className={visitados.has(p.id) ? "line-through text-[#5A7896]" : "text-[#0F305B] font-medium"}>{p.nombre}</span>
-                                  {visitados.has(p.id) && <span className="ml-auto text-emerald-600 font-bold">✓</span>}
-                                </label>
+                              {rutaGuardada.paradas.map((p, idx)=> (
+                                <div key={p.id} className="flex items-center gap-2 text-xs">
+                                  <label className="flex items-center gap-2 flex-1 cursor-pointer min-w-0">
+                                    <input type="checkbox" checked={visitados.has(p.id)} onChange={()=> toggleVisitado(p.id)} className="w-4 h-4 rounded border-[#CBD5E1] text-[#0F305B] focus:ring-[#0F305B]" />
+                                    <span className={`truncate ${visitados.has(p.id) ? "line-through text-[#5A7896]" : "text-[#0F305B] font-medium"}`}>{p.nombre}</span>
+                                    {visitados.has(p.id) && <span className="text-emerald-600 font-bold">✓</span>}
+                                  </label>
+                                  <button onClick={()=> reordenarParadas(idx, idx - 1, true)} disabled={idx === 0} className="w-6 h-6 rounded-full border border-[#E6EEF7] grid place-items-center disabled:opacity-30" title="Subir">↑</button>
+                                  <button onClick={()=> reordenarParadas(idx, idx + 1, true)} disabled={idx === rutaGuardada.paradas.length - 1} className="w-6 h-6 rounded-full border border-[#E6EEF7] grid place-items-center disabled:opacity-30" title="Bajar">↓</button>
+                                </div>
                               ))}
                             </div>
                           </div>

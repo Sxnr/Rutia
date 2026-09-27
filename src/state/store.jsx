@@ -40,11 +40,22 @@ export function RouteProvider({ children }) {
     if (itinerario) setRutaGuardada({ ...itinerario, guardadaEn: new Date().toISOString() })
   }
 
+  function reordenarParadas(origen, destino, enGuardada = false) {
+    const elegir = enGuardada ? rutaGuardada : itinerario
+    const aplicar = enGuardada ? setRutaGuardada : setItinerario
+    if (!elegir?.paradas) return
+    if (destino < 0 || destino >= elegir.paradas.length) return
+    const nuevas = [...elegir.paradas]
+    const [movida] = nuevas.splice(origen, 1)
+    nuevas.splice(destino, 0, movida)
+    aplicar({ ...elegir, paradas: nuevas.map((p, i) => ({ ...p, orden: i + 1 })) })
+  }
+
   return (
     <RouteCtx.Provider value={{
       preferencias, setPreferencias,
       itinerario, setItinerario,
-      rutaGuardada, guardarRuta,
+      rutaGuardada, setRutaGuardada, guardarRuta, reordenarParadas,
       poiDetalle, cargarPoi,
       loading, error, generarRuta
     }}>

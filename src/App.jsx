@@ -104,15 +104,8 @@ export default function App() {
   const [pantalla, setPantalla] = useState('HOME')
   const [filtroActivo, setFiltroActivo] = useState('Todos')
   const [poiFicha, setPoiFicha] = useState(null)
-  const [audioPlaying, setAudioPlaying] = useState(false)
-  const [audioProgress, setAudioProgress] = useState(35)
   const [errorForm, setErrorForm] = useState(null)
   const [visitados, setVisitados] = useState(new Set())
-  // Reseñas: { [poiId]: [{rating, comentario, fecha}] }
-  const [rating, setRating] = useState(0)
-  const [comentario, setComentario] = useState("")
-  const [errorResena, setErrorResena] = useState(null)
-  const [reviews, setReviews] = useState({})
   const [idioma, setIdioma] = useState('ES')
   const [perfil, setPerfil] = useState({ nombre: 'Usuario', correo: 'usuario@gmail.com', password: '', password2: '' })
   const [tituloEditando, setTituloEditando] = useState(false)
@@ -126,21 +119,8 @@ export default function App() {
   const filtrosRapidos = ['Todos', 'Museos', 'Gastronomía', 'Parques']
 
   useEffect(() => {
-    if (!audioPlaying) return
-    const id = setInterval(() => setAudioProgress(p => (p < 100 ? p + 0.5 : 0)), 200)
-    return () => clearInterval(id)
-  }, [audioPlaying])
-
-  useEffect(() => {
     if (itinerario) setVisitados(new Set())
   }, [itinerario?.titulo])
-
-  // Reset reseña al cambiar de POI
-  useEffect(() => {
-    setRating(0)
-    setComentario("")
-    setErrorResena(null)
-  }, [poiFicha?.id])
 
   const toggleInteres = (cat) => {
     const nuevos = preferencias.intereses.includes(cat) ? preferencias.intereses.filter(c => c !== cat) : [...preferencias.intereses, cat]
@@ -172,17 +152,6 @@ export default function App() {
     })
     // also remove from visitados
     setVisitados(prev => { const ns=new Set(prev); ns.delete(id); return ns })
-  }
-
-  const handleEnviarResena = () => {
-    if (rating === 0) { setErrorResena("Elige de 1 a 5 estrellas"); return }
-    if (comentario.trim().length < 10) { setErrorResena("Comentario obligatorio: mínimo 10 caracteres"); return }
-    const nueva = { rating, comentario: comentario.trim(), fecha: new Date().toLocaleDateString('es-CL'), autor: "Tú" }
-    setReviews(prev => ({
-      ...prev,
-      [poiFicha.id]: [...(prev[poiFicha.id]||[]), nueva]
-    }))
-    setRating(0); setComentario(""); setErrorResena(null)
   }
 
   const handleGenerar = async () => {
@@ -232,8 +201,6 @@ export default function App() {
     try { await cargarPoi(poi.id) } catch {}
     setPantalla('POI')
   }
-
-  const progreso = itinerario ? Math.round((visitados.size / (itinerario.paradas?.length || 1)) * 100) : 0
 
   const getDatoAmigable = (id) => datosAmigables[id] || datosAmigables["default"]
 
@@ -316,13 +283,11 @@ export default function App() {
                       <img src="https://i.pravatar.cc/100?img=12" className="w-14 h-14 rounded-full border-2 border-[#E6EEF7]" alt="avatar"/>
                       <div><p className="font-extrabold text-[#0F305B]">{perfil.nombre}</p></div>
                     </div>
-                    <div className="mt-4 grid grid-cols-2 gap-2 text-xs">
-                    </div>
                     <button onClick={() => setPantalla('DATOS')} className="mt-4 w-full bg-[#0F305B] text-white font-extrabold py-3 rounded-full text-sm flex items-center justify-center gap-2"><span>⚙</span> Editar mis datos</button>
-                    <button className="mt-4 w-full bg-[#0F305B] text-white font-extrabold py-3 rounded-full text-sm flex items-center justify-center gap-2"><span></span> Terminos y condiciones </button>
-                    <button className="mt-4 w-full bg-[#0F305B] text-white font-extrabold py-3 rounded-full text-sm flex items-center justify-center gap-2"><span></span> Politicas y privacidad </button>
-                    <button className="mt-4 w-full bg-[#0F305B] text-white font-extrabold py-3 rounded-full text-sm flex items-center justify-center gap-2"><span></span> Ayuda y Contacto </button>
-                       
+                    <button className="mt-3 w-full bg-white border border-[#E6EEF7] text-[#0F305B] font-extrabold py-3 rounded-full text-sm">Ayuda y contacto</button>
+                    <button className="mt-3 w-full bg-white border border-[#E6EEF7] text-[#0F305B] font-extrabold py-3 rounded-full text-sm">Términos y condiciones</button>
+                    <button className="mt-3 w-full bg-white border border-[#E6EEF7] text-[#0F305B] font-extrabold py-3 rounded-full text-sm">Política y privacidad</button>
+
                   </div>
                 </div>
               </motion.div>

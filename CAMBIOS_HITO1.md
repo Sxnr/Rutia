@@ -26,3 +26,8 @@
 - **Qué:** la tab "Mis Rutas" ahora se llama "Guardados" con ícono de marcador (bookmark). Dentro hay dos pestañas: "Rutas guardadas" (lo que ya existía, ahora sin distancia a pie) y "Lugares visitados" (nueva, con 3 lugares de ejemplo: nombre, imagen, categoría, costo, horario y duración).
 - **Por qué:** así coincide con el diagrama de información que pide "Guardados", "Rutas guardadas" y "Lugares visitados" por separado.
 - **React en simple:** `guardadosTab` (con `useState`, vale 'rutas' o 'visitados') decide qué sección se muestra. Es como un interruptor: solo una visible a la vez.
+
+## 6. Perfil con Editar datos funcional
+- **Qué:** el botón "Editar mis datos" abre la vista "Editar datos" con formulario de nombre y correo. Al pulsar "Guardar datos" se guarda y el header de Explorar ("Hola, {nombre}") también se actualiza porque usa el mismo dato.
+- **Por qué:** coincide con el diagrama ("Editar datos" dentro de Perfil) y los datos quedan en el estado, no solo escritos en la pantalla.
+- **React en simple:** `perfil` (con `useState`, un objeto `{nombre, correo}`) es la cajita compartida. `setPerfil({...perfil, nombre})` cambia solo el nombre sin borrar el correo.

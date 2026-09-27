@@ -309,7 +309,7 @@ export default function App() {
                   <div className="bg-white border border-[#E6EEF7] rounded-2xl p-5 shadow-sm">
                     <div className="flex items-center gap-3">
                       <img src="https://i.pravatar.cc/100?img=12" className="w-14 h-14 rounded-full border-2 border-[#E6EEF7]" alt="avatar"/>
-                      <div><p className="font-extrabold text-[#0F305B]">Usuario</p><p className="text-xs text-[#5A7896]">usuario@gmail.com</p><p className="text-xs text-[#5A7896]">Explorador nivel 3 • 12 rutas completadas</p></div>
+                      <div><p className="font-extrabold text-[#0F305B]">{perfil.nombre}</p><p className="text-xs text-[#5A7896]">{perfil.correo}</p><p className="text-xs text-[#5A7896]">Explorador nivel 3 • 12 rutas completadas</p></div>
                     </div>
                     <div className="mt-4 grid grid-cols-2 gap-2 text-xs">
                       <div className="bg-[#F8FAFC] border border-[#E6EEF7] rounded-xl p-3"><p className="font-bold text-[#0F305B]">Presupuesto favorito</p><p className="text-[#5A7896]">${preferencias.presupuesto.toLocaleString('es-CL')} CLP</p></div>
@@ -327,11 +327,18 @@ export default function App() {
                   </div>
                   {pantalla==='DATOS' && (
                     <div className="mt-4 bg-white border border-[#E6EEF7] rounded-2xl p-5 shadow-sm">
-                      <p className="text-xs font-bold text-[#0F305B]">Datos editables</p>
-                      <p className="text-xs text-[#5A7896] mt-1">Formulario conectado a la colección de usuarios. Cambios se reflejan en tus preferencias de ruta.</p>
+                      <p className="text-sm font-extrabold text-[#0F305B]">Editar datos</p>
+                      <p className="text-xs text-[#5A7896] mt-1">Cambia tu nombre y correo. Se guardan al pulsar Guardar.</p>
                       <div className="mt-3 space-y-2">
-                        <input placeholder="Nombre" defaultValue="Usuario" className="w-full bg-[#F8FAFC] border border-[#E6EEF7] rounded-xl px-3 py-2.5 text-sm font-medium text-[#0F305B] outline-none focus:border-[#0F305B]" />
-                        <input placeholder="Correo" defaultValue="usuario@gmail.com" className="w-full bg-[#F8FAFC] border border-[#E6EEF7] rounded-xl px-3 py-2.5 text-sm font-medium text-[#0F305B] outline-none focus:border-[#0F305B]" />
+                        <div>
+                          <label className="text-xs font-bold text-[#0F305B]">Nombre</label>
+                          <input value={perfil.nombre} onChange={e => setPerfil({ ...perfil, nombre: e.target.value })} placeholder="Tu nombre" maxLength={40} className="mt-1 w-full bg-[#F8FAFC] border border-[#E6EEF7] rounded-xl px-3 py-2.5 text-sm font-medium text-[#0F305B] outline-none focus:border-[#0F305B]" />
+                        </div>
+                        <div>
+                          <label className="text-xs font-bold text-[#0F305B]">Correo</label>
+                          <input value={perfil.correo} onChange={e => setPerfil({ ...perfil, correo: e.target.value })} placeholder="tu@correo.cl" maxLength={60} className="mt-1 w-full bg-[#F8FAFC] border border-[#E6EEF7] rounded-xl px-3 py-2.5 text-sm font-medium text-[#0F305B] outline-none focus:border-[#0F305B]" />
+                        </div>
+                        <button onClick={() => setPantalla('PERFIL')} disabled={!perfil.nombre.trim() || !perfil.correo.trim()} className="w-full bg-[#0F305B] text-white font-extrabold py-3 rounded-full text-sm disabled:opacity-40">Guardar datos</button>
                       </div>
                     </div>
                   )}

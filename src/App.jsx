@@ -114,7 +114,7 @@ export default function App() {
   const [errorResena, setErrorResena] = useState(null)
   const [reviews, setReviews] = useState({})
   const [idioma, setIdioma] = useState('ES')
-  const [perfil, setPerfil] = useState({ nombre: 'Usuario', correo: 'usuario@gmail.com' })
+  const [perfil, setPerfil] = useState({ nombre: 'Usuario', correo: 'usuario@gmail.com', password: '', password2: '' })
   const [tituloEditando, setTituloEditando] = useState(false)
   const [tituloTemp, setTituloTemp] = useState('')
   const [guardadosTab, setGuardadosTab] = useState('rutas')
@@ -298,12 +298,17 @@ export default function App() {
             )}
 
             {/* PERFIL */}
-            {(pantalla==='PERFIL' || pantalla==='DATOS') && (
+            {pantalla==='PERFIL' && (
               <motion.div key="perfil" initial={{ opacity: 0, x: 12 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: 12 }} className="pb-28">
                 <div className="bg-white border-b border-[#E6EEF7] px-5 pt-6 pb-4">
-                  <button onClick={()=> setPantalla('HOME')} className="text-xs font-bold text-[#0F305B] flex items-center gap-1">‹ Volver al inicio</button>
-                  <h1 className="text-lg font-extrabold text-[#0F305B] mt-2">Mi Perfil</h1>
-                  <p className="text-sm text-[#5A7896]">Gestiona tu identidad exploradora</p>
+                  <div className="flex items-center justify-between">
+                    <div>
+                      <button onClick={()=> setPantalla('HOME')} className="text-xs font-bold text-[#0F305B] flex items-center gap-1">‹ Volver al inicio</button>
+                      <h1 className="text-lg font-extrabold text-[#0F305B] mt-2">Mi Perfil</h1>
+                      <p className="text-sm text-[#5A7896]">Gestiona tu identidad exploradora</p>
+                    </div>
+                    <button onClick={()=> setPantalla('DATOS')} className="w-10 h-10 rounded-full bg-[#F1F5F9] border border-[#E6EEF7] grid place-items-center text-[#0F305B] text-lg" title="Configuración">⚙</button>
+                  </div>
                 </div>
                 <div className="px-5 mt-5">
                   <div className="bg-white border border-[#E6EEF7] rounded-2xl p-5 shadow-sm">
@@ -323,25 +328,47 @@ export default function App() {
                       </div>
                       <p className="text-xs text-[#5A7896] mt-1">{rutaGuardada ? "¡Ruta guardada! Sigue explorando para subir de nivel." : "Genera tu primera ruta para empezar."}</p>
                     </div>
-                    <button onClick={() => setPantalla(pantalla==='DATOS'?'PERFIL':'DATOS')} className="mt-4 w-full bg-[#0F305B] text-white font-extrabold py-3 rounded-full text-sm">{pantalla==='DATOS' ? 'Cerrar' : 'Editar mis datos'}</button>
+                    <button onClick={() => setPantalla('DATOS')} className="mt-4 w-full bg-[#0F305B] text-white font-extrabold py-3 rounded-full text-sm flex items-center justify-center gap-2"><span>⚙</span> Editar mis datos</button>
                   </div>
-                  {pantalla==='DATOS' && (
-                    <div className="mt-4 bg-white border border-[#E6EEF7] rounded-2xl p-5 shadow-sm">
-                      <p className="text-sm font-extrabold text-[#0F305B]">Editar datos</p>
-                      <p className="text-xs text-[#5A7896] mt-1">Cambia tu nombre y correo. Se guardan al pulsar Guardar.</p>
-                      <div className="mt-3 space-y-2">
-                        <div>
-                          <label className="text-xs font-bold text-[#0F305B]">Nombre</label>
-                          <input value={perfil.nombre} onChange={e => setPerfil({ ...perfil, nombre: e.target.value })} placeholder="Tu nombre" maxLength={40} className="mt-1 w-full bg-[#F8FAFC] border border-[#E6EEF7] rounded-xl px-3 py-2.5 text-sm font-medium text-[#0F305B] outline-none focus:border-[#0F305B]" />
-                        </div>
-                        <div>
-                          <label className="text-xs font-bold text-[#0F305B]">Correo</label>
-                          <input value={perfil.correo} onChange={e => setPerfil({ ...perfil, correo: e.target.value })} placeholder="tu@correo.cl" maxLength={60} className="mt-1 w-full bg-[#F8FAFC] border border-[#E6EEF7] rounded-xl px-3 py-2.5 text-sm font-medium text-[#0F305B] outline-none focus:border-[#0F305B]" />
-                        </div>
-                        <button onClick={() => setPantalla('PERFIL')} disabled={!perfil.nombre.trim() || !perfil.correo.trim()} className="w-full bg-[#0F305B] text-white font-extrabold py-3 rounded-full text-sm disabled:opacity-40">Guardar datos</button>
-                      </div>
+                </div>
+              </motion.div>
+            )}
+
+            {/* EDITAR DATOS - pantalla de configuración separada */}
+            {pantalla==='DATOS' && (
+              <motion.div key="datos" initial={{ opacity: 0, x: 12 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: 12 }} className="pb-28">
+                <div className="bg-white border-b border-[#E6EEF7] px-5 pt-6 pb-4">
+                  <button onClick={()=> setPantalla('PERFIL')} className="text-xs font-bold text-[#0F305B] flex items-center gap-1">‹ Volver al perfil</button>
+                  <h1 className="text-lg font-extrabold text-[#0F305B] mt-2">Editar datos</h1>
+                  <p className="text-sm text-[#5A7896]">Configuración de tu cuenta. Se guarda al pulsar Guardar.</p>
+                </div>
+                <div className="px-5 mt-5">
+                  <div className="bg-white border border-[#E6EEF7] rounded-2xl p-5 shadow-sm">
+                    <div className="flex items-center gap-3">
+                      <span className="w-12 h-12 rounded-full bg-[#E6EEF7] grid place-items-center text-xl">⚙</span>
+                      <div><p className="font-extrabold text-[#0F305B]">Configuración</p><p className="text-xs text-[#5A7896]">Nombre de usuario, correo y contraseña</p></div>
                     </div>
-                  )}
+                    <div className="mt-4 space-y-3">
+                      <div>
+                        <label className="text-xs font-bold text-[#0F305B]">Nombre de usuario</label>
+                        <input value={perfil.nombre} onChange={e => setPerfil({ ...perfil, nombre: e.target.value })} placeholder="Tu nombre" maxLength={40} className="mt-1 w-full bg-[#F8FAFC] border border-[#E6EEF7] rounded-xl px-3 py-2.5 text-sm font-medium text-[#0F305B] outline-none focus:border-[#0F305B]" />
+                      </div>
+                      <div>
+                        <label className="text-xs font-bold text-[#0F305B]">Correo</label>
+                        <input value={perfil.correo} onChange={e => setPerfil({ ...perfil, correo: e.target.value })} placeholder="tu@correo.cl" maxLength={60} className="mt-1 w-full bg-[#F8FAFC] border border-[#E6EEF7] rounded-xl px-3 py-2.5 text-sm font-medium text-[#0F305B] outline-none focus:border-[#0F305B]" />
+                      </div>
+                      <div>
+                        <label className="text-xs font-bold text-[#0F305B]">Nueva contraseña</label>
+                        <input type="password" value={perfil.password} onChange={e => setPerfil({ ...perfil, password: e.target.value })} placeholder="••••••••" maxLength={40} className="mt-1 w-full bg-[#F8FAFC] border border-[#E6EEF7] rounded-xl px-3 py-2.5 text-sm font-medium text-[#0F305B] outline-none focus:border-[#0F305B]" />
+                      </div>
+                      <div>
+                        <label className="text-xs font-bold text-[#0F305B]">Confirmar contraseña</label>
+                        <input type="password" value={perfil.password2} onChange={e => setPerfil({ ...perfil, password2: e.target.value })} placeholder="Repite tu contraseña" maxLength={40} className="mt-1 w-full bg-[#F8FAFC] border border-[#E6EEF7] rounded-xl px-3 py-2.5 text-sm font-medium text-[#0F305B] outline-none focus:border-[#0F305B]" />
+                        {perfil.password2 && perfil.password !== perfil.password2 && <p className="text-xs text-red-600 font-bold mt-1">⚠ Las contraseñas no coinciden</p>}
+                      </div>
+                      <button onClick={() => setPantalla('PERFIL')} disabled={!perfil.nombre.trim() || !perfil.correo.trim() || (perfil.password || perfil.password2 ? perfil.password !== perfil.password2 || !perfil.password : false)} className="w-full bg-[#0F305B] text-white font-extrabold py-3 rounded-full text-sm disabled:opacity-40">Guardar datos</button>
+                    </div>
+                  </div>
                 </div>
               </motion.div>
             )}

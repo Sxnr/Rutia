@@ -31,3 +31,8 @@
 - **Qué:** el botón "Editar mis datos" abre la vista "Editar datos" con formulario de nombre y correo. Al pulsar "Guardar datos" se guarda y el header de Explorar ("Hola, {nombre}") también se actualiza porque usa el mismo dato.
 - **Por qué:** coincide con el diagrama ("Editar datos" dentro de Perfil) y los datos quedan en el estado, no solo escritos en la pantalla.
 - **React en simple:** `perfil` (con `useState`, un objeto `{nombre, correo}`) es la cajita compartida. `setPerfil({...perfil, nombre})` cambia solo el nombre sin borrar el correo.
+
+## 7. Editar datos como pantalla de configuración
+- **Qué:** el botón "Editar mis datos" (con ícono ⚙, también en el header de Perfil) ahora abre una pantalla separada "Editar datos" tipo configuración, con nombre de usuario, correo, nueva contraseña y confirmar contraseña. El botón Guardar se habilita solo si el nombre y el correo tienen texto y las contraseñas coinciden.
+- **Por qué:** editar datos en una pantalla aparte es más claro que un formulario colapsable, y la contraseña se pide como en cualquier ajuste de cuenta.
+- **React en simple:** `pantalla==='DATOS'` ahora renderiza su propio bloque (antes era parte del bloque de Perfil). Los `input type="password"` ocultan lo que escribes.

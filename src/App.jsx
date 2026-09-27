@@ -309,7 +309,7 @@ export default function App() {
                 <div className="flex-1 overflow-y-auto pb-2">
                   <div className="bg-white border-b border-[#E6EEF7] px-5 pt-6 pb-4">
                     <button onClick={()=> setPantalla('HOME')} className="text-xs font-bold text-[#0F305B]">‹ Volver</button>
-                    <h1 className="text-lg font-extrabold text-[#0F305B] mt-1">Planifica tu ruta</h1>
+                    <h1 className="text-lg font-extrabold text-[#0F305B] mt-1">Preferencias</h1>
                     <p className="text-sm text-[#5A7896] font-medium">Ajusta tus restricciones. Te mostramos solo lo viable.</p>
                   </div>
                   <div className="px-5 mt-5">
@@ -377,41 +377,23 @@ export default function App() {
                     <button onClick={handleGuardar} className="w-9 h-9 rounded-full bg-[#FFC727] grid place-items-center shadow-md text-[#0F305B] border border-white">♡</button>
                   </div>
                   <div className="absolute bottom-0 left-0 right-0 px-5 pb-5 pt-10">
-                    <div className="inline-flex items-center bg-white/95 backdrop-blur px-3 py-1.5 rounded-full text-xs font-bold text-[#0F305B] shadow border border-white gap-1.5">
-                      <span>{itinerario?.duracionTotal || "3h 15m"}</span><span className="w-1 h-1 bg-[#8AA0B8] rounded-full"/><span>{itinerario?.distancia || "2.4 km a pie"}</span><span className="w-1 h-1 bg-[#8AA0B8] rounded-full"/><span>{itinerario?.costoTotal || "$8.500"}</span>
+                    <p className="text-[11px] font-extrabold tracking-widest uppercase text-white/80">Ruta sugerida</p>
+                    <div className="inline-flex items-center bg-white/95 backdrop-blur px-3 py-1.5 rounded-full text-xs font-bold text-[#0F305B] shadow border border-white gap-1.5 mt-1.5">
+                      <span>{itinerario?.duracionTotal || "3h 15m"}</span><span className="w-1 h-1 bg-[#8AA0B8] rounded-full"/><span>{itinerario?.costoTotal || "$8.500"}</span>
                     </div>
-                    <h1 className="text-[20px] font-extrabold leading-tight mt-2.5 text-white drop-shadow-md">{itinerario?.titulo || "Ruta Bellas Artes & Forestal"}</h1>
-                    <p className="text-white/95 text-xs mt-1.5 flex items-center gap-1.5 font-medium"><span className="flex items-center gap-1"><IconClock /> {itinerario?.horario || "Mar-Dom 10:00-18:30"}</span><span>•</span><span>{itinerario?.precioEntrada || "$3.000 General"}</span></p>
-                  </div>
-                </div>
-                <div className="px-5 mt-4">
-                  <div className="bg-white border border-[#E6EEF7] rounded-2xl p-4 shadow-sm">
-                    <div className="flex items-center justify-between">
-                      <h3 className="font-extrabold text-[#0F305B] text-sm flex items-center gap-2">☑️ Mi checklist de visita</h3>
-                      <span className="text-xs font-extrabold bg-[#0F305B] text-white px-2.5 py-1 rounded-full">{visitados.size}/{itinerario?.paradas?.length || 0}</span>
-                    </div>
-                    <div className="mt-3 h-2 bg-[#F1F5F9] border border-[#E6EEF7] rounded-full overflow-hidden">
-                      <div className="h-full bg-[#0F305B] rounded-full transition-all" style={{ width: `${progreso}%` }} />
-                    </div>
-                    <div className="mt-2 flex items-center justify-between">
-                      <p className="text-xs font-bold text-[#5A7896]">{progreso}% completado</p>
-                      <p className="text-xs text-[#5A7896]">{visitados.size === (itinerario?.paradas?.length||0) && itinerario ? "¡Ruta completada! 🎉" : "Marca cada lugar al visitarlo"}</p>
-                    </div>
-                    {visitados.size>0 && (
-                      <button onClick={()=> setVisitados(new Set())} className="mt-2 text-xs font-bold text-[#0F305B] underline">Reiniciar checklist</button>
+                    {tituloEditando ? (
+                      <div className="mt-2 flex gap-2">
+                        <input value={tituloTemp} onChange={e => setTituloTemp(e.target.value)} maxLength={60} placeholder="Nombre de tu ruta" className="flex-1 bg-white text-[#0F305B] text-sm font-bold rounded-xl px-3 py-2 outline-none" autoFocus />
+                        <button onClick={() => { if (tituloTemp.trim() && itinerario) setItinerario({ ...itinerario, titulo: tituloTemp.trim() }); setTituloEditando(false) }} className="bg-[#FFC727] text-[#0F305B] text-xs font-extrabold px-3 py-2 rounded-xl">Guardar</button>
+                      </div>
+                    ) : (
+                      <button onClick={() => { setTituloTemp(itinerario?.titulo || ''); setTituloEditando(true) }} className="block text-left w-full group" title="Toca para editar el nombre">
+                        <h1 className="text-[20px] font-extrabold leading-tight mt-2 text-white drop-shadow-md">{itinerario?.titulo || "Ruta Bellas Artes & Forestal"} <span className="text-sm opacity-70">✏️</span></h1>
+                      </button>
                     )}
                   </div>
                 </div>
-                <div className="px-5 mt-4 space-y-4">
-                  <div className="rounded-2xl overflow-hidden border border-[#E6EEF7] shadow-sm bg-white">
-                    <div className="h-36 bg-[#E6EEF7] relative grid place-items-center overflow-hidden">
-                      <img src="https://images.unsplash.com/photo-1524661135-423995f22d0b?q=80&w=800&auto=format&fit=crop" alt="mapa" className="absolute inset-0 w-full h-full object-cover opacity-30" />
-                      <div className="relative bg-white rounded-xl shadow px-3 py-2 flex items-center gap-2 border border-[#E6EEF7]"><span className="w-2 h-2 bg-[#0F305B] rounded-full animate-pulse"/><span className="text-xs font-extrabold text-[#0F305B]">Mapa en vivo</span><span className="text-xs text-[#5A7896] font-medium">• {itinerario?.distancia || "2.4 km"} • {itinerario?.paradas?.length || 4} paradas</span></div>
-                    </div>
-                    <div className="px-4 py-3 flex items-center justify-between bg-white"><p className="text-xs font-extrabold text-[#0F305B]">Ruta optimizada a pie</p><button className="text-xs font-extrabold text-[#0F305B]">Abrir en Maps →</button></div>
-                  </div>
 
-                </div>
                 <div className="px-5 mt-6">
                   <h3 className="font-extrabold text-[#0F305B]">Tu itinerario</h3>
                   <p className="text-xs text-[#5A7896] mt-1 font-medium">Toca el checkbox al visitar y <span className="inline-flex align-middle w-4 h-4 rounded-full bg-white border border-[#FECACA] text-red-500 items-center justify-center mx-1"><IconTrash/></span> para quitar lugares.</p>
@@ -535,7 +517,7 @@ export default function App() {
                 <div className="px-5 mt-5 space-y-4">
                   {/* Datos amigables reales */}
                   <div className="bg-white border border-[#E6EEF7] rounded-2xl p-4 shadow-sm">
-                    <h3 className="font-extrabold text-[#0F305B]">Sobre este lugar</h3>
+                    <h3 className="font-extrabold text-[#0F305B]">Detalle del lugar</h3>
                     <p className="text-sm text-[#3A5A7A] mt-2 leading-relaxed">{getDatoAmigable(poiFicha.id).desc}</p>
                     <div className="mt-4 grid gap-2">
                       <div className="flex items-start gap-3 bg-[#F8FAFC] border border-[#E6EEF7] rounded-xl p-3">

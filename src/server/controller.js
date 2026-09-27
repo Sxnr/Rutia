@@ -16,7 +16,7 @@ export async function motorDeFiltrado({ tiempo, presupuesto, intereses }) {
       precioEntrada: "—",
       paradas: [],
       meta: { costoTotal: 0, tiempoTotalMin: 0, viable: false, mensaje },
-      trace: ["UI", "State", "HTTP POST /api/rutas/sugerir", "Router", "Zod", "Controller", "routeService", "Repo.buscarCandidatos", "CollPOI"]
+      trace: ["UI", "State", "HTTP POST /api/v1/routes/generate", "Router", "Zod", "Controller", "routeService", "Repo.buscarCandidatos", "CollPOI"]
     }
   }
 
@@ -55,7 +55,7 @@ export async function motorDeFiltrado({ tiempo, presupuesto, intereses }) {
     precioEntrada: "$3.000 General / $1.500 Estudiantes",
     paradas,
     meta: { costoTotal: costoTotalClp, tiempoTotalMin: duracionTotalMin, viable: true },
-    trace: ["UI", "State", "HTTP POST /api/rutas/sugerir", "Router", "Zod", "Controller", "routeService", "Repo.buscarCandidatos", "CollPOI"]
+    trace: ["UI", "State", "HTTP POST /api/v1/routes/generate", "Router", "Zod", "Controller", "routeService", "Repo.buscarCandidatos", "CollPOI"]
   }
 
   await new Promise(r => setTimeout(r, 120))

@@ -15,9 +15,9 @@ http.interceptors.request.use(cfg => {
   return cfg
 })
 
-// Mock adapter: intercepta POST /rutas/sugerir y rutea directo al Router Express simulado
+// Mock adapter: intercepta POST /api/v1/routes/generate (convención arquitectura) y rutea al Router simulado
 async function mockPost(url, data) {
-  if (url.includes("/rutas/sugerir")) {
+  if (url.includes("/api/v1/routes/generate") || url.includes("/rutas/sugerir")) {
     return postRutaSugerir(data)
   }
   throw new Error("Ruta no mockeada: " + url)
@@ -33,7 +33,7 @@ async function mockGet(url) {
 export const api = {
   // 1. Petición POST directa a Router (sin Nginx)
   async sugerirRuta(preferencias) {
-    const res = await mockPost("/rutas/sugerir", preferencias)
+    const res = await mockPost("/api/v1/routes/generate", preferencias)
     // 7. Respuesta -> HTTP -> State -> UI
     return res.data
   },

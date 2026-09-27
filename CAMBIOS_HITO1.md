@@ -16,3 +16,8 @@
 - **Qué:** en cada tarjeta de lugar se quitó la distancia a pie y la duración junto al horario (ahora solo se ve el rango horario, ej. "10:30 - 11:30"). Cada tarjeta tiene botones ↑ y ↓ para subir o bajar el lugar en la lista, tanto en Ruta sugerida como en Rutas guardadas.
 - **Por qué:** la colección `pois` solo define categoría, costo, duración y horario; la distancia no está en el esquema. El orden lo elige el usuario.
 - **React en simple:** elegí botones subir/bajar en vez de drag-and-drop porque no hay librería de arrastre instalada y los botones funcionan bien en móvil y con teclado. `reordenarParadas(origen, destino)` copia la lista, saca el lugar con `splice` y lo inserta en la nueva posición.
+
+## 4. Agregar lugar propio al itinerario
+- **Qué:** cuarto bloque en Ruta sugerida: un selector con 3 lugares extra (Mercado Central, Sky Costanera, Cerro San Cristóbal) y botón Agregar. El lugar elegido se suma al final del itinerario y se recalculan tiempo y costo.
+- **Por qué:** el usuario puede personalizar la ruta generada por `POST /api/v1/routes/generate` sin volver al formulario.
+- **React en simple:** `lugarExtraId` (con `useState`) guarda lo elegido en el selector. `setItinerario({...itinerario, paradas: nuevas})` crea una lista nueva con el lugar agregado para que React la muestre.

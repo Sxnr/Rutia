@@ -44,6 +44,19 @@ const rutasPopularesUI = [
 const imagenLastarriaReal = "https://commons.wikimedia.org/wiki/Special:FilePath/Jose%20Victorino%20Lastarria.jpg?width=800"
 const fallbackLastarria = "https://images.unsplash.com/photo-1519662978799-67fa9b6d5b3b?q=80&w=800&auto=format&fit=crop"
 
+// Lista adicional hardcodeada para agregar lugares propios (solo campos del esquema pois)
+const lugaresExtra = [
+  { id: "extra_mercado", nombre: "Mercado Central", categoria: "Gastronomía", costo: 8000, tiempoMin: 60, horario: "Lun-Dom 09:00-18:00", imagen: "https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?q=80&w=400&auto=format&fit=crop" },
+  { id: "extra_costanera", nombre: "Sky Costanera", categoria: "Parques", costo: 15000, tiempoMin: 60, horario: "Lun-Dom 10:00-22:00", imagen: "https://images.unsplash.com/photo-1480714378408-67cf0d13bc1b?q=80&w=400&auto=format&fit=crop" },
+  { id: "extra_sancristobal", nombre: "Cerro San Cristóbal", categoria: "Parques", costo: 0, tiempoMin: 90, horario: "Lun-Dom 09:00-19:00", imagen: "https://images.unsplash.com/photo-1506905925346-21bda4d32df4?q=80&w=400&auto=format&fit=crop" },
+]
+
+const lugaresVisitadosEjemplo = [
+  { id: "vis_bellas", nombre: "Museo Nacional de Bellas Artes", categoria: "Museos", costo: 0, tiempoMin: 60, horario: "Mar-Dom 10:00-18:30", imagen: "https://images.unsplash.com/photo-1540202404-a2f29016b523?q=80&w=400&auto=format&fit=crop" },
+  { id: "vis_plaza", nombre: "Plaza de Armas", categoria: "Histórico", costo: 0, tiempoMin: 30, horario: "Lun-Dom 06:00-22:00", imagen: "https://images.unsplash.com/photo-1587595431973-160d0d94add1?q=80&w=400&auto=format&fit=crop" },
+  { id: "vis_emporio", nombre: "Emporio La Rosa", categoria: "Gastronomía", costo: 4500, tiempoMin: 40, horario: "Lun-Dom 08:00-21:00", imagen: "https://images.unsplash.com/photo-1445116572660-236099ec97a0?q=80&w=400&auto=format&fit=crop" },
+]
+
 // Iconos mejorados - no confundibles con Gemini
 const IconBell = () => (<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8"><path d="M6 8a6 6 0 0 1 12 0c0 7-6 5-6 9a1.5 1.5 0 0 1-3 0c0-4-3-2-3-9"/><path d="M10.3 21a1.94 1.94 0 0 0 3.4 0"/></svg>)
 const IconSearch = () => (<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>)
@@ -189,6 +202,29 @@ export default function App() {
   const handleGuardar = () => {
     guardarRuta()
     setPantalla('GUARDADA')
+  }
+
+  const handleAgregarLugarPropio = () => {
+    if (!lugarExtraId || !itinerario) return
+    const elegido = lugaresExtra.find(l => l.id === lugarExtraId)
+    if (!elegido) return
+    if (itinerario.paradas.some(p => p.id === elegido.id)) { setLugarExtraId(''); return }
+    const nuevaParada = {
+      ...elegido,
+      costoLabel: elegido.costo === 0 ? "$0 (Gratis)" : `$${elegido.costo.toLocaleString('es-CL')}`,
+      hora: "Horario libre",
+      orden: itinerario.paradas.length + 1,
+    }
+    const nuevas = [...itinerario.paradas, nuevaParada]
+    const costoTotal = nuevas.reduce((s, p) => s + (p.costo || 0), 0)
+    const tiempoTotal = nuevas.reduce((s, p) => s + (p.tiempoMin || 0), 0)
+    setItinerario({
+      ...itinerario,
+      paradas: nuevas,
+      costoTotal: `$${costoTotal.toLocaleString('es-CL')}`,
+      duracionTotal: `${Math.floor(tiempoTotal / 60)}h ${String(tiempoTotal % 60).padStart(2, '0')}m`,
+    })
+    setLugarExtraId('')
   }
 
   const abrirFichaPoi = async (poi) => {
@@ -433,6 +469,19 @@ export default function App() {
                       )
                     })}
                     {(!itinerario || itinerario.paradas.length===0) && <p className="text-xs text-[#5A7896] bg-white border border-dashed border-[#E6EEF7] rounded-xl p-4 text-center">Sin lugares. Genera otra ruta o ajusta tu presupuesto/tiempo.</p>}
+                  </div>
+                  <div className="mt-4 bg-white border border-[#E6EEF7] rounded-2xl p-4 shadow-sm">
+                    <h4 className="font-extrabold text-[#0F305B] text-sm">Agregar un lugar a tu ruta</h4>
+                    <p className="text-xs text-[#5A7896] mt-1">Elige un lugar de la lista y se suma al final del itinerario.</p>
+                    <div className="mt-3 flex gap-2">
+                      <select value={lugarExtraId} onChange={e => setLugarExtraId(e.target.value)} className="flex-1 bg-[#F8FAFC] border border-[#E6EEF7] rounded-xl px-3 py-2.5 text-sm font-medium text-[#0F305B] outline-none">
+                        <option value="">Selecciona un lugar…</option>
+                        {lugaresExtra.filter(l => !itinerario?.paradas?.some(p => p.id === l.id)).map(l => (
+                          <option key={l.id} value={l.id}>{l.nombre} • {l.categoria} • {l.costo === 0 ? "Gratis" : `$${l.costo.toLocaleString('es-CL')}`}</option>
+                        ))}
+                      </select>
+                      <button onClick={handleAgregarLugarPropio} disabled={!lugarExtraId} className="bg-[#0F305B] text-white text-sm font-extrabold px-4 py-2.5 rounded-xl disabled:opacity-40">Agregar</button>
+                    </div>
                   </div>
                   {itinerario?.paradas?.length > 1 && (
                     <button onClick={()=> setItinerario({...itinerario, paradas: []})} className="mt-3 w-full text-xs font-bold text-red-500 hover:text-red-600">Vaciar itinerario</button>

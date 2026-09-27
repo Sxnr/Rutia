@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { useRouteStore } from './state/store.jsx'
 import { validarPreferencias } from './schemas/routeSchema.js'
+import { poisCollection } from './data/poisCollection.js'
 
 // Datos UI con fotos reales de Santiago
 const rutasPopularesUI = [
@@ -68,6 +69,9 @@ const IconCrearRuta = () => (
 const IconTrash = () => (
   <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 01-2 2H8a2 2 0 01-2-2L5 6"/><path d="M10 11v6 M14 11v6"/><path d="M9 6V4a1 1 0 011-1h4a1 1 0 011 1v2"/></svg>
 )
+const IconBookmark = () => (
+  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8"><path d="M19 21l-7-5-7 5V5a2 2 0 012-2h10a2 2 0 012 2z"/></svg>
+)
 
 // Datos amigables reales por POI
 const datosAmigables = {
@@ -96,6 +100,12 @@ export default function App() {
   const [comentario, setComentario] = useState("")
   const [errorResena, setErrorResena] = useState(null)
   const [reviews, setReviews] = useState({})
+  const [idioma, setIdioma] = useState('ES')
+  const [perfil, setPerfil] = useState({ nombre: 'Usuario', correo: 'usuario@gmail.com' })
+  const [tituloEditando, setTituloEditando] = useState(false)
+  const [tituloTemp, setTituloTemp] = useState('')
+  const [guardadosTab, setGuardadosTab] = useState('rutas')
+  const [lugarExtraId, setLugarExtraId] = useState('')
 
   const { preferencias, setPreferencias, itinerario, setItinerario, generarRuta, guardarRuta, rutaGuardada, cargarPoi, loading } = useRouteStore()
 
@@ -201,13 +211,13 @@ export default function App() {
               <motion.div key="HOME" initial={{ opacity: 0, x: -12 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -12 }} transition={{ duration: 0.25 }} className="pb-28">
                 <div className="px-5 pt-6 pb-2 flex items-center justify-between bg-white border-b border-[#E6EEF7]">
                   <div className="flex items-center gap-3">
-                    <img src="https://i.pravatar.cc/100?img=33" alt="avatar" className="w-10 h-10 rounded-full object-cover border-2 border-[#E6EEF7]" />
+                    <img src="https://i.pravatar.cc/100?img=12" alt="avatar" className="w-10 h-10 rounded-full object-cover border-2 border-[#E6EEF7]" />
                     <div>
-                      <h1 className="text-[15px] font-extrabold leading-none text-[#0F305B]">Santiago Inteligente</h1>
-                      <p className="text-[10px] tracking-[0.14em] text-[#5A7896] font-bold uppercase mt-0.5">Explorador Urbano</p>
+                      <h1 className="text-[15px] font-extrabold leading-none text-[#0F305B]">Hola, {perfil.nombre}</h1>
+                      <p className="text-[11px] text-[#5A7896] font-medium mt-0.5">¿A dónde vamos hoy?</p>
                     </div>
                   </div>
-                  <button onClick={() => setPantalla('AYUDA')} className="w-10 h-10 rounded-full bg-white border border-[#E6EEF7] grid place-items-center shadow-sm text-[#0F305B] font-extrabold text-lg" title="Ayuda">?</button>
+                  <button onClick={() => setIdioma(idioma === 'ES' ? 'EN' : 'ES')} className="px-3 h-10 rounded-full bg-white border border-[#E6EEF7] grid place-items-center shadow-sm text-[#0F305B] text-xs font-extrabold" title="Cambiar idioma">{idioma === 'ES' ? 'ES | EN' : 'EN | ES'}</button>
                 </div>
                 <div className="px-5 mt-4">
                   <div className="flex items-center gap-3 bg-white rounded-2xl px-4 py-3 border border-[#E6EEF7] shadow-sm">
@@ -232,52 +242,20 @@ export default function App() {
                 </div>
                 <div className="px-5 mt-5">
                   <div className="flex items-center justify-between">
-                    <h3 className="font-extrabold text-[#0F305B] text-[16px]">Rutas Populares</h3>
-                    <span className="text-sm font-bold text-[#8AA0B8]">Ver todas</span>
+                    <h3 className="font-extrabold text-[#0F305B] text-[16px]">Lugares disponibles en la app</h3>
                   </div>
-                  <div className="mt-3 space-y-4">
-                    {rutasPopularesUI.slice(0,1).map(ruta => (
-                      <div key={ruta.id} className="rounded-[20px] overflow-hidden border border-[#E6EEF7] bg-white shadow-sm group">
-                        <div className="relative h-44">
-                          <img src={ruta.imagen} alt={ruta.titulo} onError={(e)=>{ if(e.currentTarget.src!==ruta.fallback) e.currentTarget.src=ruta.fallback }} className="w-full h-full object-cover" />
-                          <div className="absolute top-3 left-3 bg-white px-2.5 py-1 rounded-full flex items-center gap-1 text-xs font-extrabold shadow text-[#0F305B]"><IconStar /> 4.8</div>
-                        </div>
-                        <div className="px-4 py-3.5 bg-white">
-                          <h4 className="font-extrabold text-[#0F305B] text-[15px] leading-none">{ruta.titulo}</h4>
-                          <div className="flex items-center gap-1.5 text-[#5A7896] text-xs mt-1.5 font-semibold"><IconClock /> {ruta.duracion}</div>
+                  <p className="text-xs text-[#5A7896] mt-1 font-medium">Desliza para ver más lugares</p>
+                  <div className="mt-3 flex gap-3 overflow-x-auto no-scrollbar pb-2 -mx-5 px-5">
+                    {poisCollection.slice(0, 6).map(lugar => (
+                      <div key={lugar.id} className="flex-shrink-0 w-40 rounded-[18px] overflow-hidden border border-[#E6EEF7] bg-white shadow-sm">
+                        <img src={lugar.imagen} alt={lugar.nombre} className="h-24 w-full object-cover" />
+                        <div className="p-3">
+                          <p className="text-xs font-extrabold text-[#0F305B] leading-tight line-clamp-2 min-h-[28px]">{lugar.nombre}</p>
+                          <p className="text-[11px] text-[#5A7896] font-medium mt-1">{lugar.categoria}</p>
+                          <p className="text-[11px] font-extrabold text-[#0F305B] mt-0.5">{lugar.costo === 0 ? "Gratis" : `$${lugar.costo.toLocaleString('es-CL')}`}</p>
                         </div>
                       </div>
                     ))}
-                  </div>
-                </div>
-                <div className="px-5 mt-5">
-                  <div className="rounded-[20px] bg-[#0F305B] p-5 text-white relative overflow-hidden border border-[#1A3A5A]">
-                    <h3 className="font-extrabold text-white text-[16px] leading-tight relative">Desbloquea Guías<br/>Exclusivas</h3>
-                    <p className="text-white/80 text-xs mt-1.5 leading-relaxed relative font-medium">Accede a rutas offline y<br/>descuentos premium en<br/>comercios locales.</p>
-                    <button className="mt-4 bg-[#FFC727] text-[#0F305B] px-5 py-2.5 rounded-full text-xs font-extrabold shadow opacity-80 cursor-default">Mejorar a Premium</button>
-                  </div>
-
-                </div>
-                <div className="px-5 mt-6">
-                  <h3 className="font-extrabold text-[#0F305B] text-[15px]">Descubre el Barrio Lastarria</h3>
-                  <div className="mt-3 rounded-[20px] overflow-hidden border border-[#E6EEF7] bg-white shadow-sm">
-                    <div className="relative h-56">
-                      <img src={imagenLastarriaReal} alt="Lastarria" onError={(e)=>{ if(e.currentTarget.src!==fallbackLastarria) e.currentTarget.src=fallbackLastarria }} className="w-full h-full object-cover" />
-                      <div className="absolute inset-0 bg-gradient-to-t from-[#0F305B]/90 via-[#0F305B]/30 to-transparent" />
-                      <div className="absolute inset-0 p-4 flex flex-col">
-                        <div className="flex gap-1.5"><span className="text-[8px] font-bold bg-white/20 text-white px-2 py-1 rounded-full border border-white/20">PATRIMONIO</span><span className="text-[8px] font-bold bg-[#FFC727] text-[#0F305B] px-2 py-1 rounded-full">BOHEMIO</span></div>
-                        <div className="mt-auto">
-                          <div className="bg-white/95 backdrop-blur rounded-xl p-3 border border-white/50">
-                            <p className="text-[10px] font-extrabold text-[#0F305B] tracking-widest uppercase">Lifestyle • Historia • 1.2km</p>
-                            <p className="text-xs text-[#3A5A7A] mt-1 leading-snug font-medium">Cafés de autor, GAM a pasos. Ruta 2h • $9.000 CLP.</p>
-                          </div>
-                          <div className="mt-3 flex items-center justify-between text-white">
-                            <span className="text-sm font-extrabold">Lastarria: Arte & Cultura</span>
-                            <span className="w-8 h-8 rounded-full bg-[#E6EEF7] text-[#8AA0B8] grid place-items-center font-bold">→</span>
-                          </div>
-                        </div>
-                      </div>
-                    </div>
                   </div>
                 </div>
               </motion.div>

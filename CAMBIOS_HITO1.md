@@ -21,3 +21,8 @@
 - **Qué:** cuarto bloque en Ruta sugerida: un selector con 3 lugares extra (Mercado Central, Sky Costanera, Cerro San Cristóbal) y botón Agregar. El lugar elegido se suma al final del itinerario y se recalculan tiempo y costo.
 - **Por qué:** el usuario puede personalizar la ruta generada por `POST /api/v1/routes/generate` sin volver al formulario.
 - **React en simple:** `lugarExtraId` (con `useState`) guarda lo elegido en el selector. `setItinerario({...itinerario, paradas: nuevas})` crea una lista nueva con el lugar agregado para que React la muestre.
+
+## 5. Pantalla Guardados con dos secciones
+- **Qué:** la tab "Mis Rutas" ahora se llama "Guardados" con ícono de marcador (bookmark). Dentro hay dos pestañas: "Rutas guardadas" (lo que ya existía, ahora sin distancia a pie) y "Lugares visitados" (nueva, con 3 lugares de ejemplo: nombre, imagen, categoría, costo, horario y duración).
+- **Por qué:** así coincide con el diagrama de información que pide "Guardados", "Rutas guardadas" y "Lugares visitados" por separado.
+- **React en simple:** `guardadosTab` (con `useState`, vale 'rutas' o 'visitados') decide qué sección se muestra. Es como un interruptor: solo una visible a la vez.

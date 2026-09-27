@@ -500,9 +500,32 @@ export default function App() {
               <motion.div key="misrutas" initial={{ opacity: 0, x: 12 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: 12 }} className="pb-28">
                 <div className="bg-white border-b border-[#E6EEF7] px-5 pt-6 pb-4">
                   <button onClick={()=> setPantalla('HOME')} className="text-xs font-bold text-[#0F305B]">‹ Volver</button>
-                  <h1 className="text-lg font-extrabold text-[#0F305B] mt-1">Mis Rutas</h1>
-                  <p className="text-sm text-[#5A7896]">Tus itinerarios guardados y su avance</p>
+                  <h1 className="text-lg font-extrabold text-[#0F305B] mt-1">Guardados</h1>
+                  <p className="text-sm text-[#5A7896]">Tus rutas y lugares guardados</p>
+                  <div className="mt-3 grid grid-cols-2 gap-2">
+                    <button onClick={()=> setGuardadosTab('rutas')} className={`py-2.5 rounded-full text-sm font-extrabold border ${guardadosTab==='rutas' ? 'bg-[#0F305B] text-white border-[#0F305B]' : 'bg-white border-[#E6EEF7] text-[#3A5A7A]'}`}>Rutas guardadas</button>
+                    <button onClick={()=> setGuardadosTab('visitados')} className={`py-2.5 rounded-full text-sm font-extrabold border ${guardadosTab==='visitados' ? 'bg-[#0F305B] text-white border-[#0F305B]' : 'bg-white border-[#E6EEF7] text-[#3A5A7A]'}`}>Lugares visitados</button>
+                  </div>
                 </div>
+                {guardadosTab === 'visitados' ? (
+                <div className="px-5 mt-5">
+                  <h3 className="font-extrabold text-[#0F305B] text-[15px]">Lugares visitados</h3>
+                  <p className="text-xs text-[#5A7896] mt-1">Lugares que ya visitaste (ejemplo).</p>
+                  <div className="mt-3 space-y-3">
+                    {lugaresVisitadosEjemplo.map(l => (
+                      <div key={l.id} className="bg-white border border-[#E6EEF7] rounded-2xl p-3 flex gap-3 shadow-sm">
+                        <img src={l.imagen} alt={l.nombre} className="w-16 h-16 rounded-xl object-cover border border-[#E6EEF7]" />
+                        <div className="flex-1 min-w-0">
+                          <p className="text-sm font-extrabold text-[#0F305B] leading-tight truncate">{l.nombre}</p>
+                          <p className="text-xs text-[#5A7896] mt-0.5">{l.categoria} • {l.horario}</p>
+                          <p className="text-xs font-bold text-[#0F305B] mt-1">{l.costo === 0 ? "Gratis" : `$${l.costo.toLocaleString('es-CL')}`} • {l.tiempoMin} min</p>
+                        </div>
+                        <span className="text-emerald-600 font-extrabold self-center">✓</span>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+                ) : (
                 <div className="px-5 mt-5">
                   {!rutaGuardada ? (
                     <div className="bg-white border border-dashed border-[#E6EEF7] rounded-2xl p-8 text-center">
@@ -517,7 +540,7 @@ export default function App() {
                         <img src={rutaGuardada.paradas?.[0]?.imagen} alt={rutaGuardada.titulo} className="h-32 w-full object-cover" />
                         <div className="p-4">
                           <h3 className="font-extrabold text-[#0F305B]">{rutaGuardada.titulo}</h3>
-                          <p className="text-xs text-[#5A7896] mt-1">{rutaGuardada.duracionTotal} • {rutaGuardada.distancia} • {rutaGuardada.costoTotal}</p>
+                          <p className="text-xs text-[#5A7896] mt-1">{rutaGuardada.duracionTotal} • {rutaGuardada.costoTotal}</p>
                           <p className="text-xs text-[#8AA0B8] mt-1">Guardada: {new Date(rutaGuardada.guardadaEn).toLocaleString('es-CL')}</p>
                           <div className="mt-3">
                             <div className="flex items-center justify-between text-xs font-bold text-[#0F305B]"><span>Avance</span><span>{visitados.size}/{rutaGuardada.paradas.length}</span></div>
@@ -548,6 +571,7 @@ export default function App() {
                     </div>
                   )}
                 </div>
+                )}
               </motion.div>
             )}
 
@@ -673,7 +697,7 @@ export default function App() {
             {[
               { id: 'HOME', label: 'Explorar', icon: <IconExplorar/>, go: 'HOME' },
               { id: 'FORM', label: 'Crear Ruta', icon: <IconCrearRuta/>, go: 'FORM' },
-              { id: 'MISRUTAS', label: 'Mis Rutas', icon: <span className="text-lg">🗺️</span>, go: 'MISRUTAS' },
+              { id: 'MISRUTAS', label: 'Guardados', icon: <IconBookmark/>, go: 'MISRUTAS' },
               { id: 'PERFIL', label: 'Perfil', icon: <span className="text-lg">👤</span>, go: 'PERFIL' },
             ].map(item => {
               const active = (pantalla==='HOME' && item.id==='HOME') || (pantalla==='FORM' && item.id==='FORM') || (pantalla==='RUTA' && item.id==='FORM') || ((pantalla==='MISRUTAS' || pantalla==='GUARDADA') && item.id==='MISRUTAS') || ((pantalla==='PERFIL' || pantalla==='DATOS') && item.id==='PERFIL')

@@ -1,6 +1,6 @@
-# Santiago Inteligente 🇨🇱
+# Rutia 🇨🇱
 
-> Para el turista en Santiago con tiempo y presupuesto acotados, Santiago Inteligente genera rutas viables en segundos descartando lo impagable.
+> Para el turista en Santiago con tiempo y presupuesto acotados, Rutia genera rutas viables en segundos descartando lo impagable.
 
 ## 👥 Integrantes
 

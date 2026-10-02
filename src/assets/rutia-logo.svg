@@ -1,0 +1,7 @@
+<svg viewBox="0 0 220 180" xmlns="http://www.w3.org/2000/svg">
+  <path d="M94,40 a26,26 0 1,1 52,0 Q146,64 120,94 Q94,64 94,40 Z" fill="#142C50"/>
+  <circle cx="120" cy="40" r="10" fill="#E0A526"/>
+  <path d="M50,110 Q80,70 110,60" fill="none" stroke="#7D8A9A" stroke-width="2" stroke-dasharray="2,6" stroke-linecap="round"/>
+  <circle cx="50" cy="110" r="5" fill="#E0A526"/>
+  <text x="120" y="150" text-anchor="middle" font-size="32" font-weight="700" fill="#142C50" font-family="sans-serif">Rutia</text>
+</svg>

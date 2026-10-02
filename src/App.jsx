@@ -3,6 +3,7 @@ import { motion, AnimatePresence } from 'framer-motion'
 import { useRouteStore } from './state/store.jsx'
 import { validarPreferencias } from './schemas/routeSchema.js'
 import { poisCollection } from './data/poisCollection.js'
+import rutiaIcon from './assets/rutia-icon.svg'
 
 // Datos UI con fotos reales de Santiago
 const rutasPopularesUI = [
@@ -60,7 +61,7 @@ const lugaresVisitadosEjemplo = [
 // Iconos mejorados - no confundibles con Gemini
 const IconBell = () => (<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8"><path d="M6 8a6 6 0 0 1 12 0c0 7-6 5-6 9a1.5 1.5 0 0 1-3 0c0-4-3-2-3-9"/><path d="M10.3 21a1.94 1.94 0 0 0 3.4 0"/></svg>)
 const IconSearch = () => (<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>)
-const IconStar = () => (<svg width="12" height="12" viewBox="0 0 24 24" fill="#FFC727" stroke="#FFC727"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>)
+const IconStar = () => (<svg width="12" height="12" viewBox="0 0 24 24" fill="#E0A526" stroke="#E0A526"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>)
 const IconClock = () => (<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>)
 // Nuevo: Explorar = Brújula
 const IconExplorar = () => (
@@ -75,7 +76,7 @@ const IconCrearRuta = () => (
   <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.7">
     <polygon points="1 6 1 22 8 18 16 22 23 18 23 2 16 6 8 2 1 6" />
     <path d="M8 2 v16 M16 6 v16" strokeWidth="1.2"/>
-    <circle cx="12" cy="11" r="2.5" fill="#FFC727" stroke="#0F305B" strokeWidth="1.2"/>
+    <circle cx="12" cy="11" r="2.5" fill="#E0A526" stroke="#142C50" strokeWidth="1.2"/>
     <path d="M12 13.5 L12 16" strokeWidth="1.5" strokeLinecap="round"/>
   </svg>
 )
@@ -205,57 +206,57 @@ export default function App() {
   const getDatoAmigable = (id) => datosAmigables[id] || datosAmigables["default"]
 
   return (
-    <div className="min-h-screen bg-[#0A2540] flex justify-center py-4 px-2 md:py-6">
-      <div className="w-full max-w-md mx-auto bg-[#F8FAFC] h-[844px] md:h-[860px] shadow-xl rounded-[32px] overflow-hidden relative flex flex-col border border-white/20">
-        <div className="flex-1 overflow-y-auto no-scrollbar relative bg-[#F8FAFC]">
+    <div className="min-h-screen bg-[#142C50] flex justify-center py-4 px-2 md:py-6">
+      <div className="w-full max-w-md mx-auto bg-[#F4F0E6] h-[844px] md:h-[860px] shadow-xl rounded-[32px] overflow-hidden relative flex flex-col border border-white/20">
+        <div className="flex-1 overflow-y-auto no-scrollbar relative bg-[#F4F0E6]">
           <AnimatePresence mode="wait">
             {/* HOME */}
             {pantalla === 'HOME' && (
               <motion.div key="HOME" initial={{ opacity: 0, x: -12 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -12 }} transition={{ duration: 0.25 }} className="pb-28">
-                <div className="px-5 pt-6 pb-2 flex items-center justify-between bg-white border-b border-[#E6EEF7]">
+                <div className="px-5 pt-6 pb-2 flex items-center justify-between bg-white border-b border-[#7D8A9A]/30">
                   <div className="flex items-center gap-3">
-                    <img src="https://i.pravatar.cc/100?img=12" alt="avatar" className="w-10 h-10 rounded-full object-cover border-2 border-[#E6EEF7]" />
+                    <img src={rutiaIcon} alt="Rutia" className="w-10 h-10 rounded-2xl object-cover shadow-sm" />
                     <div>
-                      <h1 className="text-[15px] font-extrabold leading-none text-[#0F305B]">Hola, {perfil.nombre}</h1>
-                      <p className="text-[11px] text-[#5A7896] font-medium mt-0.5">¿A dónde vamos hoy?</p>
+                      <h1 className="text-[17px] font-extrabold leading-none text-[#142C50] tracking-tight">Rutia</h1>
+                      <p className="text-[11px] text-[#7D8A9A] font-medium mt-0.5">Hola, {perfil.nombre} · ¿A dónde vamos hoy?</p>
                     </div>
                   </div>
-                  <button onClick={() => setIdioma(idioma === 'ES' ? 'EN' : 'ES')} className="px-3 h-10 rounded-full bg-white border border-[#E6EEF7] grid place-items-center shadow-sm text-[#0F305B] text-xs font-extrabold" title="Cambiar idioma">{idioma === 'ES' ? 'ES | EN' : 'EN | ES'}</button>
+                  <button onClick={() => setIdioma(idioma === 'ES' ? 'EN' : 'ES')} className="px-3 h-10 rounded-full bg-white border border-[#7D8A9A]/30 grid place-items-center shadow-sm text-[#142C50] text-xs font-extrabold" title="Cambiar idioma">{idioma === 'ES' ? 'ES | EN' : 'EN | ES'}</button>
                 </div>
                 <div className="px-5 mt-4">
-                  <div className="flex items-center gap-3 bg-white rounded-2xl px-4 py-3 border border-[#E6EEF7] shadow-sm">
-                    <span className="text-[#8AA0B8]"><IconSearch /></span>
-                    <input disabled placeholder="¿Qué quieres explorar hoy?" className="bg-transparent outline-none text-sm placeholder:text-[#8AA0B8] w-full font-medium text-[#0F305B]" />
-                    <span className="w-8 h-8 rounded-full bg-[#F1F5F9] grid place-items-center border border-[#E6EEF7] text-[#0F305B] text-sm">⚙</span>
+                  <div className="flex items-center gap-3 bg-white rounded-2xl px-4 py-3 border border-[#7D8A9A]/30 shadow-sm">
+                    <span className="text-[#7D8A9A]"><IconSearch /></span>
+                    <input disabled placeholder="¿Qué quieres explorar hoy?" className="bg-transparent outline-none text-sm placeholder:text-[#7D8A9A] w-full font-medium text-[#142C50]" />
+                    <span className="w-8 h-8 rounded-full bg-[#F4F0E6] grid place-items-center border border-[#7D8A9A]/30 text-[#142C50] text-sm">⚙</span>
                   </div>
                 </div>
 
                 <div className="mt-4 flex gap-2 overflow-x-auto no-scrollbar px-5 pb-1">
                   {filtrosRapidos.map(f => (
-                    <button key={f} onClick={() => setFiltroActivo(f)} className={`whitespace-nowrap px-5 py-2 rounded-full text-sm font-bold border transition flex items-center gap-1.5 ${filtroActivo===f ? 'bg-[#0F305B] text-white border-[#0F305B] shadow' : 'bg-white border-[#E6EEF7] text-[#3A5A7A]'}`}>{f==='Museos' && <span>🏛️</span>} {f}</button>
+                    <button key={f} onClick={() => setFiltroActivo(f)} className={`whitespace-nowrap px-5 py-2 rounded-full text-sm font-bold border transition flex items-center gap-1.5 ${filtroActivo===f ? 'bg-[#142C50] text-white border-[#142C50] shadow' : 'bg-white border-[#7D8A9A]/30 text-[#7D8A9A]'}`}>{f==='Museos' && <span>🏛️</span>} {f}</button>
                   ))}
                 </div>
                 {/* BOTÓN PRINCIPAL - azul, bien visible, arriba */}
                 <div className="px-5 mt-5">
-                  <button onClick={() => setPantalla('FORM')} className="w-full bg-[#0F305B] hover:bg-[#0A2540] text-white font-extrabold py-4 rounded-full shadow-lg flex items-center justify-center gap-2 text-sm">
-                    <span className="w-7 h-7 rounded-full bg-white/20 grid place-items-center"><IconCrearRuta/></span>
+                  <button onClick={() => setPantalla('FORM')} className="w-full bg-[#E0A526] hover:brightness-95 text-[#142C50] font-extrabold py-4 rounded-full shadow-lg flex items-center justify-center gap-2 text-sm">
+                    <span className="w-7 h-7 rounded-full bg-[#142C50]/15 grid place-items-center"><IconCrearRuta/></span>
                     Planifica tu ruta inteligente →
                   </button>
-                  <p className="text-center text-xs text-[#5A7896] mt-2 font-medium">Dinos tu tiempo y presupuesto. Nosotros armamos lo imposible.</p>
+                  <p className="text-center text-xs text-[#7D8A9A] mt-2 font-medium">Dinos tu tiempo y presupuesto. Nosotros armamos lo imposible.</p>
                 </div>
                 <div className="px-5 mt-5">
                   <div className="flex items-center justify-between">
-                    <h3 className="font-extrabold text-[#0F305B] text-[16px]">Lugares disponibles en la app</h3>
+                    <h3 className="font-extrabold text-[#142C50] text-[16px]">Lugares disponibles en la app</h3>
                   </div>
-                  <p className="text-xs text-[#5A7896] mt-1 font-medium">Desliza para ver más lugares</p>
+                  <p className="text-xs text-[#7D8A9A] mt-1 font-medium">Desliza para ver más lugares</p>
                   <div className="mt-3 flex gap-3 overflow-x-auto no-scrollbar pb-2 -mx-5 px-5">
                     {poisCollection.slice(0, 6).map(lugar => (
-                      <div key={lugar.id} className="flex-shrink-0 w-40 rounded-[18px] overflow-hidden border border-[#E6EEF7] bg-white shadow-sm">
+                      <div key={lugar.id} className="flex-shrink-0 w-40 rounded-[18px] overflow-hidden border border-[#7D8A9A]/30 bg-white shadow-sm">
                         <img src={lugar.imagen} alt={lugar.nombre} className="h-24 w-full object-cover" />
                         <div className="p-3">
-                          <p className="text-xs font-extrabold text-[#0F305B] leading-tight line-clamp-2 min-h-[28px]">{lugar.nombre}</p>
-                          <p className="text-[11px] text-[#5A7896] font-medium mt-1">{lugar.categoria}</p>
-                          <p className="text-[11px] font-extrabold text-[#0F305B] mt-0.5">{lugar.costo === 0 ? "Gratis" : `$${lugar.costo.toLocaleString('es-CL')}`}</p>
+                          <p className="text-xs font-extrabold text-[#142C50] leading-tight line-clamp-2 min-h-[28px]">{lugar.nombre}</p>
+                          <p className="text-[11px] text-[#7D8A9A] font-medium mt-1">{lugar.categoria}</p>
+                          <p className="text-[11px] font-extrabold text-[#142C50] mt-0.5">{lugar.costo === 0 ? "Gratis" : `$${lugar.costo.toLocaleString('es-CL')}`}</p>
                         </div>
                       </div>
                     ))}
@@ -267,26 +268,26 @@ export default function App() {
             {/* PERFIL */}
             {pantalla==='PERFIL' && (
               <motion.div key="perfil" initial={{ opacity: 0, x: 12 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: 12 }} className="pb-28">
-                <div className="bg-white border-b border-[#E6EEF7] px-5 pt-6 pb-4">
+                <div className="bg-white border-b border-[#7D8A9A]/30 px-5 pt-6 pb-4">
                   <div className="flex items-center justify-between">
                     <div>
-                      <button onClick={()=> setPantalla('HOME')} className="text-xs font-bold text-[#0F305B] flex items-center gap-1">‹ Volver al inicio</button>
-                      <h1 className="text-lg font-extrabold text-[#0F305B] mt-2">Mi Perfil</h1>
-                      <p className="text-sm text-[#5A7896]">Gestiona tu identidad exploradora</p>
+                      <button onClick={()=> setPantalla('HOME')} className="text-xs font-bold text-[#142C50] flex items-center gap-1">‹ Volver al inicio</button>
+                      <h1 className="text-lg font-extrabold text-[#142C50] mt-2">Mi Perfil</h1>
+                      <p className="text-sm text-[#7D8A9A]">Gestiona tu identidad exploradora</p>
                     </div>
-                    <button onClick={()=> setPantalla('DATOS')} className="w-10 h-10 rounded-full bg-[#F1F5F9] border border-[#E6EEF7] grid place-items-center text-[#0F305B] text-lg" title="Configuración">⚙</button>
+                    <button onClick={()=> setPantalla('DATOS')} className="w-10 h-10 rounded-full bg-[#F4F0E6] border border-[#7D8A9A]/30 grid place-items-center text-[#142C50] text-lg" title="Configuración">⚙</button>
                   </div>
                 </div>
                 <div className="px-5 mt-5">
-                  <div className="bg-white border border-[#E6EEF7] rounded-2xl p-5 shadow-sm">
+                  <div className="bg-white border border-[#7D8A9A]/30 rounded-2xl p-5 shadow-sm">
                     <div className="flex items-center gap-3">
-                      <img src="https://i.pravatar.cc/100?img=12" className="w-14 h-14 rounded-full border-2 border-[#E6EEF7]" alt="avatar"/>
-                      <div><p className="font-extrabold text-[#0F305B]">{perfil.nombre}</p></div>
+                      <img src="https://i.pravatar.cc/100?img=12" className="w-14 h-14 rounded-full border-2 border-[#7D8A9A]/30" alt="avatar"/>
+                      <div><p className="font-extrabold text-[#142C50]">{perfil.nombre}</p></div>
                     </div>
-                    <button onClick={() => setPantalla('DATOS')} className="mt-4 w-full bg-[#0F305B] text-white font-extrabold py-3 rounded-full text-sm flex items-center justify-center gap-2"><span>⚙</span> Editar mis datos</button>
-                    <button className="mt-3 w-full bg-white border border-[#E6EEF7] text-[#0F305B] font-extrabold py-3 rounded-full text-sm">Ayuda y contacto</button>
-                    <button className="mt-3 w-full bg-white border border-[#E6EEF7] text-[#0F305B] font-extrabold py-3 rounded-full text-sm">Términos y condiciones</button>
-                    <button className="mt-3 w-full bg-white border border-[#E6EEF7] text-[#0F305B] font-extrabold py-3 rounded-full text-sm">Política y privacidad</button>
+                    <button onClick={() => setPantalla('DATOS')} className="mt-4 w-full bg-[#142C50] text-white font-extrabold py-3 rounded-full text-sm flex items-center justify-center gap-2"><span>⚙</span> Editar mis datos</button>
+                    <button className="mt-3 w-full bg-white border border-[#7D8A9A]/30 text-[#142C50] font-extrabold py-3 rounded-full text-sm">Ayuda y contacto</button>
+                    <button className="mt-3 w-full bg-white border border-[#7D8A9A]/30 text-[#142C50] font-extrabold py-3 rounded-full text-sm">Términos y condiciones</button>
+                    <button className="mt-3 w-full bg-white border border-[#7D8A9A]/30 text-[#142C50] font-extrabold py-3 rounded-full text-sm">Política y privacidad</button>
 
                   </div>
                 </div>
@@ -296,36 +297,36 @@ export default function App() {
             {/* EDITAR DATOS - pantalla de configuración separada */}
             {pantalla==='DATOS' && (
               <motion.div key="datos" initial={{ opacity: 0, x: 12 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: 12 }} className="pb-28">
-                <div className="bg-white border-b border-[#E6EEF7] px-5 pt-6 pb-4">
-                  <button onClick={()=> setPantalla('PERFIL')} className="text-xs font-bold text-[#0F305B] flex items-center gap-1">‹ Volver al perfil</button>
-                  <h1 className="text-lg font-extrabold text-[#0F305B] mt-2">Editar datos</h1>
-                  <p className="text-sm text-[#5A7896]">Configuración de tu cuenta. Se guarda al pulsar Guardar.</p>
+                <div className="bg-white border-b border-[#7D8A9A]/30 px-5 pt-6 pb-4">
+                  <button onClick={()=> setPantalla('PERFIL')} className="text-xs font-bold text-[#142C50] flex items-center gap-1">‹ Volver al perfil</button>
+                  <h1 className="text-lg font-extrabold text-[#142C50] mt-2">Editar datos</h1>
+                  <p className="text-sm text-[#7D8A9A]">Configuración de tu cuenta. Se guarda al pulsar Guardar.</p>
                 </div>
                 <div className="px-5 mt-5">
-                  <div className="bg-white border border-[#E6EEF7] rounded-2xl p-5 shadow-sm">
+                  <div className="bg-white border border-[#7D8A9A]/30 rounded-2xl p-5 shadow-sm">
                     <div className="flex items-center gap-3">
-                      <span className="w-12 h-12 rounded-full bg-[#E6EEF7] grid place-items-center text-xl">⚙</span>
-                      <div><p className="font-extrabold text-[#0F305B]">Configuración</p><p className="text-xs text-[#5A7896]">Nombre de usuario, correo y contraseña</p></div>
+                      <span className="w-12 h-12 rounded-full bg-[#F4F0E6] grid place-items-center text-xl">⚙</span>
+                      <div><p className="font-extrabold text-[#142C50]">Configuración</p><p className="text-xs text-[#7D8A9A]">Nombre de usuario, correo y contraseña</p></div>
                     </div>
                     <div className="mt-4 space-y-3">
                       <div>
-                        <label className="text-xs font-bold text-[#0F305B]">Nombre de usuario</label>
-                        <input value={perfil.nombre} onChange={e => setPerfil({ ...perfil, nombre: e.target.value })} placeholder="Tu nombre" maxLength={40} className="mt-1 w-full bg-[#F8FAFC] border border-[#E6EEF7] rounded-xl px-3 py-2.5 text-sm font-medium text-[#0F305B] outline-none focus:border-[#0F305B]" />
+                        <label className="text-xs font-bold text-[#142C50]">Nombre de usuario</label>
+                        <input value={perfil.nombre} onChange={e => setPerfil({ ...perfil, nombre: e.target.value })} placeholder="Tu nombre" maxLength={40} className="mt-1 w-full bg-[#F4F0E6] border border-[#7D8A9A]/30 rounded-xl px-3 py-2.5 text-sm font-medium text-[#142C50] outline-none focus:border-[#142C50]" />
                       </div>
                       <div>
-                        <label className="text-xs font-bold text-[#0F305B]">Correo</label>
-                        <input value={perfil.correo} onChange={e => setPerfil({ ...perfil, correo: e.target.value })} placeholder="tu@correo.cl" maxLength={60} className="mt-1 w-full bg-[#F8FAFC] border border-[#E6EEF7] rounded-xl px-3 py-2.5 text-sm font-medium text-[#0F305B] outline-none focus:border-[#0F305B]" />
+                        <label className="text-xs font-bold text-[#142C50]">Correo</label>
+                        <input value={perfil.correo} onChange={e => setPerfil({ ...perfil, correo: e.target.value })} placeholder="tu@correo.cl" maxLength={60} className="mt-1 w-full bg-[#F4F0E6] border border-[#7D8A9A]/30 rounded-xl px-3 py-2.5 text-sm font-medium text-[#142C50] outline-none focus:border-[#142C50]" />
                       </div>
                       <div>
-                        <label className="text-xs font-bold text-[#0F305B]">Nueva contraseña</label>
-                        <input type="password" value={perfil.password} onChange={e => setPerfil({ ...perfil, password: e.target.value })} placeholder="••••••••" maxLength={40} className="mt-1 w-full bg-[#F8FAFC] border border-[#E6EEF7] rounded-xl px-3 py-2.5 text-sm font-medium text-[#0F305B] outline-none focus:border-[#0F305B]" />
+                        <label className="text-xs font-bold text-[#142C50]">Nueva contraseña</label>
+                        <input type="password" value={perfil.password} onChange={e => setPerfil({ ...perfil, password: e.target.value })} placeholder="••••••••" maxLength={40} className="mt-1 w-full bg-[#F4F0E6] border border-[#7D8A9A]/30 rounded-xl px-3 py-2.5 text-sm font-medium text-[#142C50] outline-none focus:border-[#142C50]" />
                       </div>
                       <div>
-                        <label className="text-xs font-bold text-[#0F305B]">Confirmar contraseña</label>
-                        <input type="password" value={perfil.password2} onChange={e => setPerfil({ ...perfil, password2: e.target.value })} placeholder="Repite tu contraseña" maxLength={40} className="mt-1 w-full bg-[#F8FAFC] border border-[#E6EEF7] rounded-xl px-3 py-2.5 text-sm font-medium text-[#0F305B] outline-none focus:border-[#0F305B]" />
+                        <label className="text-xs font-bold text-[#142C50]">Confirmar contraseña</label>
+                        <input type="password" value={perfil.password2} onChange={e => setPerfil({ ...perfil, password2: e.target.value })} placeholder="Repite tu contraseña" maxLength={40} className="mt-1 w-full bg-[#F4F0E6] border border-[#7D8A9A]/30 rounded-xl px-3 py-2.5 text-sm font-medium text-[#142C50] outline-none focus:border-[#142C50]" />
                         {perfil.password2 && perfil.password !== perfil.password2 && <p className="text-xs text-red-600 font-bold mt-1">⚠ Las contraseñas no coinciden</p>}
                       </div>
-                      <button onClick={() => setPantalla('PERFIL')} disabled={!perfil.nombre.trim() || !perfil.correo.trim() || (perfil.password || perfil.password2 ? perfil.password !== perfil.password2 || !perfil.password : false)} className="w-full bg-[#0F305B] text-white font-extrabold py-3 rounded-full text-sm disabled:opacity-40">Guardar datos</button>
+                      <button onClick={() => setPantalla('PERFIL')} disabled={!perfil.nombre.trim() || !perfil.correo.trim() || (perfil.password || perfil.password2 ? perfil.password !== perfil.password2 || !perfil.password : false)} className="w-full bg-[#142C50] text-white font-extrabold py-3 rounded-full text-sm disabled:opacity-40">Guardar datos</button>
                     </div>
                   </div>
                 </div>
@@ -334,48 +335,48 @@ export default function App() {
 
             {/* FORMULARIO - con botón central fijo sin necesidad de scroll */}
             {pantalla==='FORM' && (
-              <motion.div key="form" initial={{ opacity: 0, x: 12 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: 12 }} className="flex flex-col h-[calc(100%-0px)] bg-[#F8FAFC]">
+              <motion.div key="form" initial={{ opacity: 0, x: 12 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: 12 }} className="flex flex-col h-[calc(100%-0px)] bg-[#F4F0E6]">
                 <div className="flex-1 overflow-y-auto pb-2">
-                  <div className="bg-white border-b border-[#E6EEF7] px-5 pt-6 pb-4">
-                    <button onClick={()=> setPantalla('HOME')} className="text-xs font-bold text-[#0F305B]">‹ Volver</button>
-                    <h1 className="text-lg font-extrabold text-[#0F305B] mt-1">Preferencias</h1>
-                    <p className="text-sm text-[#5A7896] font-medium">Ajusta tus restricciones. Te mostramos solo lo viable.</p>
+                  <div className="bg-white border-b border-[#7D8A9A]/30 px-5 pt-6 pb-4">
+                    <button onClick={()=> setPantalla('HOME')} className="text-xs font-bold text-[#142C50]">‹ Volver</button>
+                    <h1 className="text-lg font-extrabold text-[#142C50] mt-1">Preferencias</h1>
+                    <p className="text-sm text-[#7D8A9A] font-medium">Ajusta tus restricciones. Te mostramos solo lo viable.</p>
                   </div>
                   <div className="px-5 mt-5">
-                    <div className="bg-white border border-[#E6EEF7] rounded-2xl p-5 shadow-sm">
+                    <div className="bg-white border border-[#7D8A9A]/30 rounded-2xl p-5 shadow-sm">
                       <div className="flex justify-between items-center">
-                        <h3 className="font-extrabold text-[#0F305B] flex items-center gap-2"><span className="w-8 h-8 rounded-full bg-[#E6EEF7] grid place-items-center text-sm border border-[#D6E3F3]">⏱</span> Tiempo disponible</h3>
-                        <span className="bg-[#0F305B] text-white text-sm font-extrabold px-3 py-1.5 rounded-full">{preferencias.tiempo}h</span>
+                        <h3 className="font-extrabold text-[#142C50] flex items-center gap-2"><span className="w-8 h-8 rounded-full bg-[#F4F0E6] grid place-items-center text-sm border border-[#7D8A9A]/30">⏱</span> Tiempo disponible</h3>
+                        <span className="bg-[#142C50] text-white text-sm font-extrabold px-3 py-1.5 rounded-full">{preferencias.tiempo}h</span>
                       </div>
                       <input type="range" min="1" max="8" step="0.5" value={preferencias.tiempo} onChange={e=> setPreferencias({ ...preferencias, tiempo: parseFloat(e.target.value)})} className="w-full mt-5" />
-                      <div className="flex justify-between text-xs text-[#5A7896] mt-1 font-bold"><span>1h</span><span>4h</span><span>8h</span></div>
+                      <div className="flex justify-between text-xs text-[#7D8A9A] mt-1 font-bold"><span>1h</span><span>4h</span><span>8h</span></div>
                     </div>
                   </div>
                   <div className="px-5 mt-4">
-                    <div className="bg-white border border-[#E6EEF7] rounded-2xl p-5 shadow-sm">
-                      <h3 className="font-extrabold text-[#0F305B] flex items-center gap-2"><span className="w-8 h-8 rounded-full bg-[#ECFDF5] grid place-items-center text-sm border border-[#D1FAE5]">💰</span> Presupuesto total (CLP)</h3>
+                    <div className="bg-white border border-[#7D8A9A]/30 rounded-2xl p-5 shadow-sm">
+                      <h3 className="font-extrabold text-[#142C50] flex items-center gap-2"><span className="w-8 h-8 rounded-full bg-[#F4F0E6] grid place-items-center text-sm border border-[#7D8A9A]/30">💰</span> Presupuesto total (CLP)</h3>
                       <div className="mt-4 relative">
-                        <span className="absolute left-3 top-1/2 -translate-y-1/2 text-[#5A7896] font-bold">$</span>
-                        <input type="number" value={preferencias.presupuesto} onChange={e=> setPreferencias({ ...preferencias, presupuesto: Number(e.target.value)||0 })} className="w-full bg-[#F1F5F9] border border-[#E6EEF7] rounded-xl pl-7 pr-4 py-3.5 font-extrabold text-[#0F305B] outline-none focus:border-[#0F305B]" />
+                        <span className="absolute left-3 top-1/2 -translate-y-1/2 text-[#7D8A9A] font-bold">$</span>
+                        <input type="number" value={preferencias.presupuesto} onChange={e=> setPreferencias({ ...preferencias, presupuesto: Number(e.target.value)||0 })} className="w-full bg-[#F4F0E6] border border-[#7D8A9A]/30 rounded-xl pl-7 pr-4 py-3.5 font-extrabold text-[#142C50] outline-none focus:border-[#142C50]" />
                       </div>
                       <div className="grid grid-cols-3 gap-2 mt-3">
                         {[10000,15000,25000].map(v=> (
-                          <button key={v} onClick={()=> setPreferencias({ ...preferencias, presupuesto: v })} className={`py-2 rounded-full text-xs font-extrabold border ${preferencias.presupuesto===v ? 'bg-[#0F305B] text-white border-[#0F305B]' : 'bg-white border-[#E6EEF7] text-[#3A5A7A]'}`}>${v.toLocaleString('es-CL')}</button>
+                          <button key={v} onClick={()=> setPreferencias({ ...preferencias, presupuesto: v })} className={`py-2 rounded-full text-xs font-extrabold border ${preferencias.presupuesto===v ? 'bg-[#142C50] text-white border-[#142C50]' : 'bg-white border-[#7D8A9A]/30 text-[#7D8A9A]'}`}>${v.toLocaleString('es-CL')}</button>
                         ))}
                       </div>
                     </div>
                   </div>
                   <div className="px-5 mt-4 pb-2">
-                    <div className="bg-white border border-[#E6EEF7] rounded-2xl p-5 shadow-sm">
-                      <h3 className="font-extrabold text-[#0F305B]">Intereses</h3>
-                      <p className="text-xs text-[#5A7896] mt-1 font-medium">Elige al menos uno para personalizar</p>
+                    <div className="bg-white border border-[#7D8A9A]/30 rounded-2xl p-5 shadow-sm">
+                      <h3 className="font-extrabold text-[#142C50]">Intereses</h3>
+                      <p className="text-xs text-[#7D8A9A] mt-1 font-medium">Elige al menos uno para personalizar</p>
                       <div className="grid grid-cols-2 gap-2.5 mt-4">
                         {categorias.map(cat=>{
                           const activo=preferencias.intereses.includes(cat)
                           const icons={'Museos':'🏛️','Gastronomía':'🍽️','Histórico':'🏰','Parques':'🌳','Shopping':'🛍️','Vida Nocturna':'🌃'}
                           return (
-                            <button key={cat} onClick={()=> toggleInteres(cat)} className={`flex items-center gap-2.5 px-4 py-3.5 rounded-2xl border text-sm font-extrabold text-left transition ${activo ? 'bg-[#0F305B] text-white border-[#0F305B] shadow' : 'bg-[#F8FAFC] border-[#E6EEF7] text-[#3A5A7A]'}`}>
-                              <span className={`w-8 h-8 rounded-full grid place-items-center text-sm ${activo ? 'bg-white/15' : 'bg-white border border-[#E6EEF7]'}`}>{icons[cat]}</span>
+                            <button key={cat} onClick={()=> toggleInteres(cat)} className={`flex items-center gap-2.5 px-4 py-3.5 rounded-2xl border text-sm font-extrabold text-left transition ${activo ? 'bg-[#142C50] text-white border-[#142C50] shadow' : 'bg-[#F4F0E6] border-[#7D8A9A]/30 text-[#7D8A9A]'}`}>
+                              <span className={`w-8 h-8 rounded-full grid place-items-center text-sm ${activo ? 'bg-white/15' : 'bg-white border border-[#7D8A9A]/30'}`}>{icons[cat]}</span>
                               {cat}{activo && <span className="ml-auto">✓</span>}
                             </button>
                           )
@@ -386,34 +387,34 @@ export default function App() {
                   </div>
                 </div>
                 {/* Botón fijo central - siempre visible sin scroll */}
-                <div className="sticky bottom-0 bg-white border-t border-[#E6EEF7] px-5 py-4 shadow-[0_-8px_24px_rgba(15,48,91,0.08)]">
-                  <button onClick={handleGenerar} disabled={loading} className="w-full max-w-sm mx-auto bg-[#0F305B] hover:bg-[#0A2540] disabled:bg-slate-300 text-white font-extrabold py-4 rounded-full shadow-lg flex items-center justify-center gap-2 transition block">
+                <div className="sticky bottom-0 bg-white border-t border-[#7D8A9A]/30 px-5 py-4 shadow-[0_-8px_24px_rgba(15,48,91,0.08)]">
+                  <button onClick={handleGenerar} disabled={loading} className="w-full max-w-sm mx-auto bg-[#E0A526] hover:brightness-95 disabled:bg-slate-300 text-[#142C50] font-extrabold py-4 rounded-full shadow-lg flex items-center justify-center gap-2 transition block">
                     {loading ? <><span className="w-5 h-5 border-2 border-white/40 border-t-white rounded-full animate-spin"/> Generando tu ruta...</> : <>✨ Generar Ruta</>}
                   </button>
-                  <p className="text-center text-xs text-[#5A7896] mt-2 font-medium">Solo verás lugares que encajan en tu tiempo y presupuesto.</p>
+                  <p className="text-center text-xs text-[#7D8A9A] mt-2 font-medium">Solo verás lugares que encajan en tu tiempo y presupuesto.</p>
                 </div>
               </motion.div>
             )}
 
             {/* RUTA SUGERIDA - con CHECKLIST + ELIMINAR */}
             {pantalla==='RUTA' && (
-              <motion.div key="ruta" initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: 12 }} className="pb-36 bg-[#F8FAFC]">
+              <motion.div key="ruta" initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: 12 }} className="pb-36 bg-[#F4F0E6]">
                 <div className="relative h-[264px] w-full overflow-hidden">
                   <img src={itinerario?.paradas?.[0]?.imagen || "https://commons.wikimedia.org/wiki/Special:FilePath/Museo%20Nacional%20de%20Bellas%20Artes%20Santiago.jpg?width=1200"} alt="Ruta" className="w-full h-full object-cover" />
-                  <div className="absolute inset-0 bg-gradient-to-t from-[#0A2540]/85 via-[#0A2540]/35 to-[#0A2540]/10" />
+                  <div className="absolute inset-0 bg-gradient-to-t from-[#142C50]/85 via-[#142C50]/35 to-[#142C50]/10" />
                   <div className="absolute top-0 left-0 right-0 flex items-center justify-between px-4 pt-4">
-                    <button onClick={()=> setPantalla('HOME')} className="bg-white px-4 py-2 rounded-full text-[13px] font-extrabold shadow-md text-[#0F305B] flex items-center gap-1.5 border border-white leading-none"><span className="text-[16px]">‹</span> Santiago Inteligente</button>
-                    <button onClick={handleGuardar} className="w-9 h-9 rounded-full bg-[#FFC727] grid place-items-center shadow-md text-[#0F305B] border border-white">♡</button>
+                    <button onClick={()=> setPantalla('HOME')} className="bg-white px-4 py-2 rounded-full text-[13px] font-extrabold shadow-md text-[#142C50] flex items-center gap-1.5 border border-white leading-none"><span className="text-[16px]">‹</span> Rutia</button>
+                    <button onClick={handleGuardar} className="w-9 h-9 rounded-full bg-[#E0A526] grid place-items-center shadow-md text-[#142C50] border border-white">♡</button>
                   </div>
                   <div className="absolute bottom-0 left-0 right-0 px-5 pb-5 pt-10">
                     <p className="text-[11px] font-extrabold tracking-widest uppercase text-white/80">Ruta sugerida</p>
-                    <div className="inline-flex items-center bg-white/95 backdrop-blur px-3 py-1.5 rounded-full text-xs font-bold text-[#0F305B] shadow border border-white gap-1.5 mt-1.5">
-                      <span>{itinerario?.duracionTotal || "3h 15m"}</span><span className="w-1 h-1 bg-[#8AA0B8] rounded-full"/><span>{itinerario?.costoTotal || "$8.500"}</span>
+                    <div className="inline-flex items-center bg-white/95 backdrop-blur px-3 py-1.5 rounded-full text-xs font-bold text-[#142C50] shadow border border-white gap-1.5 mt-1.5">
+                      <span>{itinerario?.duracionTotal || "3h 15m"}</span><span className="w-1 h-1 bg-[#7D8A9A] rounded-full"/><span>{itinerario?.costoTotal || "$8.500"}</span>
                     </div>
                     {tituloEditando ? (
                       <div className="mt-2 flex gap-2">
-                        <input value={tituloTemp} onChange={e => setTituloTemp(e.target.value)} maxLength={60} placeholder="Nombre de tu ruta" className="flex-1 bg-white text-[#0F305B] text-sm font-bold rounded-xl px-3 py-2 outline-none" autoFocus />
-                        <button onClick={() => { if (tituloTemp.trim() && itinerario) setItinerario({ ...itinerario, titulo: tituloTemp.trim() }); setTituloEditando(false) }} className="bg-[#FFC727] text-[#0F305B] text-xs font-extrabold px-3 py-2 rounded-xl">Guardar</button>
+                        <input value={tituloTemp} onChange={e => setTituloTemp(e.target.value)} maxLength={60} placeholder="Nombre de tu ruta" className="flex-1 bg-white text-[#142C50] text-sm font-bold rounded-xl px-3 py-2 outline-none" autoFocus />
+                        <button onClick={() => { if (tituloTemp.trim() && itinerario) setItinerario({ ...itinerario, titulo: tituloTemp.trim() }); setTituloEditando(false) }} className="bg-[#E0A526] text-[#142C50] text-xs font-extrabold px-3 py-2 rounded-xl">Guardar</button>
                       </div>
                     ) : (
                       <button onClick={() => { setTituloTemp(itinerario?.titulo || ''); setTituloEditando(true) }} className="block text-left w-full group" title="Toca para editar el nombre">
@@ -424,34 +425,34 @@ export default function App() {
                 </div>
 
                 <div className="px-5 mt-6">
-                  <h3 className="font-extrabold text-[#0F305B]">Tu itinerario</h3>
-                  <p className="text-xs text-[#5A7896] mt-1 font-medium">Toca el checkbox al visitar y <span className="inline-flex align-middle w-4 h-4 rounded-full bg-white border border-[#FECACA] text-red-500 items-center justify-center mx-1"><IconTrash/></span> para quitar lugares.</p>
+                  <h3 className="font-extrabold text-[#142C50]">Tu itinerario</h3>
+                  <p className="text-xs text-[#7D8A9A] mt-1 font-medium">Toca el checkbox al visitar y <span className="inline-flex align-middle w-4 h-4 rounded-full bg-white border border-[#FECACA] text-red-500 items-center justify-center mx-1"><IconTrash/></span> para quitar lugares.</p>
                   <div className="mt-4 space-y-3">
                     {(itinerario?.paradas || []).map((p,i)=> {
                       const hecho = visitados.has(p.id)
                       return (
                         <div key={p.id || p.nombre} className="flex gap-3">
                           <div className="flex flex-col items-center">
-                            <label className={`w-8 h-8 rounded-full grid place-items-center text-xs font-extrabold border-2 cursor-pointer transition ${hecho ? 'bg-emerald-500 text-white border-emerald-500' : 'bg-white text-[#3A5A7A] border-[#E6EEF7] hover:border-[#0F305B]'}`}>
+                            <label className={`w-8 h-8 rounded-full grid place-items-center text-xs font-extrabold border-2 cursor-pointer transition ${hecho ? 'bg-emerald-500 text-white border-emerald-500' : 'bg-white text-[#7D8A9A] border-[#7D8A9A]/30 hover:border-[#142C50]'}`}>
                               <input type="checkbox" checked={hecho} onChange={()=> toggleVisitado(p.id)} className="sr-only" />
                               {hecho ? '✓' : i+1}
                             </label>
-                            {i < (itinerario?.paradas?.length-1) && <div className={`w-0.5 flex-1 mt-1 ${hecho ? 'bg-emerald-200' : 'bg-[#E6EEF7]'}`} style={{ minHeight: 32 }}/>}
+                            {i < (itinerario?.paradas?.length-1) && <div className={`w-0.5 flex-1 mt-1 ${hecho ? 'bg-emerald-200' : 'bg-[#F4F0E6]'}`} style={{ minHeight: 32 }}/>}
                           </div>
-                          <div className={`flex-1 border rounded-2xl p-3 flex gap-3 shadow-sm text-left transition relative ${hecho ? 'bg-emerald-50 border-emerald-200' : 'bg-white border-[#E6EEF7] hover:border-[#0F305B]'}`}>
+                          <div className={`flex-1 border rounded-2xl p-3 flex gap-3 shadow-sm text-left transition relative ${hecho ? 'bg-emerald-50 border-emerald-200' : 'bg-white border-[#7D8A9A]/30 hover:border-[#142C50]'}`}>
                             <button onClick={()=> abrirFichaPoi(p)} className="flex gap-3 flex-1 text-left min-w-0">
-                              <img src={p.imagen} alt={p.nombre} onError={(e)=>{ if(p.fallback && e.currentTarget.src!==p.fallback) e.currentTarget.src=p.fallback }} className={`w-16 h-16 rounded-xl object-cover border flex-shrink-0 ${hecho ? 'border-emerald-200 opacity-70' : 'border-[#E6EEF7]'}`} />
+                              <img src={p.imagen} alt={p.nombre} onError={(e)=>{ if(p.fallback && e.currentTarget.src!==p.fallback) e.currentTarget.src=p.fallback }} className={`w-16 h-16 rounded-xl object-cover border flex-shrink-0 ${hecho ? 'border-emerald-200 opacity-70' : 'border-[#7D8A9A]/30'}`} />
                               <div className="flex-1 min-w-0">
-                                <p className={`text-sm font-extrabold leading-tight truncate ${hecho ? 'text-emerald-700 line-through' : 'text-[#0F305B]'}`}>{p.nombre}</p>
-                                <p className="text-xs text-[#5A7896] mt-0.5 font-medium">{p.hora}</p>
+                                <p className={`text-sm font-extrabold leading-tight truncate ${hecho ? 'text-emerald-700 line-through' : 'text-[#142C50]'}`}>{p.nombre}</p>
+                                <p className="text-xs text-[#7D8A9A] mt-0.5 font-medium">{p.hora}</p>
                                 <div className="flex items-center gap-2 mt-1.5">
-                                  <span className={`text-xs font-bold border px-2 py-0.5 rounded-full ${hecho ? 'bg-emerald-100 text-emerald-700 border-emerald-200' : 'bg-[#E6EEF7] text-[#0F305B] border-[#D6E3F3]'}`}>{hecho ? 'Visitado' : p.costoLabel}</span>
+                                  <span className={`text-xs font-bold border px-2 py-0.5 rounded-full ${hecho ? 'bg-emerald-100 text-emerald-700 border-emerald-200' : 'bg-[#F4F0E6] text-[#142C50] border-[#7D8A9A]/30'}`}>{hecho ? 'Visitado' : p.costoLabel}</span>
                                 </div>
                               </div>
                             </button>
                             <div className="flex flex-col gap-1 flex-shrink-0 self-center">
-                              <button onClick={()=> reordenarParadas(i, i - 1)} disabled={i === 0} className="w-8 h-7 rounded-full bg-white border border-[#E6EEF7] text-[#0F305B] grid place-items-center text-xs disabled:opacity-30" title="Subir lugar">↑</button>
-                              <button onClick={()=> reordenarParadas(i, i + 1)} disabled={i === (itinerario?.paradas?.length - 1)} className="w-8 h-7 rounded-full bg-white border border-[#E6EEF7] text-[#0F305B] grid place-items-center text-xs disabled:opacity-30" title="Bajar lugar">↓</button>
+                              <button onClick={()=> reordenarParadas(i, i - 1)} disabled={i === 0} className="w-8 h-7 rounded-full bg-white border border-[#7D8A9A]/30 text-[#142C50] grid place-items-center text-xs disabled:opacity-30" title="Subir lugar">↑</button>
+                              <button onClick={()=> reordenarParadas(i, i + 1)} disabled={i === (itinerario?.paradas?.length - 1)} className="w-8 h-7 rounded-full bg-white border border-[#7D8A9A]/30 text-[#142C50] grid place-items-center text-xs disabled:opacity-30" title="Bajar lugar">↓</button>
                               <button onClick={()=> handleEliminarParada(p.id)} className="w-8 h-8 rounded-full bg-white border border-[#FECACA] text-red-500 hover:bg-red-50 grid place-items-center" title="Quitar de la ruta">
                                 <IconTrash/>
                               </button>
@@ -461,19 +462,19 @@ export default function App() {
                         </div>
                       )
                     })}
-                    {(!itinerario || itinerario.paradas.length===0) && <p className="text-xs text-[#5A7896] bg-white border border-dashed border-[#E6EEF7] rounded-xl p-4 text-center">Sin lugares. Genera otra ruta o ajusta tu presupuesto/tiempo.</p>}
+                    {(!itinerario || itinerario.paradas.length===0) && <p className="text-xs text-[#7D8A9A] bg-white border border-dashed border-[#7D8A9A]/30 rounded-xl p-4 text-center">Sin lugares. Genera otra ruta o ajusta tu presupuesto/tiempo.</p>}
                   </div>
-                  <div className="mt-4 bg-white border border-[#E6EEF7] rounded-2xl p-4 shadow-sm">
-                    <h4 className="font-extrabold text-[#0F305B] text-sm">Agregar un lugar a tu ruta</h4>
-                    <p className="text-xs text-[#5A7896] mt-1">Elige un lugar de la lista y se suma al final del itinerario.</p>
+                  <div className="mt-4 bg-white border border-[#7D8A9A]/30 rounded-2xl p-4 shadow-sm">
+                    <h4 className="font-extrabold text-[#142C50] text-sm">Agregar un lugar a tu ruta</h4>
+                    <p className="text-xs text-[#7D8A9A] mt-1">Elige un lugar de la lista y se suma al final del itinerario.</p>
                     <div className="mt-3 flex gap-2">
-                      <select value={lugarExtraId} onChange={e => setLugarExtraId(e.target.value)} className="flex-1 bg-[#F8FAFC] border border-[#E6EEF7] rounded-xl px-3 py-2.5 text-sm font-medium text-[#0F305B] outline-none">
+                      <select value={lugarExtraId} onChange={e => setLugarExtraId(e.target.value)} className="flex-1 bg-[#F4F0E6] border border-[#7D8A9A]/30 rounded-xl px-3 py-2.5 text-sm font-medium text-[#142C50] outline-none">
                         <option value="">Selecciona un lugar…</option>
                         {lugaresExtra.filter(l => !itinerario?.paradas?.some(p => p.id === l.id)).map(l => (
                           <option key={l.id} value={l.id}>{l.nombre} • {l.categoria} • {l.costo === 0 ? "Gratis" : `$${l.costo.toLocaleString('es-CL')}`}</option>
                         ))}
                       </select>
-                      <button onClick={handleAgregarLugarPropio} disabled={!lugarExtraId} className="bg-[#0F305B] text-white text-sm font-extrabold px-4 py-2.5 rounded-xl disabled:opacity-40">Agregar</button>
+                      <button onClick={handleAgregarLugarPropio} disabled={!lugarExtraId} className="bg-[#142C50] text-white text-sm font-extrabold px-4 py-2.5 rounded-xl disabled:opacity-40">Agregar</button>
                     </div>
                   </div>
                   {itinerario?.paradas?.length > 1 && (
@@ -481,37 +482,37 @@ export default function App() {
                   )}
                 </div>
                 <div className="px-5 mt-6 flex gap-3">
-                  <button onClick={()=> setPantalla('FORM')} className="flex-1 bg-white border border-[#E6EEF7] font-extrabold py-3.5 rounded-full text-sm text-[#0F305B]">← Ajustar ruta</button>
-                  <button onClick={handleGuardar} className="flex-1 bg-[#FFC727] text-[#0F305B] font-extrabold py-3.5 rounded-full text-sm shadow border border-[#FFB800]">Guardar ruta</button>
+                  <button onClick={()=> setPantalla('FORM')} className="flex-1 bg-white border border-[#7D8A9A]/30 font-extrabold py-3.5 rounded-full text-sm text-[#142C50]">← Ajustar ruta</button>
+                  <button onClick={handleGuardar} className="flex-1 bg-[#E0A526] text-[#142C50] font-extrabold py-3.5 rounded-full text-sm shadow border border-[#E0A526]">Guardar ruta</button>
                 </div>
-                <div className="px-5 mt-3"><button onClick={()=> setPantalla('HOME')} className="w-full bg-[#0F305B] text-white font-extrabold py-3.5 rounded-full text-sm">Volver al inicio</button></div>
+                <div className="px-5 mt-3"><button onClick={()=> setPantalla('HOME')} className="w-full bg-[#142C50] text-white font-extrabold py-3.5 rounded-full text-sm">Volver al inicio</button></div>
               </motion.div>
             )}
 
             {/* MIS RUTAS */}
             {(pantalla==='MISRUTAS' || pantalla==='GUARDADA') && (
               <motion.div key="misrutas" initial={{ opacity: 0, x: 12 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: 12 }} className="pb-28">
-                <div className="bg-white border-b border-[#E6EEF7] px-5 pt-6 pb-4">
-                  <button onClick={()=> setPantalla('HOME')} className="text-xs font-bold text-[#0F305B]">‹ Volver</button>
-                  <h1 className="text-lg font-extrabold text-[#0F305B] mt-1">Guardados</h1>
-                  <p className="text-sm text-[#5A7896]">Tus rutas y lugares guardados</p>
+                <div className="bg-white border-b border-[#7D8A9A]/30 px-5 pt-6 pb-4">
+                  <button onClick={()=> setPantalla('HOME')} className="text-xs font-bold text-[#142C50]">‹ Volver</button>
+                  <h1 className="text-lg font-extrabold text-[#142C50] mt-1">Guardados</h1>
+                  <p className="text-sm text-[#7D8A9A]">Tus rutas y lugares guardados</p>
                   <div className="mt-3 grid grid-cols-2 gap-2">
-                    <button onClick={()=> setGuardadosTab('rutas')} className={`py-2.5 rounded-full text-sm font-extrabold border ${guardadosTab==='rutas' ? 'bg-[#0F305B] text-white border-[#0F305B]' : 'bg-white border-[#E6EEF7] text-[#3A5A7A]'}`}>Rutas guardadas</button>
-                    <button onClick={()=> setGuardadosTab('visitados')} className={`py-2.5 rounded-full text-sm font-extrabold border ${guardadosTab==='visitados' ? 'bg-[#0F305B] text-white border-[#0F305B]' : 'bg-white border-[#E6EEF7] text-[#3A5A7A]'}`}>Lugares visitados</button>
+                    <button onClick={()=> setGuardadosTab('rutas')} className={`py-2.5 rounded-full text-sm font-extrabold border ${guardadosTab==='rutas' ? 'bg-[#142C50] text-white border-[#142C50]' : 'bg-white border-[#7D8A9A]/30 text-[#7D8A9A]'}`}>Rutas guardadas</button>
+                    <button onClick={()=> setGuardadosTab('visitados')} className={`py-2.5 rounded-full text-sm font-extrabold border ${guardadosTab==='visitados' ? 'bg-[#142C50] text-white border-[#142C50]' : 'bg-white border-[#7D8A9A]/30 text-[#7D8A9A]'}`}>Lugares visitados</button>
                   </div>
                 </div>
                 {guardadosTab === 'visitados' ? (
                 <div className="px-5 mt-5">
-                  <h3 className="font-extrabold text-[#0F305B] text-[15px]">Lugares visitados</h3>
-                  <p className="text-xs text-[#5A7896] mt-1">Lugares que ya visitaste (ejemplo).</p>
+                  <h3 className="font-extrabold text-[#142C50] text-[15px]">Lugares visitados</h3>
+                  <p className="text-xs text-[#7D8A9A] mt-1">Lugares que ya visitaste (ejemplo).</p>
                   <div className="mt-3 space-y-3">
                     {lugaresVisitadosEjemplo.map(l => (
-                      <div key={l.id} className="bg-white border border-[#E6EEF7] rounded-2xl p-3 flex gap-3 shadow-sm">
-                        <img src={l.imagen} alt={l.nombre} className="w-16 h-16 rounded-xl object-cover border border-[#E6EEF7]" />
+                      <div key={l.id} className="bg-white border border-[#7D8A9A]/30 rounded-2xl p-3 flex gap-3 shadow-sm">
+                        <img src={l.imagen} alt={l.nombre} className="w-16 h-16 rounded-xl object-cover border border-[#7D8A9A]/30" />
                         <div className="flex-1 min-w-0">
-                          <p className="text-sm font-extrabold text-[#0F305B] leading-tight truncate">{l.nombre}</p>
-                          <p className="text-xs text-[#5A7896] mt-0.5">{l.categoria} • {l.horario}</p>
-                          <p className="text-xs font-bold text-[#0F305B] mt-1">{l.costo === 0 ? "Gratis" : `$${l.costo.toLocaleString('es-CL')}`} • {l.tiempoMin} min</p>
+                          <p className="text-sm font-extrabold text-[#142C50] leading-tight truncate">{l.nombre}</p>
+                          <p className="text-xs text-[#7D8A9A] mt-0.5">{l.categoria} • {l.horario}</p>
+                          <p className="text-xs font-bold text-[#142C50] mt-1">{l.costo === 0 ? "Gratis" : `$${l.costo.toLocaleString('es-CL')}`} • {l.tiempoMin} min</p>
                         </div>
                         <span className="text-emerald-600 font-extrabold self-center">✓</span>
                       </div>
@@ -521,40 +522,40 @@ export default function App() {
                 ) : (
                 <div className="px-5 mt-5">
                   {!rutaGuardada ? (
-                    <div className="bg-white border border-dashed border-[#E6EEF7] rounded-2xl p-8 text-center">
+                    <div className="bg-white border border-dashed border-[#7D8A9A]/30 rounded-2xl p-8 text-center">
                       <p className="text-3xl">🗺️</p>
-                      <p className="font-extrabold text-[#0F305B] mt-2">Sin rutas guardadas</p>
-                      <p className="text-xs text-[#5A7896] mt-1">Genera una y pulsa “Guardar ruta”.</p>
-                      <button onClick={()=> setPantalla('FORM')} className="mt-4 bg-[#0F305B] text-white font-extrabold px-5 py-2.5 rounded-full text-sm">Crear ruta</button>
+                      <p className="font-extrabold text-[#142C50] mt-2">Sin rutas guardadas</p>
+                      <p className="text-xs text-[#7D8A9A] mt-1">Genera una y pulsa “Guardar ruta”.</p>
+                      <button onClick={()=> setPantalla('FORM')} className="mt-4 bg-[#142C50] text-white font-extrabold px-5 py-2.5 rounded-full text-sm">Crear ruta</button>
                     </div>
                   ) : (
                     <div className="space-y-4">
-                      <div className="bg-white border border-[#E6EEF7] rounded-2xl overflow-hidden shadow-sm">
+                      <div className="bg-white border border-[#7D8A9A]/30 rounded-2xl overflow-hidden shadow-sm">
                         <img src={rutaGuardada.paradas?.[0]?.imagen} alt={rutaGuardada.titulo} className="h-32 w-full object-cover" />
                         <div className="p-4">
-                          <h3 className="font-extrabold text-[#0F305B]">{rutaGuardada.titulo}</h3>
-                          <p className="text-xs text-[#5A7896] mt-1">{rutaGuardada.duracionTotal} • {rutaGuardada.costoTotal}</p>
-                          <p className="text-xs text-[#8AA0B8] mt-1">Guardada: {new Date(rutaGuardada.guardadaEn).toLocaleString('es-CL')}</p>
+                          <h3 className="font-extrabold text-[#142C50]">{rutaGuardada.titulo}</h3>
+                          <p className="text-xs text-[#7D8A9A] mt-1">{rutaGuardada.duracionTotal} • {rutaGuardada.costoTotal}</p>
+                          <p className="text-xs text-[#7D8A9A] mt-1">Guardada: {new Date(rutaGuardada.guardadaEn).toLocaleString('es-CL')}</p>
                           <div className="mt-3">
-                            <div className="flex items-center justify-between text-xs font-bold text-[#0F305B]"><span>Avance</span><span>{visitados.size}/{rutaGuardada.paradas.length}</span></div>
-                            <div className="mt-1 h-2 bg-[#F1F5F9] border border-[#E6EEF7] rounded-full overflow-hidden"><div className="h-full bg-emerald-500 rounded-full transition-all" style={{ width: `${rutaGuardada.paradas.length ? (visitados.size/rutaGuardada.paradas.length)*100 : 0}%` }}/></div>
+                            <div className="flex items-center justify-between text-xs font-bold text-[#142C50]"><span>Avance</span><span>{visitados.size}/{rutaGuardada.paradas.length}</span></div>
+                            <div className="mt-1 h-2 bg-[#F4F0E6] border border-[#7D8A9A]/30 rounded-full overflow-hidden"><div className="h-full bg-emerald-500 rounded-full transition-all" style={{ width: `${rutaGuardada.paradas.length ? (visitados.size/rutaGuardada.paradas.length)*100 : 0}%` }}/></div>
                           </div>
                           <div className="mt-3 flex gap-2">
-                            <button onClick={()=> setPantalla('RUTA')} className="flex-1 bg-white border border-[#E6EEF7] font-bold py-2 rounded-full text-sm text-[#0F305B]">Ver itinerario</button>
-                            <button onClick={()=> abrirFichaPoi(rutaGuardada.paradas[0])} className="flex-1 bg-[#FFC727] font-extrabold py-2 rounded-full text-sm text-[#0F305B]">Ver detalle</button>
+                            <button onClick={()=> setPantalla('RUTA')} className="flex-1 bg-white border border-[#7D8A9A]/30 font-bold py-2 rounded-full text-sm text-[#142C50]">Ver itinerario</button>
+                            <button onClick={()=> abrirFichaPoi(rutaGuardada.paradas[0])} className="flex-1 bg-[#E0A526] font-extrabold py-2 rounded-full text-sm text-[#142C50]">Ver detalle</button>
                           </div>
-                          <div className="mt-4 bg-[#F8FAFC] border border-[#E6EEF7] rounded-xl p-3">
-                            <p className="text-xs font-extrabold text-[#0F305B]">Checklist de esta ruta</p>
+                          <div className="mt-4 bg-[#F4F0E6] border border-[#7D8A9A]/30 rounded-xl p-3">
+                            <p className="text-xs font-extrabold text-[#142C50]">Checklist de esta ruta</p>
                             <div className="mt-2 space-y-1.5">
                               {rutaGuardada.paradas.map((p, idx)=> (
                                 <div key={p.id} className="flex items-center gap-2 text-xs">
                                   <label className="flex items-center gap-2 flex-1 cursor-pointer min-w-0">
-                                    <input type="checkbox" checked={visitados.has(p.id)} onChange={()=> toggleVisitado(p.id)} className="w-4 h-4 rounded border-[#CBD5E1] text-[#0F305B] focus:ring-[#0F305B]" />
-                                    <span className={`truncate ${visitados.has(p.id) ? "line-through text-[#5A7896]" : "text-[#0F305B] font-medium"}`}>{p.nombre}</span>
+                                    <input type="checkbox" checked={visitados.has(p.id)} onChange={()=> toggleVisitado(p.id)} className="w-4 h-4 rounded border-[#CBD5E1] text-[#142C50] focus:ring-[#142C50]" />
+                                    <span className={`truncate ${visitados.has(p.id) ? "line-through text-[#7D8A9A]" : "text-[#142C50] font-medium"}`}>{p.nombre}</span>
                                     {visitados.has(p.id) && <span className="text-emerald-600 font-bold">✓</span>}
                                   </label>
-                                  <button onClick={()=> reordenarParadas(idx, idx - 1, true)} disabled={idx === 0} className="w-6 h-6 rounded-full border border-[#E6EEF7] grid place-items-center disabled:opacity-30" title="Subir">↑</button>
-                                  <button onClick={()=> reordenarParadas(idx, idx + 1, true)} disabled={idx === rutaGuardada.paradas.length - 1} className="w-6 h-6 rounded-full border border-[#E6EEF7] grid place-items-center disabled:opacity-30" title="Bajar">↓</button>
+                                  <button onClick={()=> reordenarParadas(idx, idx - 1, true)} disabled={idx === 0} className="w-6 h-6 rounded-full border border-[#7D8A9A]/30 grid place-items-center disabled:opacity-30" title="Subir">↑</button>
+                                  <button onClick={()=> reordenarParadas(idx, idx + 1, true)} disabled={idx === rutaGuardada.paradas.length - 1} className="w-6 h-6 rounded-full border border-[#7D8A9A]/30 grid place-items-center disabled:opacity-30" title="Bajar">↓</button>
                                 </div>
                               ))}
                             </div>
@@ -570,50 +571,50 @@ export default function App() {
 
             {/* FICHA POI - con datos amigables y reseña */}
             {pantalla==='POI' && poiFicha && (
-              <motion.div key="poi" initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: 12 }} className="pb-28 bg-[#F8FAFC]">
+              <motion.div key="poi" initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: 12 }} className="pb-28 bg-[#F4F0E6]">
                 <div className="relative h-56 w-full overflow-hidden">
                   <img src={poiFicha.imagen} alt={poiFicha.nombre} className="w-full h-full object-cover" />
-                  <div className="absolute inset-0 bg-gradient-to-t from-[#0A2540]/80 to-transparent" />
+                  <div className="absolute inset-0 bg-gradient-to-t from-[#142C50]/80 to-transparent" />
                   <div className="absolute top-0 left-0 right-0 flex items-center justify-between px-4 pt-4">
-                    <button onClick={()=> setPantalla('RUTA')} className="bg-white px-4 py-2 rounded-full text-xs font-extrabold text-[#0F305B] shadow">‹ Volver</button>
-                    <label className="flex items-center gap-1.5 bg-white px-3 py-1.5 rounded-full border border-[#E6EEF7] shadow cursor-pointer">
+                    <button onClick={()=> setPantalla('RUTA')} className="bg-white px-4 py-2 rounded-full text-xs font-extrabold text-[#142C50] shadow">‹ Volver</button>
+                    <label className="flex items-center gap-1.5 bg-white px-3 py-1.5 rounded-full border border-[#7D8A9A]/30 shadow cursor-pointer">
                       <input type="checkbox" checked={visitados.has(poiFicha.id)} onChange={()=> toggleVisitado(poiFicha.id)} className="w-4 h-4 rounded border-[#CBD5E1] text-emerald-600 focus:ring-emerald-500" />
-                      <span className="text-xs font-extrabold text-[#0F305B]">{visitados.has(poiFicha.id) ? "Visitado" : "Marcar visitado"}</span>
+                      <span className="text-xs font-extrabold text-[#142C50]">{visitados.has(poiFicha.id) ? "Visitado" : "Marcar visitado"}</span>
                     </label>
                   </div>
                   <div className="absolute bottom-0 left-0 right-0 px-5 pb-4">
-                    <span className="bg-white/95 text-[#0F305B] text-xs font-bold px-2.5 py-1 rounded-full border border-white">{poiFicha.categoria}</span>
+                    <span className="bg-white/95 text-[#142C50] text-xs font-bold px-2.5 py-1 rounded-full border border-white">{poiFicha.categoria}</span>
                     <h1 className="text-lg font-extrabold text-white mt-2 leading-tight">{poiFicha.nombre}</h1>
                   </div>
                 </div>
                 <div className="px-5 mt-5 space-y-4">
                   {/* Datos amigables reales */}
-                  <div className="bg-white border border-[#E6EEF7] rounded-2xl p-4 shadow-sm">
-                    <h3 className="font-extrabold text-[#0F305B]">Detalle del lugar</h3>
-                    <p className="text-sm text-[#3A5A7A] mt-2 leading-relaxed">{getDatoAmigable(poiFicha.id).desc}</p>
+                  <div className="bg-white border border-[#7D8A9A]/30 rounded-2xl p-4 shadow-sm">
+                    <h3 className="font-extrabold text-[#142C50]">Detalle del lugar</h3>
+                    <p className="text-sm text-[#7D8A9A] mt-2 leading-relaxed">{getDatoAmigable(poiFicha.id).desc}</p>
                     <div className="mt-4 grid gap-2">
-                      <div className="flex items-start gap-3 bg-[#F8FAFC] border border-[#E6EEF7] rounded-xl p-3">
-                        <span className="w-8 h-8 rounded-full bg-white border border-[#E6EEF7] grid place-items-center text-sm flex-shrink-0">📍</span>
-                        <div><p className="text-xs font-extrabold text-[#0F305B]">Dirección</p><p className="text-xs text-[#5A7896] mt-0.5">{getDatoAmigable(poiFicha.id).direccion}</p></div>
+                      <div className="flex items-start gap-3 bg-[#F4F0E6] border border-[#7D8A9A]/30 rounded-xl p-3">
+                        <span className="w-8 h-8 rounded-full bg-white border border-[#7D8A9A]/30 grid place-items-center text-sm flex-shrink-0">📍</span>
+                        <div><p className="text-xs font-extrabold text-[#142C50]">Dirección</p><p className="text-xs text-[#7D8A9A] mt-0.5">{getDatoAmigable(poiFicha.id).direccion}</p></div>
                       </div>
                       <div className="grid grid-cols-3 gap-2">
-                        <div className="bg-[#F8FAFC] border border-[#E6EEF7] rounded-xl p-3 text-center">
-                          <p className="text-xs font-bold text-[#5A7896]">Horario</p><p className="text-xs font-extrabold text-[#0F305B] mt-1">{poiFicha.horario}</p>
+                        <div className="bg-[#F4F0E6] border border-[#7D8A9A]/30 rounded-xl p-3 text-center">
+                          <p className="text-xs font-bold text-[#7D8A9A]">Horario</p><p className="text-xs font-extrabold text-[#142C50] mt-1">{poiFicha.horario}</p>
                         </div>
-                        <div className="bg-[#F8FAFC] border border-[#E6EEF7] rounded-xl p-3 text-center">
-                          <p className="text-xs font-bold text-[#5A7896]">Duración</p><p className="text-xs font-extrabold text-[#0F305B] mt-1">{poiFicha.tiempoMin} min</p>
+                        <div className="bg-[#F4F0E6] border border-[#7D8A9A]/30 rounded-xl p-3 text-center">
+                          <p className="text-xs font-bold text-[#7D8A9A]">Duración</p><p className="text-xs font-extrabold text-[#142C50] mt-1">{poiFicha.tiempoMin} min</p>
                         </div>
-                        <div className="bg-[#F8FAFC] border border-[#E6EEF7] rounded-xl p-3 text-center">
-                          <p className="text-xs font-bold text-[#5A7896]">Entrada</p><p className="text-xs font-extrabold text-[#0F305B] mt-1">{poiFicha.costoLabel}</p>
+                        <div className="bg-[#F4F0E6] border border-[#7D8A9A]/30 rounded-xl p-3 text-center">
+                          <p className="text-xs font-bold text-[#7D8A9A]">Entrada</p><p className="text-xs font-extrabold text-[#142C50] mt-1">{poiFicha.costoLabel}</p>
                         </div>
                       </div>
-                      <div className="flex items-center justify-between bg-[#F8FAFC] border border-[#E6EEF7] rounded-xl px-3 py-2">
-                        <span className="text-xs font-bold text-[#0F305B]">Estado de visita</span>
+                      <div className="flex items-center justify-between bg-[#F4F0E6] border border-[#7D8A9A]/30 rounded-xl px-3 py-2">
+                        <span className="text-xs font-bold text-[#142C50]">Estado de visita</span>
                         <span className={`text-xs font-extrabold px-2.5 py-1 rounded-full border ${visitados.has(poiFicha.id) ? 'bg-emerald-100 text-emerald-700 border-emerald-200' : 'bg-amber-100 text-amber-700 border-amber-200'}`}>{visitados.has(poiFicha.id) ? '✓ Visitado' : 'Pendiente'}</span>
                       </div>
                     </div>
                   </div>
-                  <button onClick={()=> setPantalla('HOME')} className="w-full bg-[#0F305B] text-white font-extrabold py-3 rounded-full text-sm">Volver al inicio</button>
+                  <button onClick={()=> setPantalla('HOME')} className="w-full bg-[#142C50] text-white font-extrabold py-3 rounded-full text-sm">Volver al inicio</button>
                 </div>
               </motion.div>
             )}
@@ -621,10 +622,10 @@ export default function App() {
             {/* AYUDA */}
             {(pantalla==='AYUDA') && (
               <motion.div key="ayuda" initial={{ opacity: 0, x: 12 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: 12 }} className="pb-28">
-                <div className="bg-white border-b border-[#E6EEF7] px-5 pt-6 pb-4">
-                  <button onClick={()=> setPantalla('HOME')} className="text-xs font-bold text-[#0F305B]">‹ Volver</button>
-                  <h1 className="text-lg font-extrabold text-[#0F305B] mt-1">Ayuda</h1>
-                  <p className="text-sm text-[#5A7896]">Contacto y preguntas frecuentes</p>
+                <div className="bg-white border-b border-[#7D8A9A]/30 px-5 pt-6 pb-4">
+                  <button onClick={()=> setPantalla('HOME')} className="text-xs font-bold text-[#142C50]">‹ Volver</button>
+                  <h1 className="text-lg font-extrabold text-[#142C50] mt-1">Ayuda</h1>
+                  <p className="text-sm text-[#7D8A9A]">Contacto y preguntas frecuentes</p>
                 </div>
                 <div className="px-5 mt-5 space-y-3">
                   {[
@@ -632,12 +633,12 @@ export default function App() {
                     { q: "¿Funciona sin internet?", a: "Sí, guarda tu ruta y el checklist de visita sigue disponible offline." },
                     { q: "¿De dónde salen los datos?", a: "Lugares reales de Santiago con precios y horarios actualizados." },
                   ].map(f=> (
-                    <div key={f.q} className="bg-white border border-[#E6EEF7] rounded-2xl p-4 shadow-sm">
-                      <p className="font-extrabold text-[#0F305B] text-sm">{f.q}</p>
-                      <p className="text-xs text-[#5A7896] mt-1 leading-relaxed">{f.a}</p>
+                    <div key={f.q} className="bg-white border border-[#7D8A9A]/30 rounded-2xl p-4 shadow-sm">
+                      <p className="font-extrabold text-[#142C50] text-sm">{f.q}</p>
+                      <p className="text-xs text-[#7D8A9A] mt-1 leading-relaxed">{f.a}</p>
                     </div>
                   ))}
-                  <div className="bg-[#0F305B] rounded-2xl p-4 text-white"><p className="font-extrabold text-sm">¿Aún necesitas ayuda?</p><p className="text-xs text-white/70 mt-1">soporte@santiago.inteligente.cl • +56 9 1234 5678</p><button className="mt-3 bg-[#FFC727] text-[#0F305B] font-extrabold px-4 py-2 rounded-full text-xs">Contactar</button></div>
+                  <div className="bg-[#142C50] rounded-2xl p-4 text-white"><p className="font-extrabold text-sm">¿Aún necesitas ayuda?</p><p className="text-xs text-white/70 mt-1">soporte@rutia.cl • +56 9 1234 5678</p><button className="mt-3 bg-[#E0A526] text-[#142C50] font-extrabold px-4 py-2 rounded-full text-xs">Contactar</button></div>
                 </div>
               </motion.div>
             )}
@@ -646,7 +647,7 @@ export default function App() {
 
         {/* NAVBAR - simbología mejorada - oculto en FORM para dejar botón Generar central */}
         {pantalla !== 'FORM' && (
-        <div className="absolute bottom-0 left-0 right-0 bg-white border-t border-[#E6EEF7] px-6 pt-2 pb-4 rounded-t-3xl shadow-[0_-8px_24px_rgba(15,48,91,0.08)]">
+        <div className="absolute bottom-0 left-0 right-0 bg-white border-t border-[#7D8A9A]/30 px-6 pt-2 pb-4 rounded-t-3xl shadow-[0_-8px_24px_rgba(15,48,91,0.08)]">
           <div className="flex items-center justify-between">
             {[
               { id: 'HOME', label: 'Explorar', icon: <IconExplorar/>, go: 'HOME' },
@@ -656,24 +657,24 @@ export default function App() {
             ].map(item => {
               const active = (pantalla==='HOME' && item.id==='HOME') || (pantalla==='FORM' && item.id==='FORM') || (pantalla==='RUTA' && item.id==='FORM') || ((pantalla==='MISRUTAS' || pantalla==='GUARDADA') && item.id==='MISRUTAS') || ((pantalla==='PERFIL' || pantalla==='DATOS') && item.id==='PERFIL')
               return (
-                <button key={item.id} onClick={()=> setPantalla(item.go)} className={`flex flex-col items-center gap-1 min-w-[64px] ${active ? 'text-[#0F305B]' : 'text-[#8AA0B8]'}`}>
-                  <span className={`w-7 h-7 grid place-items-center rounded-full ${active ? 'bg-[#E6EEF7]' : ''}`}>{item.icon}</span>
+                <button key={item.id} onClick={()=> setPantalla(item.go)} className={`flex flex-col items-center gap-1 min-w-[64px] ${active ? 'text-[#142C50]' : 'text-[#7D8A9A]'}`}>
+                  <span className={`w-7 h-7 grid place-items-center rounded-full ${active ? 'bg-[#F4F0E6]' : ''}`}>{item.icon}</span>
                   <span className="text-[11px] font-extrabold leading-none">{item.label}</span>
                 </button>
               )
             })}
           </div>
-          <div className="w-24 h-1 bg-[#0F305B] rounded-full mx-auto mt-3" />
+          <div className="w-24 h-1 bg-[#142C50] rounded-full mx-auto mt-3" />
         </div>
         )}
 
         <AnimatePresence>
           {loading && (
-            <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="absolute inset-0 bg-[#0A2540]/60 backdrop-blur-sm grid place-items-center z-50">
-              <div className="bg-white border border-[#E6EEF7] rounded-2xl shadow-xl p-6 flex flex-col items-center gap-3 mx-8">
-                <span className="w-10 h-10 border-3 border-[#E6EEF7] border-t-[#0F305B] rounded-full animate-spin" style={{ borderWidth: 3 }} />
-                <p className="font-extrabold text-[#0F305B] text-sm">Generando tu ruta...</p>
-                <p className="text-xs text-[#5A7896] text-center font-medium">Filtrando lugares según tu presupuesto y tiempo</p>
+            <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="absolute inset-0 bg-[#142C50]/60 backdrop-blur-sm grid place-items-center z-50">
+              <div className="bg-white border border-[#7D8A9A]/30 rounded-2xl shadow-xl p-6 flex flex-col items-center gap-3 mx-8">
+                <span className="w-10 h-10 border-3 border-[#7D8A9A]/30 border-t-[#142C50] rounded-full animate-spin" style={{ borderWidth: 3 }} />
+                <p className="font-extrabold text-[#142C50] text-sm">Generando tu ruta...</p>
+                <p className="text-xs text-[#7D8A9A] text-center font-medium">Filtrando lugares según tu presupuesto y tiempo</p>
               </div>
             </motion.div>
           )}

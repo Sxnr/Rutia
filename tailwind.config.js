@@ -7,12 +7,17 @@ export default {
   theme: {
     extend: {
       colors: {
-        primary: "#0F305B",
-        navy: "#0A2540",
-        navyLight: "#14365F",
-        accent: "#FFC727",
-        accentHover: "#FFB800",
-        surface: "#F1F4F8",
+        primary: "#142C50",
+        navy: "#142C50",
+        navyLight: "#142C50",
+        accent: "#E0A526",
+        gold: "#E0A526",
+        accentHover: "#E0A526",
+        muted: "#7D8A9A",
+        slate: "#7D8A9A",
+        cream: "#F4F0E6",
+        surface: "#F4F0E6",
+        "surface-alt": "#F4F0E6",
       },
       fontFamily: {
         sans: ['Inter', 'system-ui', 'sans-serif'],

@@ -9,7 +9,7 @@ function fmtDuracion(min) {
 
 // Convierte paradas de negocio en paradas listas para la UI (solo etiquetas/legibilidad)
 function mapearParadas(paradasServicio) {
-  return paradasServicio.map((p, i) => {
+  return paradasServicio.map((p) => {
     const poi = p._poi
     return {
       id: poi.id,
@@ -21,7 +21,6 @@ function mapearParadas(paradasServicio) {
       duracionMin: p.duracionMin,
       trasladoMin: p.trasladoMin,
       trasladoLabel: p.trasladoMin > 0 ? `${p.trasladoMin} min traslado` : "Inicio",
-      distanciaSig: i < paradasServicio.length - 1 ? `${p.trasladoMin > 0 ? p.trasladoMin * 80 : 320}m a pie` : "fin",
       imagen: poi.imagen,
       coords: poi.coords,
       horario: poi.horario,
@@ -39,7 +38,6 @@ export async function motorDeFiltrado({ tiempo, presupuesto, intereses }) {
     return {
       titulo: "Sin resultados",
       duracionTotal: "0h 00m",
-      distancia: "—",
       costoTotal: "$0",
       paradas: [],
       meta: { costoTotal: 0, tiempoTotalMin: 0, viable: false, mensaje },
@@ -51,7 +49,6 @@ export async function motorDeFiltrado({ tiempo, presupuesto, intereses }) {
   const itinerario = {
     titulo: intereses.includes("Museos") ? "Ruta Bellas Artes & Forestal" : "Ruta Hiper-Local Optimizada",
     duracionTotal: fmtDuracion(duracionTotalMin),
-    distancia: `${(paradas.length * 0.6).toFixed(1)} km a pie`,
     costoTotal: `$${costoTotalClp.toLocaleString('es-CL')}`,
     paradas,
     meta: { costoTotal: costoTotalClp, tiempoTotalMin: duracionTotalMin, viable: true },
@@ -70,7 +67,6 @@ export async function recalcularItinerarioController({ paradas }) {
   await new Promise(r => setTimeout(r, 60))
   return {
     duracionTotal: fmtDuracion(duracionTotalMin),
-    distancia: `${(paradasMapeadas.length * 0.6).toFixed(1)} km a pie`,
     costoTotal: `$${costoTotalClp.toLocaleString('es-CL')}`,
     paradas: paradasMapeadas,
     meta: { costoTotal: costoTotalClp, tiempoTotalMin: duracionTotalMin, viable: paradasMapeadas.length > 0 },

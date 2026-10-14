@@ -1,5 +1,5 @@
 import axios from 'axios'
-import { postRutaSugerir, getPoiDetalle } from '../../server/presentation/router.js'
+import { postRutaSugerir, postRutaRecalcular, getPoiDetalle } from '../../server/presentation/router.js'
 
 // Capa Cliente: Cliente HTTP (Axios) - directo a Router, sin Nginx/PM2
 // UI -> State -> HTTP == POST ==> Router (según Arq. Técnica sin Infra)
@@ -20,6 +20,9 @@ async function mockPost(url, data) {
   if (url.includes("/api/v1/routes/generate") || url.includes("/rutas/sugerir")) {
     return postRutaSugerir(data)
   }
+  if (url.includes("/api/v1/routes/recalculate")) {
+    return postRutaRecalcular(data)
+  }
   throw new Error("Ruta no mockeada: " + url)
 }
 async function mockGet(url) {
@@ -35,6 +38,11 @@ export const api = {
   async sugerirRuta(preferencias) {
     const res = await mockPost("/api/v1/routes/generate", preferencias)
     // 7. Respuesta -> HTTP -> State -> UI
+    return res.data
+  },
+  // Recalcula duración y costo de una ruta ya armada (capa de negocio)
+  async recalcularRuta(ids) {
+    const res = await mockPost("/api/v1/routes/recalculate", { paradas: ids.map(id => ({ id })) })
     return res.data
   },
   async getPoi(id) {

@@ -40,22 +40,48 @@ export function RouteProvider({ children }) {
     if (itinerario) setRutaGuardada({ ...itinerario, guardadaEn: new Date().toISOString() })
   }
 
-  function reordenarParadas(origen, destino, enGuardada = false) {
+  // Pide a la capa de negocio (vía HTTP) que recalcule duración y costo
+  async function recalcularDesde(paradas) {
+    return api.recalcularRuta(paradas.map(p => p.id))
+  }
+
+  async function aplicarParadas(nuevasParadas, enGuardada = false) {
     const elegir = enGuardada ? rutaGuardada : itinerario
     const aplicar = enGuardada ? setRutaGuardada : setItinerario
+    if (!elegir) return
+    const patch = await recalcularDesde(nuevasParadas)
+    aplicar({ ...elegir, ...patch })
+  }
+
+  async function reordenarParadas(origen, destino, enGuardada = false) {
+    const elegir = enGuardada ? rutaGuardada : itinerario
     if (!elegir?.paradas) return
     if (destino < 0 || destino >= elegir.paradas.length) return
     const nuevas = [...elegir.paradas]
     const [movida] = nuevas.splice(origen, 1)
     nuevas.splice(destino, 0, movida)
-    aplicar({ ...elegir, paradas: nuevas.map((p, i) => ({ ...p, orden: i + 1 })) })
+    await aplicarParadas(nuevas, enGuardada)
+  }
+
+  async function eliminarParada(id, enGuardada = false) {
+    const elegir = enGuardada ? rutaGuardada : itinerario
+    if (!elegir?.paradas) return
+    const nuevas = elegir.paradas.filter(p => p.id !== id)
+    await aplicarParadas(nuevas, enGuardada)
+  }
+
+  async function vaciarItinerario(enGuardada = false) {
+    const elegir = enGuardada ? rutaGuardada : itinerario
+    if (!elegir) return
+    await aplicarParadas([], enGuardada)
   }
 
   return (
     <RouteCtx.Provider value={{
       preferencias, setPreferencias,
       itinerario, setItinerario,
-      rutaGuardada, setRutaGuardada, guardarRuta, reordenarParadas,
+      rutaGuardada, setRutaGuardada, guardarRuta,
+      reordenarParadas, eliminarParada, vaciarItinerario,
       poiDetalle, cargarPoi,
       loading, error, generarRuta
     }}>

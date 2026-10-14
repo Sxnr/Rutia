@@ -109,4 +109,44 @@ export async function sugerirRuta({ tiempo, presupuesto, intereses }) {
   }
 }
 
+/**
+ * Recalcula duración (incluye traslados por coordenadas reales) y costo
+ * de una ruta ya armada, reconsultando cada lugar en la capa de datos.
+ * NO filtra ni ordena: respeta el orden de `paradas` recibido.
+ * @param {{ paradas: Array<{ id: string }> }} params paradas en orden (solo se usa el id)
+ * @returns {Promise<{ duracionTotalMin: number, costoTotalClp: number, paradas: object[] }>}
+ */
+export async function recalcularItinerario({ paradas }) {
+  const pois = []
+  for (const p of paradas) {
+    const id = typeof p === 'string' ? p : (p.id || p.poiId)
+    const poi = await poisRepository.findById(id) // capa de datos
+    if (poi) pois.push(poi)
+  }
+
+  const paradasOut = []
+  let minutosTotales = 0
+  let costoTotal = 0
+  let anterior = null
+
+  for (let i = 0; i < pois.length; i++) {
+    const poi = pois[i]
+    const traslado = anterior ? Math.ceil(distanciaKm(anterior, poi) * MINUTOS_TRASLADO_POR_KM) : 0
+    minutosTotales += traslado + poi.tiempoMin
+    costoTotal += poi.costo
+    paradasOut.push({
+      orden: i + 1,
+      poiId: String(poi.id),
+      nombre: poi.nombre,
+      duracionMin: poi.tiempoMin,
+      trasladoMin: traslado,
+      costoClp: poi.costo,
+      _poi: poi,
+    })
+    anterior = poi
+  }
+
+  return { duracionTotalMin: minutosTotales, costoTotalClp: costoTotal, paradas: paradasOut }
+}
+
 export { distanciaKm }

@@ -11,3 +11,12 @@ export const preferenciasSchema = z.object({
 export function validarPreferencias(data) {
   return preferenciasSchema.safeParse(data)
 }
+
+// Esquema para el recálculo de una ruta ya armada (eliminar/reordenar/vaciar)
+export const paradasSchema = z.object({
+  paradas: z.array(z.object({ id: z.string().min(1) })),
+})
+
+export function validarParadas(data) {
+  return paradasSchema.safeParse(data)
+}

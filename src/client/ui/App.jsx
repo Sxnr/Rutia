@@ -65,7 +65,7 @@ export default function App() {
   const [tituloTemp, setTituloTemp] = useState('')
   const [guardadosTab, setGuardadosTab] = useState('rutas')
 
-  const { preferencias, setPreferencias, itinerario, setItinerario, generarRuta, guardarRuta, rutaGuardada, cargarPoi, loading, reordenarParadas } = useRouteStore()
+  const { preferencias, setPreferencias, itinerario, setItinerario, generarRuta, guardarRuta, rutaGuardada, cargarPoi, loading, reordenarParadas, eliminarParada, vaciarItinerario } = useRouteStore()
 
   useEffect(() => {
     if (itinerario) setVisitados(new Set())
@@ -87,20 +87,13 @@ export default function App() {
   }
 
   const handleEliminarParada = (id) => {
-    if (!itinerario) return
-    const nuevas = itinerario.paradas.filter(p => p.id !== id)
-    // Recalcula totales simple
-    const costoTotal = nuevas.reduce((s,p)=> s + (p.costo||0), 0)
-    const tiempoTotal = nuevas.reduce((s,p)=> s + (p.tiempoMin||0), 0)
-    setItinerario({
-      ...itinerario,
-      paradas: nuevas,
-      costoTotal: `$${costoTotal.toLocaleString('es-CL')}`,
-      duracionTotal: `${Math.floor(tiempoTotal/60)}h ${String(tiempoTotal%60).padStart(2,'0')}m`,
-      distancia: nuevas.length <=1 ? "—" : `${(nuevas.length*0.6).toFixed(1)} km a pie`
-    })
-    // also remove from visitados
-    setVisitados(prev => { const ns=new Set(prev); ns.delete(id); return ns })
+    // La capa de negocio recalcula duración y costo (vía HTTP); la UI no suma nada
+    eliminarParada(id, false)
+    setVisitados(prev => { const ns = new Set(prev); ns.delete(id); return ns })
+  }
+
+  const handleVaciar = () => {
+    vaciarItinerario(false)
   }
 
   const handleGenerar = async () => {
@@ -146,7 +139,7 @@ export default function App() {
               <Preferencias setPantalla={setPantalla} preferencias={preferencias} setPreferencias={setPreferencias} toggleInteres={toggleInteres} errorForm={errorForm} handleGenerar={handleGenerar} loading={loading} />
             )}
             {pantalla==='RUTA' && (
-              <RutaSugerida itinerario={itinerario} setItinerario={setItinerario} setPantalla={setPantalla} handleGuardar={handleGuardar} tituloEditando={tituloEditando} setTituloEditando={setTituloEditando} tituloTemp={tituloTemp} setTituloTemp={setTituloTemp} visitados={visitados} toggleVisitado={toggleVisitado} reordenarParadas={reordenarParadas} handleEliminarParada={handleEliminarParada} abrirFichaPoi={abrirFichaPoi} />
+              <RutaSugerida itinerario={itinerario} setItinerario={setItinerario} setPantalla={setPantalla} handleGuardar={handleGuardar} tituloEditando={tituloEditando} setTituloEditando={setTituloEditando} tituloTemp={tituloTemp} setTituloTemp={setTituloTemp} visitados={visitados} toggleVisitado={toggleVisitado} reordenarParadas={reordenarParadas} handleEliminarParada={handleEliminarParada} abrirFichaPoi={abrirFichaPoi} handleVaciar={handleVaciar} />
             )}
             {(pantalla==='MISRUTAS' || pantalla==='GUARDADA') && (
               <Guardados setPantalla={setPantalla} guardadosTab={guardadosTab} setGuardadosTab={setGuardadosTab} rutaGuardada={rutaGuardada} visitados={visitados} toggleVisitado={toggleVisitado} reordenarParadas={reordenarParadas} abrirFichaPoi={abrirFichaPoi} />

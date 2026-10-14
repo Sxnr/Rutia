@@ -1,5 +1,5 @@
-import { validarPreferencias } from './routeSchema.js'
-import { motorDeFiltrado } from './controller.js'
+import { validarPreferencias, validarParadas } from './routeSchema.js'
+import { motorDeFiltrado, recalcularItinerarioController } from './controller.js'
 
 // Capa Servidor: Enrutador (Express) - sin Nginx/PM2, directo
 // Flujo: HTTP POST /api/rutas/sugerir => Router -> Validator -> Controller
@@ -34,4 +34,17 @@ export async function getPoiDetalle(id) {
     throw e
   }
   return { status: 200, data: poi }
+}
+
+// Recálculo de ruta ya armada: Router -> Validator -> Controller(negocio->datos)
+export async function postRutaRecalcular(body) {
+  const parsed = validarParadas(body)
+  if (!parsed.success) {
+    const err = new Error("Validación fallida")
+    err.status = 400
+    err.details = parsed.error.flatten()
+    throw err
+  }
+  const itinerario = await recalcularItinerarioController(parsed.data)
+  return { status: 200, data: itinerario }
 }

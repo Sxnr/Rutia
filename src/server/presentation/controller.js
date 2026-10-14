@@ -1,30 +1,15 @@
-import { sugerirRuta } from '../business/routeService.js'
+import { sugerirRuta, recalcularItinerario } from '../business/routeService.js'
 
 // controller.js — CAPA DE PRESENTACIÓN (delgado)
 // Traduce HTTP ↔ negocio. NO contiene reglas de la ruta.
-export async function motorDeFiltrado({ tiempo, presupuesto, intereses }) {
-  // Delega toda la lógica a la capa de negocio
-  const { duracionTotalMin, costoTotalClp, paradas: paradasServicio, mensaje } = await sugerirRuta({ tiempo, presupuesto, intereses })
 
-  if (paradasServicio.length === 0) {
-    return {
-      titulo: "Sin resultados",
-      duracionTotal: "0h 00m",
-      distancia: "—",
-      costoTotal: "$0",
-      horario: "—",
-      precioEntrada: "—",
-      paradas: [],
-      meta: { costoTotal: 0, tiempoTotalMin: 0, viable: false, mensaje },
-      trace: ["UI", "State", "HTTP POST /api/v1/routes/generate", "Router", "Zod", "Controller", "routeService", "Repo.buscarCandidatos", "CollPOI"]
-    }
-  }
+function fmtDuracion(min) {
+  return `${Math.floor(min / 60)}h ${String(min % 60).padStart(2, '0')}m`
+}
 
-  // Enriquecimiento para el prototipo: horas y distancia legible
-  const paradas = paradasServicio.map((p, i) => {
-    const startMin = 10 * 60 + 30 + i * 65
-    const endMin = startMin + p.duracionMin
-    const fmt = (m) => `${String(Math.floor(m/60)).padStart(2,'0')}:${String(m%60).padStart(2,'0')}`
+// Convierte paradas de negocio en paradas listas para la UI (solo etiquetas/legibilidad)
+function mapearParadas(paradasServicio) {
+  return paradasServicio.map((p, i) => {
     const poi = p._poi
     return {
       id: poi.id,
@@ -36,8 +21,7 @@ export async function motorDeFiltrado({ tiempo, presupuesto, intereses }) {
       duracionMin: p.duracionMin,
       trasladoMin: p.trasladoMin,
       trasladoLabel: p.trasladoMin > 0 ? `${p.trasladoMin} min traslado` : "Inicio",
-      hora: `${fmt(startMin)} - ${fmt(endMin)}`,
-      distanciaSig: i < paradasServicio.length - 1 ? `${p.trasladoMin > 0 ? p.trasladoMin*80 : 320}m a pie` : "fin",
+      distanciaSig: i < paradasServicio.length - 1 ? `${p.trasladoMin > 0 ? p.trasladoMin * 80 : 320}m a pie` : "fin",
       imagen: poi.imagen,
       coords: poi.coords,
       horario: poi.horario,
@@ -45,19 +29,50 @@ export async function motorDeFiltrado({ tiempo, presupuesto, intereses }) {
       orden: p.orden,
     }
   })
+}
+
+export async function motorDeFiltrado({ tiempo, presupuesto, intereses }) {
+  // Delega toda la lógica a la capa de negocio
+  const { duracionTotalMin, costoTotalClp, paradas: paradasServicio, mensaje } = await sugerirRuta({ tiempo, presupuesto, intereses })
+
+  if (paradasServicio.length === 0) {
+    return {
+      titulo: "Sin resultados",
+      duracionTotal: "0h 00m",
+      distancia: "—",
+      costoTotal: "$0",
+      paradas: [],
+      meta: { costoTotal: 0, tiempoTotalMin: 0, viable: false, mensaje },
+    }
+  }
+
+  const paradas = mapearParadas(paradasServicio)
 
   const itinerario = {
     titulo: intereses.includes("Museos") ? "Ruta Bellas Artes & Forestal" : "Ruta Hiper-Local Optimizada",
-    duracionTotal: `${Math.floor(duracionTotalMin/60)}h ${String(duracionTotalMin%60).padStart(2,'0')}m`,
+    duracionTotal: fmtDuracion(duracionTotalMin),
     distancia: `${(paradas.length * 0.6).toFixed(1)} km a pie`,
     costoTotal: `$${costoTotalClp.toLocaleString('es-CL')}`,
-    horario: "Mar-Dom 10:00-18:30",
-    precioEntrada: "$3.000 General / $1.500 Estudiantes",
     paradas,
     meta: { costoTotal: costoTotalClp, tiempoTotalMin: duracionTotalMin, viable: true },
-    trace: ["UI", "State", "HTTP POST /api/v1/routes/generate", "Router", "Zod", "Controller", "routeService", "Repo.buscarCandidatos", "CollPOI"]
   }
 
   await new Promise(r => setTimeout(r, 120))
   return itinerario
+}
+
+// Recálculo de una ruta ya armada (eliminar / reordenar / vaciar paradas).
+// La capa de negocio recalcula duración y costo con datos de la capa de datos.
+export async function recalcularItinerarioController({ paradas }) {
+  const { duracionTotalMin, costoTotalClp, paradas: paradasServicio } = await recalcularItinerario({ paradas })
+  const paradasMapeadas = mapearParadas(paradasServicio)
+
+  await new Promise(r => setTimeout(r, 60))
+  return {
+    duracionTotal: fmtDuracion(duracionTotalMin),
+    distancia: `${(paradasMapeadas.length * 0.6).toFixed(1)} km a pie`,
+    costoTotal: `$${costoTotalClp.toLocaleString('es-CL')}`,
+    paradas: paradasMapeadas,
+    meta: { costoTotal: costoTotalClp, tiempoTotalMin: duracionTotalMin, viable: paradasMapeadas.length > 0 },
+  }
 }

@@ -1,7 +1,7 @@
 import { motion } from 'framer-motion'
 import { IconTrash } from './icons.jsx'
 
-export default function RutaSugerida({ itinerario, setItinerario, setPantalla, handleGuardar, tituloEditando, setTituloEditando, tituloTemp, setTituloTemp, visitados, toggleVisitado, reordenarParadas, handleEliminarParada, abrirFichaPoi }) {
+export default function RutaSugerida({ itinerario, setItinerario, setPantalla, handleGuardar, tituloEditando, setTituloEditando, tituloTemp, setTituloTemp, visitados, toggleVisitado, reordenarParadas, handleEliminarParada, abrirFichaPoi, handleVaciar }) {
   return (
     <motion.div key="ruta" initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: 12 }} className="pb-36 bg-[#F4F0E6]">
       <div className="relative h-[264px] w-full overflow-hidden">
@@ -49,7 +49,7 @@ export default function RutaSugerida({ itinerario, setItinerario, setPantalla, h
                     <img src={p.imagen} alt={p.nombre} onError={(e)=>{ if(p.fallback && e.currentTarget.src!==p.fallback) e.currentTarget.src=p.fallback }} className={`w-16 h-16 rounded-xl object-cover border flex-shrink-0 ${hecho ? 'border-emerald-200 opacity-70' : 'border-[#7D8A9A]/30'}`} />
                     <div className="flex-1 min-w-0">
                       <p className={`text-sm font-extrabold leading-tight truncate ${hecho ? 'text-emerald-700 line-through' : 'text-[#142C50]'}`}>{p.nombre}</p>
-                      <p className="text-xs text-[#7D8A9A] mt-0.5 font-medium">{p.hora}</p>
+                      <p className="text-xs text-[#7D8A9A] mt-0.5 font-medium">{p.horario}</p>
                       <div className="flex items-center gap-2 mt-1.5">
                         <span className={`text-xs font-bold border px-2 py-0.5 rounded-full ${hecho ? 'bg-emerald-100 text-emerald-700 border-emerald-200' : 'bg-[#F4F0E6] text-[#142C50] border-[#7D8A9A]/30'}`}>{hecho ? 'Visitado' : p.costoLabel}</span>
                       </div>
@@ -70,7 +70,7 @@ export default function RutaSugerida({ itinerario, setItinerario, setPantalla, h
           {(!itinerario || itinerario.paradas.length===0) && <p className="text-xs text-[#7D8A9A] bg-white border border-dashed border-[#7D8A9A]/30 rounded-xl p-4 text-center">Sin lugares. Genera otra ruta o ajusta tu presupuesto/tiempo.</p>}
         </div>
         {itinerario?.paradas?.length > 1 && (
-          <button onClick={()=> setItinerario({...itinerario, paradas: []})} className="mt-3 w-full text-xs font-bold text-red-500 hover:text-red-600">Vaciar itinerario</button>
+          <button onClick={handleVaciar} className="mt-3 w-full text-xs font-bold text-red-500 hover:text-red-600">Vaciar itinerario</button>
         )}
       </div>
       <div className="px-5 mt-6 flex gap-3">

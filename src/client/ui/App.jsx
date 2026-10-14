@@ -53,13 +53,6 @@ const rutasPopularesUI = [
 const imagenLastarriaReal = "https://commons.wikimedia.org/wiki/Special:FilePath/Jose%20Victorino%20Lastarria.jpg?width=800"
 const fallbackLastarria = "https://images.unsplash.com/photo-1519662978799-67fa9b6d5b3b?q=80&w=800&auto=format&fit=crop"
 
-// Lista adicional hardcodeada para agregar lugares propios (solo campos del esquema pois)
-const lugaresExtra = [
-  { id: "extra_mercado", nombre: "Mercado Central", categoria: "Gastronomía", costo: 8000, tiempoMin: 60, horario: "Lun-Dom 09:00-18:00", imagen: "https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?q=80&w=400&auto=format&fit=crop" },
-  { id: "extra_costanera", nombre: "Sky Costanera", categoria: "Parques", costo: 15000, tiempoMin: 60, horario: "Lun-Dom 10:00-22:00", imagen: "https://images.unsplash.com/photo-1480714378408-67cf0d13bc1b?q=80&w=400&auto=format&fit=crop" },
-  { id: "extra_sancristobal", nombre: "Cerro San Cristóbal", categoria: "Parques", costo: 0, tiempoMin: 90, horario: "Lun-Dom 09:00-19:00", imagen: "https://images.unsplash.com/photo-1506905925346-21bda4d32df4?q=80&w=400&auto=format&fit=crop" },
-]
-
 export default function App() {
   const [pantalla, setPantalla] = useState('HOME')
   const [filtroActivo, setFiltroActivo] = useState('Todos')
@@ -71,7 +64,6 @@ export default function App() {
   const [tituloEditando, setTituloEditando] = useState(false)
   const [tituloTemp, setTituloTemp] = useState('')
   const [guardadosTab, setGuardadosTab] = useState('rutas')
-  const [lugarExtraId, setLugarExtraId] = useState('')
 
   const { preferencias, setPreferencias, itinerario, setItinerario, generarRuta, guardarRuta, rutaGuardada, cargarPoi, loading, reordenarParadas } = useRouteStore()
 
@@ -130,29 +122,6 @@ export default function App() {
     setPantalla('GUARDADA')
   }
 
-  const handleAgregarLugarPropio = () => {
-    if (!lugarExtraId || !itinerario) return
-    const elegido = lugaresExtra.find(l => l.id === lugarExtraId)
-    if (!elegido) return
-    if (itinerario.paradas.some(p => p.id === elegido.id)) { setLugarExtraId(''); return }
-    const nuevaParada = {
-      ...elegido,
-      costoLabel: elegido.costo === 0 ? "$0 (Gratis)" : `$${elegido.costo.toLocaleString('es-CL')}`,
-      hora: "Horario libre",
-      orden: itinerario.paradas.length + 1,
-    }
-    const nuevas = [...itinerario.paradas, nuevaParada]
-    const costoTotal = nuevas.reduce((s, p) => s + (p.costo || 0), 0)
-    const tiempoTotal = nuevas.reduce((s, p) => s + (p.tiempoMin || 0), 0)
-    setItinerario({
-      ...itinerario,
-      paradas: nuevas,
-      costoTotal: `$${costoTotal.toLocaleString('es-CL')}`,
-      duracionTotal: `${Math.floor(tiempoTotal / 60)}h ${String(tiempoTotal % 60).padStart(2, '0')}m`,
-    })
-    setLugarExtraId('')
-  }
-
   const abrirFichaPoi = async (poi) => {
     setPoiFicha(poi)
     try { await cargarPoi(poi.id) } catch {}
@@ -177,7 +146,7 @@ export default function App() {
               <Preferencias setPantalla={setPantalla} preferencias={preferencias} setPreferencias={setPreferencias} toggleInteres={toggleInteres} errorForm={errorForm} handleGenerar={handleGenerar} loading={loading} />
             )}
             {pantalla==='RUTA' && (
-              <RutaSugerida itinerario={itinerario} setItinerario={setItinerario} setPantalla={setPantalla} handleGuardar={handleGuardar} tituloEditando={tituloEditando} setTituloEditando={setTituloEditando} tituloTemp={tituloTemp} setTituloTemp={setTituloTemp} visitados={visitados} toggleVisitado={toggleVisitado} reordenarParadas={reordenarParadas} handleEliminarParada={handleEliminarParada} abrirFichaPoi={abrirFichaPoi} lugarExtraId={lugarExtraId} setLugarExtraId={setLugarExtraId} handleAgregarLugarPropio={handleAgregarLugarPropio} lugaresExtra={lugaresExtra} />
+              <RutaSugerida itinerario={itinerario} setItinerario={setItinerario} setPantalla={setPantalla} handleGuardar={handleGuardar} tituloEditando={tituloEditando} setTituloEditando={setTituloEditando} tituloTemp={tituloTemp} setTituloTemp={setTituloTemp} visitados={visitados} toggleVisitado={toggleVisitado} reordenarParadas={reordenarParadas} handleEliminarParada={handleEliminarParada} abrirFichaPoi={abrirFichaPoi} />
             )}
             {(pantalla==='MISRUTAS' || pantalla==='GUARDADA') && (
               <Guardados setPantalla={setPantalla} guardadosTab={guardadosTab} setGuardadosTab={setGuardadosTab} rutaGuardada={rutaGuardada} visitados={visitados} toggleVisitado={toggleVisitado} reordenarParadas={reordenarParadas} abrirFichaPoi={abrirFichaPoi} />

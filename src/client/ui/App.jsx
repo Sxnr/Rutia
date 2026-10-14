@@ -138,7 +138,7 @@ export default function App() {
               <RutaSugerida itinerario={itinerario} setItinerario={setItinerario} setPantalla={setPantalla} handleGuardar={handleGuardar} tituloEditando={tituloEditando} setTituloEditando={setTituloEditando} tituloTemp={tituloTemp} setTituloTemp={setTituloTemp} visitados={visitados} toggleVisitado={toggleVisitado} reordenarParadas={reordenarParadas} handleEliminarParada={handleEliminarParada} abrirFichaPoi={abrirFichaPoi} handleVaciar={handleVaciar} />
             )}
             {(pantalla==='MISRUTAS' || pantalla==='GUARDADA') && (
-              <Guardados setPantalla={setPantalla} guardadosTab={guardadosTab} setGuardadosTab={setGuardadosTab} rutaGuardada={rutaGuardada} visitados={visitados} toggleVisitado={toggleVisitado} reordenarParadas={reordenarParadas} abrirFichaPoi={abrirFichaPoi} />
+              <Guardados setPantalla={setPantalla} guardadosTab={guardadosTab} setGuardadosTab={setGuardadosTab} rutaGuardada={rutaGuardada} visitados={visitados} toggleVisitado={toggleVisitado} reordenarParadas={reordenarParadas} abrirFichaPoi={abrirFichaPoi} lugares={lugares} />
             )}
             {pantalla==='POI' && poiFicha && (
               <DetalleLugar poiFicha={poiFicha} setPantalla={setPantalla} visitados={visitados} toggleVisitado={toggleVisitado} />

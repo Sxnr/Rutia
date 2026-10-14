@@ -1,12 +1,8 @@
 import { motion } from 'framer-motion'
 
-const lugaresVisitadosEjemplo = [
-  { id: "vis_bellas", nombre: "Museo Nacional de Bellas Artes", categoria: "Museos", costo: 0, tiempoMin: 60, horario: "Mar-Dom 10:00-18:30", imagen: "https://images.unsplash.com/photo-1540202404-a2f29016b523?q=80&w=400&auto=format&fit=crop" },
-  { id: "vis_plaza", nombre: "Plaza de Armas", categoria: "Histórico", costo: 0, tiempoMin: 30, horario: "Lun-Dom 06:00-22:00", imagen: "https://images.unsplash.com/photo-1587595431973-160d0d94add1?q=80&w=400&auto=format&fit=crop" },
-  { id: "vis_emporio", nombre: "Emporio La Rosa", categoria: "Gastronomía", costo: 4500, tiempoMin: 40, horario: "Lun-Dom 08:00-21:00", imagen: "https://images.unsplash.com/photo-1445116572660-236099ec97a0?q=80&w=400&auto=format&fit=crop" },
-]
-
-export default function Guardados({ setPantalla, guardadosTab, setGuardadosTab, rutaGuardada, visitados, toggleVisitado, reordenarParadas, abrirFichaPoi }) {
+export default function Guardados({ setPantalla, guardadosTab, setGuardadosTab, rutaGuardada, visitados, toggleVisitado, reordenarParadas, abrirFichaPoi, lugares }) {
+  // Lugares del store (capa de datos) marcados como visitados en esta sesión
+  const visitadosReales = (lugares || []).filter(l => visitados.has(l.id))
   return (
     <motion.div key="misrutas" initial={{ opacity: 0, x: 12 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: 12 }} className="pb-28">
       <div className="bg-white border-b border-[#7D8A9A]/30 px-5 pt-6 pb-4">
@@ -21,20 +17,28 @@ export default function Guardados({ setPantalla, guardadosTab, setGuardadosTab, 
       {guardadosTab === 'visitados' ? (
       <div className="px-5 mt-5">
         <h3 className="font-extrabold text-[#142C50] text-[15px]">Lugares visitados</h3>
-        <p className="text-xs text-[#7D8A9A] mt-1">Lugares que ya visitaste (ejemplo).</p>
-        <div className="mt-3 space-y-3">
-          {lugaresVisitadosEjemplo.map(l => (
-            <div key={l.id} className="bg-white border border-[#7D8A9A]/30 rounded-2xl p-3 flex gap-3 shadow-sm">
-              <img src={l.imagen} alt={l.nombre} className="w-16 h-16 rounded-xl object-cover border border-[#7D8A9A]/30" />
-              <div className="flex-1 min-w-0">
-                <p className="text-sm font-extrabold text-[#142C50] leading-tight truncate">{l.nombre}</p>
-                <p className="text-xs text-[#7D8A9A] mt-0.5">{l.categoria} • {l.horario}</p>
-                <p className="text-xs font-bold text-[#142C50] mt-1">{l.costo === 0 ? "Gratis" : `$${l.costo.toLocaleString('es-CL')}`} • {l.tiempoMin} min</p>
-              </div>
-              <span className="text-emerald-600 font-extrabold self-center">✓</span>
+        {visitadosReales.length === 0 ? (
+          <div className="mt-3 bg-white border border-dashed border-[#7D8A9A]/30 rounded-2xl p-6 text-center">
+            <p className="text-xs text-[#7D8A9A]">Aún no marcaste lugares como visitados.</p>
+          </div>
+        ) : (
+          <>
+            <p className="text-xs text-[#7D8A9A] mt-1">Lugares que marcaste como visitados.</p>
+            <div className="mt-3 space-y-3">
+              {visitadosReales.map(l => (
+                <div key={l.id} className="bg-white border border-[#7D8A9A]/30 rounded-2xl p-3 flex gap-3 shadow-sm">
+                  <img src={l.imagen} alt={l.nombre} className="w-16 h-16 rounded-xl object-cover border border-[#7D8A9A]/30" />
+                  <div className="flex-1 min-w-0">
+                    <p className="text-sm font-extrabold text-[#142C50] leading-tight truncate">{l.nombre}</p>
+                    <p className="text-xs text-[#7D8A9A] mt-0.5">{l.categoria} • {l.horario}</p>
+                    <p className="text-xs font-bold text-[#142C50] mt-1">{l.costo === 0 ? "Gratis" : `$${l.costo.toLocaleString('es-CL')}`} • {l.tiempoMin} min</p>
+                  </div>
+                  <span className="text-emerald-600 font-extrabold self-center">✓</span>
+                </div>
+              ))}
             </div>
-          ))}
-        </div>
+          </>
+        )}
       </div>
       ) : (
       <div className="px-5 mt-5">

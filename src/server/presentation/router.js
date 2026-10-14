@@ -1,4 +1,4 @@
-import { validarPreferencias } from '../schemas/routeSchema.js'
+import { validarPreferencias } from './routeSchema.js'
 import { motorDeFiltrado } from './controller.js'
 
 // Capa Servidor: Enrutador (Express) - sin Nginx/PM2, directo
@@ -26,7 +26,7 @@ export async function postRutaSugerir(body) {
 }
 
 export async function getPoiDetalle(id) {
-  const { poisRepository } = await import('./repository.js')
+  const { poisRepository } = await import('../data/repository.js')
   const poi = await poisRepository.findById(id)
   if (!poi) {
     const e = new Error("POI no encontrado")

@@ -1,5 +1,5 @@
 import axios from 'axios'
-import { postRutaSugerir, getPoiDetalle } from '../server/router.js'
+import { postRutaSugerir, getPoiDetalle } from '../../server/presentation/router.js'
 
 // Capa Cliente: Cliente HTTP (Axios) - directo a Router, sin Nginx/PM2
 // UI -> State -> HTTP == POST ==> Router (según Arq. Técnica sin Infra)

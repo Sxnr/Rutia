@@ -1,4 +1,4 @@
-import { sugerirRuta } from './routeService.js'
+import { sugerirRuta } from '../business/routeService.js'
 
 // controller.js — CAPA DE PRESENTACIÓN (delgado)
 // Traduce HTTP ↔ negocio. NO contiene reglas de la ruta.

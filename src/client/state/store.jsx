@@ -1,5 +1,5 @@
 import { createContext, useContext, useState } from 'react'
-import { api } from '../api/httpClient.js'
+import { api } from '../http/httpClient.js'
 
 // Capa Cliente: Gestor de Estado (State) + Interfaz P02
 // UI -> State -> HTTP (Axios) según Arq. Técnica

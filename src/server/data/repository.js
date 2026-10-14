@@ -1,4 +1,4 @@
-import { poisCollection } from '../data/poisCollection.js'
+import { poisCollection } from './db/poisCollection.js'
 
 // Capa Servidor: Repositorio de POIs (Abstracción de BD) + ODM (Mongoose simulado)
 // Repo -> ODM -> CollPOI

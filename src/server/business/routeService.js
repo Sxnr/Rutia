@@ -5,7 +5,7 @@
  *  - NO conoce MongoDB (pide datos al repositorio).
  * Adaptado al prototipo: campos reales son id, categoria, costo, tiempoMin, coords, imagen.
  */
-import { poisRepository } from './repository.js'
+import { poisRepository } from '../data/repository.js'
 
 const MINUTOS_TRASLADO_POR_KM = 15
 const MAX_PARADAS = 6

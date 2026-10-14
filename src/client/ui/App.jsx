@@ -1,9 +1,9 @@
 import { useState, useEffect } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
-import { useRouteStore } from './state/store.jsx'
-import { validarPreferencias } from './schemas/routeSchema.js'
-import { poisCollection } from './data/poisCollection.js'
-import rutiaIcon from './assets/rutia-icon.svg'
+import { useRouteStore } from '../state/store.jsx'
+import { validarPreferencias } from '../../server/presentation/routeSchema.js'
+import { poisCollection } from '../../server/data/db/poisCollection.js'
+import rutiaIcon from '../../assets/rutia-icon.svg'
 
 // Datos UI con fotos reales de Santiago
 const rutasPopularesUI = [

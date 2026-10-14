@@ -1,5 +1,6 @@
 import { createContext, useContext, useState, useEffect } from 'react'
 import { api } from '../http/httpClient.js'
+import { logPaso } from '../../shared/debug.js'
 
 // Capa Cliente: Gestor de Estado (State) + Interfaz P02
 // UI -> State -> HTTP según Arq. Técnica
@@ -29,10 +30,14 @@ export function RouteProvider({ children }) {
   // State -> HTTP -> Router
   async function generarRuta(nuevasPrefs) {
     const prefs = nuevasPrefs || preferencias
+    logPaso(2, 'Estado', 'Gestor de estado arma la petición con las preferencias', prefs)
     setLoading(true); setError(null)
     try {
       const data = await api.sugerirRuta(prefs)
       setItinerario(data)
+      logPaso(10, 'Estado → UI', 'Itinerario guardado en el estado; la interfaz lo renderiza', {
+        paradas: data?.paradas?.length, duracion: data?.duracionTotal, costo: data?.costoTotal,
+      })
       return data
     } catch (e) {
       setError(e.message || "Error al generar")
@@ -64,12 +69,16 @@ export function RouteProvider({ children }) {
     if (!elegir) return
     const patch = await recalcularDesde(nuevasParadas)
     aplicar({ ...elegir, ...patch })
+    logPaso(10, 'Estado → UI', 'Ruta recalculada y guardada en el estado', {
+      paradas: nuevasParadas.length, duracion: patch?.duracionTotal, costo: patch?.costoTotal,
+    })
   }
 
   async function reordenarParadas(origen, destino, enGuardada = false) {
     const elegir = enGuardada ? rutaGuardada : itinerario
     if (!elegir?.paradas) return
     if (destino < 0 || destino >= elegir.paradas.length) return
+    logPaso(1, 'Interfaz', 'Usuario reordena una parada', { origen, destino })
     const nuevas = [...elegir.paradas]
     const [movida] = nuevas.splice(origen, 1)
     nuevas.splice(destino, 0, movida)
@@ -79,6 +88,7 @@ export function RouteProvider({ children }) {
   async function eliminarParada(id, enGuardada = false) {
     const elegir = enGuardada ? rutaGuardada : itinerario
     if (!elegir?.paradas) return
+    logPaso(1, 'Interfaz', 'Usuario elimina una parada', { id })
     const nuevas = elegir.paradas.filter(p => p.id !== id)
     await aplicarParadas(nuevas, enGuardada)
   }
@@ -86,6 +96,7 @@ export function RouteProvider({ children }) {
   async function vaciarItinerario(enGuardada = false) {
     const elegir = enGuardada ? rutaGuardada : itinerario
     if (!elegir) return
+    logPaso(1, 'Interfaz', 'Usuario vacía el itinerario')
     await aplicarParadas([], enGuardada)
   }
 

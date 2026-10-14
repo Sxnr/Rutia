@@ -1,4 +1,5 @@
 import { postRutaSugerir, postRutaRecalcular, getPoiDetalle, getLugares } from '../../server/presentation/router.js'
+import { logPaso } from '../../shared/debug.js'
 
 // Capa Cliente: Cliente HTTP simulado (sin backend real ni Axios)
 // UI -> State -> HTTP == mock POST/GET ==> Router (según Arq. Técnica sin Infra)
@@ -27,13 +28,17 @@ async function mockGet(url) {
 export const api = {
   // 1. Petición POST al Router (sin Nginx)
   async sugerirRuta(preferencias) {
+    logPaso(3, 'Cliente HTTP', 'POST /api/v1/routes/generate', preferencias)
     const res = await mockPost("/api/v1/routes/generate", preferencias)
     // 7. Respuesta -> HTTP -> State -> UI
+    logPaso(9, 'Cliente HTTP', 'El servidor responde con la ruta armada', { status: res.status })
     return res.data
   },
   // Recalcula duración y costo de una ruta ya armada (capa de negocio)
   async recalcularRuta(ids) {
+    logPaso(3, 'Cliente HTTP', 'POST /api/v1/routes/recalculate', { paradas: ids })
     const res = await mockPost("/api/v1/routes/recalculate", { paradas: ids.map(id => ({ id })) })
+    logPaso(9, 'Cliente HTTP', 'El servidor responde con el recálculo', { status: res.status })
     return res.data
   },
   async listarLugares() {

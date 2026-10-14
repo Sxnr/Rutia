@@ -1,13 +1,16 @@
 import { validarPreferencias, validarParadas } from './routeSchema.js'
 import { motorDeFiltrado, recalcularItinerarioController } from './controller.js'
 import { listarLugares } from '../business/routeService.js'
+import { logPaso } from '../../shared/debug.js'
 
 // Capa Servidor: Enrutador (Express) - sin Nginx/PM2, directo
 // Flujo: HTTP POST /api/rutas/sugerir => Router -> Validator -> Controller
 export async function postRutaSugerir(body) {
+  logPaso(4, 'Router', 'El servidor recibe la petición POST /routes/generate')
   // 1. Router recibe
   // 2. Validator (Zod)
   const parsed = validarPreferencias(body)
+  logPaso(5, 'Validator', 'Zod valida el payload', { ok: parsed.success })
   if (!parsed.success) {
     const err = new Error(parsed.error.issues?.[0]?.message || "Revisa el formulario")
     err.status = 400
@@ -39,7 +42,9 @@ export async function getPoiDetalle(id) {
 
 // Recálculo de ruta ya armada: Router -> Validator -> Controller(negocio->datos)
 export async function postRutaRecalcular(body) {
+  logPaso(4, 'Router', 'El servidor recibe la petición POST /routes/recalculate')
   const parsed = validarParadas(body)
+  logPaso(5, 'Validator', 'Zod valida las paradas', { ok: parsed.success })
   if (!parsed.success) {
     const err = new Error("Validación fallida")
     err.status = 400

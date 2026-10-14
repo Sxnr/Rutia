@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { useRouteStore } from '../state/store.jsx'
+import { logPaso } from '../../shared/debug.js'
 import { IconExplorar, IconCrearRuta, IconBookmark } from './icons.jsx'
 
 import Explorar from './Explorar.jsx'
@@ -96,6 +97,7 @@ export default function App() {
   }
 
   const handleGenerar = async () => {
+    logPaso(1, 'Interfaz', 'Usuario pulsa "Generar ruta"', preferencias)
     // La validación vive en la capa de presentación; la UI solo llama al cliente HTTP
     try {
       await generarRuta(preferencias)

@@ -6,6 +6,7 @@
  * Adaptado al prototipo: campos reales son id, categoria, costo, tiempoMin, coords, imagen.
  */
 import { poisRepository } from '../data/repository.js'
+import { logPaso } from '../../shared/debug.js'
 
 const MINUTOS_TRASLADO_POR_KM = 15
 const MAX_PARADAS = 6
@@ -41,8 +42,10 @@ function coincidencias(poi, intereses) {
  * @returns {Promise<{ duracionTotalMin: number, costoTotalClp: number, paradas: object[], mensaje?: string }>}
  */
 export async function sugerirRuta({ tiempo, presupuesto, intereses }) {
+  logPaso(7, 'Negocio', 'Motor de filtrado aplica reglas (tiempo, presupuesto, intereses)', { tiempo, presupuesto, intereses })
   const minutosDisponibles = Math.round(tiempo * 60)
 
+  logPaso(8, 'Datos', 'Repositorio consulta la colección de lugares')
   const candidatos = await poisRepository.buscarCandidatos({
     intereses,
     presupuesto,
@@ -117,6 +120,8 @@ export async function sugerirRuta({ tiempo, presupuesto, intereses }) {
  * @returns {Promise<{ duracionTotalMin: number, costoTotalClp: number, paradas: object[] }>}
  */
 export async function recalcularItinerario({ paradas }) {
+  logPaso(7, 'Negocio', 'Recalcula duración y costo respetando el orden de paradas')
+  logPaso(8, 'Datos', 'Repositorio reconsulta cada lugar por id')
   const pois = []
   for (const p of paradas) {
     const id = typeof p === 'string' ? p : (p.id || p.poiId)

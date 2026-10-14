@@ -1,8 +1,8 @@
-import { createContext, useContext, useState } from 'react'
+import { createContext, useContext, useState, useEffect } from 'react'
 import { api } from '../http/httpClient.js'
 
 // Capa Cliente: Gestor de Estado (State) + Interfaz P02
-// UI -> State -> HTTP (Axios) según Arq. Técnica
+// UI -> State -> HTTP según Arq. Técnica
 const RouteCtx = createContext(null)
 
 export function RouteProvider({ children }) {
@@ -12,8 +12,21 @@ export function RouteProvider({ children }) {
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState(null)
   const [poiDetalle, setPoiDetalle] = useState(null)
+  const [lugares, setLugares] = useState([])
 
-  // State -> HTTP (Axios) -> Router
+  // Carga el catálogo de lugares al montar (vía cliente HTTP -> negocio -> datos)
+  useEffect(() => {
+    cargarLugares()
+  }, [])
+
+  async function cargarLugares() {
+    try {
+      const data = await api.listarLugares()
+      setLugares(data)
+    } catch { /* silencioso: la home muestra lista vacía */ }
+  }
+
+  // State -> HTTP -> Router
   async function generarRuta(nuevasPrefs) {
     const prefs = nuevasPrefs || preferencias
     setLoading(true); setError(null)
@@ -83,6 +96,7 @@ export function RouteProvider({ children }) {
       rutaGuardada, setRutaGuardada, guardarRuta,
       reordenarParadas, eliminarParada, vaciarItinerario,
       poiDetalle, cargarPoi,
+      lugares, cargarLugares,
       loading, error, generarRuta
     }}>
       {children}

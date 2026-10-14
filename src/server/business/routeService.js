@@ -149,4 +149,9 @@ export async function recalcularItinerario({ paradas }) {
   return { duracionTotalMin: minutosTotales, costoTotalClp: costoTotal, paradas: paradasOut }
 }
 
+// Listado simple de lugares (la capa de negocio consulta a la de datos)
+export async function listarLugares() {
+  return poisRepository.findAll()
+}
+
 export { distanciaKm }

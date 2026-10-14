@@ -1,5 +1,6 @@
 import { validarPreferencias, validarParadas } from './routeSchema.js'
 import { motorDeFiltrado, recalcularItinerarioController } from './controller.js'
+import { listarLugares } from '../business/routeService.js'
 
 // Capa Servidor: Enrutador (Express) - sin Nginx/PM2, directo
 // Flujo: HTTP POST /api/rutas/sugerir => Router -> Validator -> Controller
@@ -8,7 +9,7 @@ export async function postRutaSugerir(body) {
   // 2. Validator (Zod)
   const parsed = validarPreferencias(body)
   if (!parsed.success) {
-    const err = new Error("Validación fallida")
+    const err = new Error(parsed.error.issues?.[0]?.message || "Revisa el formulario")
     err.status = 400
     err.details = parsed.error.flatten()
     throw err
@@ -47,4 +48,10 @@ export async function postRutaRecalcular(body) {
   }
   const itinerario = await recalcularItinerarioController(parsed.data)
   return { status: 200, data: itinerario }
+}
+
+// Listado de lugares: Router -> negocio -> datos
+export async function getLugares() {
+  const lugares = await listarLugares()
+  return { status: 200, data: lugares }
 }

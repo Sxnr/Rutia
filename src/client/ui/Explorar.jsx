@@ -1,11 +1,10 @@
 import { motion } from 'framer-motion'
 import rutiaIcon from '../../assets/rutia-icon.svg'
-import { poisCollection } from '../../server/data/db/poisCollection.js'
 import { IconSearch, IconCrearRuta } from './icons.jsx'
 
 const filtrosRapidos = ['Todos', 'Museos', 'Gastronomía', 'Parques']
 
-export default function Explorar({ perfil, idioma, setIdioma, filtroActivo, setFiltroActivo, setPantalla }) {
+export default function Explorar({ perfil, idioma, setIdioma, filtroActivo, setFiltroActivo, setPantalla, lugares }) {
   return (
     <motion.div key="HOME" initial={{ opacity: 0, x: -12 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -12 }} transition={{ duration: 0.25 }} className="pb-28">
       <div className="px-5 pt-6 pb-2 flex items-center justify-between bg-white border-b border-[#7D8A9A]/30">
@@ -45,7 +44,7 @@ export default function Explorar({ perfil, idioma, setIdioma, filtroActivo, setF
         </div>
         <p className="text-xs text-[#7D8A9A] mt-1 font-medium">Desliza para ver más lugares</p>
         <div className="mt-3 flex gap-3 overflow-x-auto no-scrollbar pb-2 -mx-5 px-5">
-          {poisCollection.slice(0, 6).map(lugar => (
+          {(lugares || []).slice(0, 6).map(lugar => (
             <div key={lugar.id} className="flex-shrink-0 w-40 rounded-[18px] overflow-hidden border border-[#7D8A9A]/30 bg-white shadow-sm">
               <img src={lugar.imagen} alt={lugar.nombre} className="h-24 w-full object-cover" />
               <div className="p-3">

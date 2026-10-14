@@ -1,31 +1,22 @@
-import axios from 'axios'
-import { postRutaSugerir, postRutaRecalcular, getPoiDetalle } from '../../server/presentation/router.js'
+import { postRutaSugerir, postRutaRecalcular, getPoiDetalle, getLugares } from '../../server/presentation/router.js'
 
-// Capa Cliente: Cliente HTTP (Axios) - directo a Router, sin Nginx/PM2
-// UI -> State -> HTTP == POST ==> Router (según Arq. Técnica sin Infra)
+// Capa Cliente: Cliente HTTP simulado (sin backend real ni Axios)
+// UI -> State -> HTTP == mock POST/GET ==> Router (según Arq. Técnica sin Infra)
 
-const http = axios.create({
-  baseURL: "/api",
-  timeout: 4000,
-})
+// Latencia simulada de red
+const LATENCIA_MS = 90
+const espera = (ms = LATENCIA_MS) => new Promise(r => setTimeout(r, ms))
 
-// Interceptor simula red local sin Nginx
-http.interceptors.request.use(cfg => {
-  // console.debug("[HTTP] POST", cfg.url)
-  return cfg
-})
-
-// Mock adapter: intercepta POST /api/v1/routes/generate (convención arquitectura) y rutea al Router simulado
+// Mock adapter: rutea cada URL al Router simulado de la capa de presentación
 async function mockPost(url, data) {
-  if (url.includes("/api/v1/routes/generate") || url.includes("/rutas/sugerir")) {
-    return postRutaSugerir(data)
-  }
-  if (url.includes("/api/v1/routes/recalculate")) {
-    return postRutaRecalcular(data)
-  }
+  await espera()
+  if (url.includes("/api/v1/routes/generate")) return postRutaSugerir(data)
+  if (url.includes("/api/v1/routes/recalculate")) return postRutaRecalcular(data)
   throw new Error("Ruta no mockeada: " + url)
 }
 async function mockGet(url) {
+  await espera()
+  if (url.includes("/api/v1/places")) return getLugares()
   if (url.includes("/pois/")) {
     const id = url.split("/").pop()
     return getPoiDetalle(id)
@@ -34,7 +25,7 @@ async function mockGet(url) {
 }
 
 export const api = {
-  // 1. Petición POST directa a Router (sin Nginx)
+  // 1. Petición POST al Router (sin Nginx)
   async sugerirRuta(preferencias) {
     const res = await mockPost("/api/v1/routes/generate", preferencias)
     // 7. Respuesta -> HTTP -> State -> UI
@@ -45,9 +36,12 @@ export const api = {
     const res = await mockPost("/api/v1/routes/recalculate", { paradas: ids.map(id => ({ id })) })
     return res.data
   },
+  async listarLugares() {
+    const res = await mockGet("/api/v1/places")
+    return res.data
+  },
   async getPoi(id) {
     const res = await mockGet(`/pois/${id}`)
     return res.data
   },
-  http,
 }

@@ -1,7 +1,6 @@
 import { useState, useEffect } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { useRouteStore } from '../state/store.jsx'
-import { validarPreferencias } from '../../server/presentation/routeSchema.js'
 import { IconExplorar, IconCrearRuta, IconBookmark } from './icons.jsx'
 
 import Explorar from './Explorar.jsx'
@@ -65,7 +64,7 @@ export default function App() {
   const [tituloTemp, setTituloTemp] = useState('')
   const [guardadosTab, setGuardadosTab] = useState('rutas')
 
-  const { preferencias, setPreferencias, itinerario, setItinerario, generarRuta, guardarRuta, rutaGuardada, cargarPoi, loading, reordenarParadas, eliminarParada, vaciarItinerario } = useRouteStore()
+  const { preferencias, setPreferencias, itinerario, setItinerario, generarRuta, guardarRuta, rutaGuardada, cargarPoi, loading, reordenarParadas, eliminarParada, vaciarItinerario, lugares } = useRouteStore()
 
   useEffect(() => {
     if (itinerario) setVisitados(new Set())
@@ -97,13 +96,10 @@ export default function App() {
   }
 
   const handleGenerar = async () => {
-    const res = validarPreferencias(preferencias)
-    if (!res.success) {
-      setErrorForm(res.error.issues[0]?.message || "Revisa formulario")
-      return
-    }
+    // La validación vive en la capa de presentación; la UI solo llama al cliente HTTP
     try {
       await generarRuta(preferencias)
+      setErrorForm(null)
       setPantalla('RUTA')
     } catch (e) {
       setErrorForm(e.message)
@@ -127,7 +123,7 @@ export default function App() {
         <div className="flex-1 overflow-y-auto no-scrollbar relative bg-[#F4F0E6]">
           <AnimatePresence mode="wait">
             {pantalla === 'HOME' && (
-              <Explorar perfil={perfil} idioma={idioma} setIdioma={setIdioma} filtroActivo={filtroActivo} setFiltroActivo={setFiltroActivo} setPantalla={setPantalla} />
+              <Explorar perfil={perfil} idioma={idioma} setIdioma={setIdioma} filtroActivo={filtroActivo} setFiltroActivo={setFiltroActivo} setPantalla={setPantalla} lugares={lugares} />
             )}
             {pantalla==='PERFIL' && (
               <Perfil setPantalla={setPantalla} perfil={perfil} />

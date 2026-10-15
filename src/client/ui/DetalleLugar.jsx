@@ -33,6 +33,9 @@ export default function DetalleLugar({ poiFicha, setPantalla, visitados, toggleV
           <h1 className="text-lg font-extrabold text-white mt-2 leading-tight">{poiFicha.nombre}</h1>
         </div>
       </div>
+      {poiFicha.credito && (
+        <p className="px-5 pt-1.5 text-right text-[10px] leading-tight text-[#7D8A9A]">{poiFicha.credito}</p>
+      )}
       <div className="px-5 mt-5 space-y-4">
         {/* Datos amigables reales */}
         <div className="bg-white border border-[#7D8A9A]/30 rounded-2xl p-4 shadow-sm">

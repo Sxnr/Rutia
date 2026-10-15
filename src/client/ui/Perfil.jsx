@@ -16,7 +16,11 @@ export default function Perfil({ setPantalla, perfil }) {
       <div className="px-5 mt-5">
         <div className="bg-white border border-[#7D8A9A]/30 rounded-2xl p-5 shadow-sm">
           <div className="flex items-center gap-3">
-            <img src="https://i.pravatar.cc/100?img=12" className="w-14 h-14 rounded-full border-2 border-[#7D8A9A]/30" alt="avatar"/>
+            <span className="w-14 h-14 rounded-full border-2 border-[#7D8A9A]/30 bg-[#F4F0E6] grid place-items-center" role="img" aria-label="Avatar genérico">
+              <svg viewBox="0 0 24 24" className="w-7 h-7 text-[#7D8A9A]" fill="currentColor" aria-hidden="true">
+                <path d="M12 12a5 5 0 1 0 0-10 5 5 0 0 0 0 10Zm0 2c-4.42 0-8 2.69-8 6v2h16v-2c0-3.31-3.58-6-8-6Z"/>
+              </svg>
+            </span>
             <div><p className="font-extrabold text-[#142C50]">{perfil.nombre}</p></div>
           </div>
           <button onClick={() => setPantalla('DATOS')} className="mt-4 w-full bg-[#142C50] text-white font-extrabold py-3 rounded-full text-sm flex items-center justify-center gap-2"><span>⚙</span> Editar mis datos</button>

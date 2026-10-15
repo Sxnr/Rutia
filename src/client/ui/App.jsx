@@ -13,46 +13,6 @@ import Perfil from './Perfil.jsx'
 import EditarDatos from './EditarDatos.jsx'
 import Ayuda from './Ayuda.jsx'
 
-// Datos UI (huérfanos, pendientes de limpieza en Fase 2+)
-const rutasPopularesUI = [
-  {
-    id: "r_santiago_historico",
-    titulo: "Santiago Histórico",
-    duracion: "3h 45m",
-    rating: 4.8,
-    reviews: 342,
-    precio: "$4.500",
-    imagen: "https://commons.wikimedia.org/wiki/Special:FilePath/Plaza_de_Armas_Santiago_Chile.jpg?width=800",
-    fallback: "https://images.unsplash.com/photo-1587595431973-160d0d94add1?q=80&w=800&auto=format&fit=crop",
-    lugares: ["Plaza de Armas", "Palacio La Moneda", "Catedral Metropolitana"],
-  },
-  {
-    id: "r_bellavista",
-    titulo: "Bohemio Bellavista",
-    duracion: "2h 30m",
-    rating: 4.9,
-    reviews: 189,
-    precio: "$12.000",
-    imagen: "https://commons.wikimedia.org/wiki/Special:FilePath/La_Chascona.jpg?width=800",
-    fallback: "https://images.unsplash.com/photo-1506905925346-21bda4d32df4?q=80&w=800&auto=format&fit=crop",
-    lugares: ["La Chascona", "Patio Bellavista", "Cerro San Cristóbal"],
-  },
-  {
-    id: "r_parques",
-    titulo: "Parques & Arte",
-    duracion: "4h 10m",
-    rating: 4.7,
-    reviews: 210,
-    precio: "$7.000",
-    imagen: "https://images.unsplash.com/photo-1540202404-a2f29016b523?q=80&w=800&auto=format&fit=crop",
-    fallback: "https://images.unsplash.com/photo-1555993539-1732b0258235?q=80&w=800&auto=format&fit=crop",
-    lugares: ["Parque Forestal", "Bellas Artes", "GAM"],
-  },
-]
-
-const imagenLastarriaReal = "https://commons.wikimedia.org/wiki/Special:FilePath/Jose%20Victorino%20Lastarria.jpg?width=800"
-const fallbackLastarria = "https://images.unsplash.com/photo-1519662978799-67fa9b6d5b3b?q=80&w=800&auto=format&fit=crop"
-
 export default function App() {
   const [pantalla, setPantalla] = useState('HOME')
   const [filtroActivo, setFiltroActivo] = useState('Todos')

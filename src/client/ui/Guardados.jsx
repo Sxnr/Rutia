@@ -1,8 +1,10 @@
 import { motion } from 'framer-motion'
+import rutiaIcon from '../../assets/rutia-icon.svg'
 
 export default function Guardados({ setPantalla, guardadosTab, setGuardadosTab, rutaGuardada, visitados, toggleVisitado, reordenarParadas, abrirFichaPoi, lugares }) {
   // Lugares del store (capa de datos) marcados como visitados en esta sesión
   const visitadosReales = (lugares || []).filter(l => visitados.has(l.id))
+  const cabeceraGuardada = rutaGuardada?.paradas?.[0]?.imagen
   return (
     <motion.div key="misrutas" initial={{ opacity: 0, x: 12 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: 12 }} className="pb-28">
       <div className="bg-white border-b border-[#7D8A9A]/30 px-5 pt-6 pb-4">
@@ -52,7 +54,13 @@ export default function Guardados({ setPantalla, guardadosTab, setGuardadosTab, 
         ) : (
           <div className="space-y-4">
             <div className="bg-white border border-[#7D8A9A]/30 rounded-2xl overflow-hidden shadow-sm">
-              <img src={rutaGuardada.paradas?.[0]?.imagen} alt={rutaGuardada.titulo} className="h-32 w-full object-cover" />
+              {cabeceraGuardada ? (
+                <img src={cabeceraGuardada} alt={rutaGuardada.titulo} className="h-32 w-full object-cover" />
+              ) : (
+                <div className="h-32 w-full bg-[#142C50] grid place-items-center">
+                  <img src={rutiaIcon} alt="" className="w-10 h-10 rounded-xl opacity-90" />
+                </div>
+              )}
               <div className="p-4">
                 <h3 className="font-extrabold text-[#142C50]">{rutaGuardada.titulo}</h3>
                 <p className="text-xs text-[#7D8A9A] mt-1">{rutaGuardada.duracionTotal} • {rutaGuardada.costoTotal}</p>

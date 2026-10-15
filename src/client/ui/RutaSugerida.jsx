@@ -1,11 +1,19 @@
 import { motion } from 'framer-motion'
 import { IconTrash } from './icons.jsx'
+import rutiaIcon from '../../assets/rutia-icon.svg'
 
 export default function RutaSugerida({ itinerario, setItinerario, setPantalla, handleGuardar, tituloEditando, setTituloEditando, tituloTemp, setTituloTemp, visitados, toggleVisitado, reordenarParadas, handleEliminarParada, abrirFichaPoi, handleVaciar }) {
+  const cabecera = itinerario?.paradas?.[0]?.imagen
   return (
     <motion.div key="ruta" initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: 12 }} className="pb-36 bg-[#F4F0E6]">
       <div className="relative h-[264px] w-full overflow-hidden">
-        <img src={itinerario?.paradas?.[0]?.imagen || "https://commons.wikimedia.org/wiki/Special:FilePath/Museo%20Nacional%20de%20Bellas%20Artes%20Santiago.jpg?width=1200"} alt="Ruta" className="w-full h-full object-cover" />
+        {cabecera ? (
+          <img src={cabecera} alt="Ruta" className="w-full h-full object-cover" />
+        ) : (
+          <div className="w-full h-full bg-[#142C50] grid place-items-center">
+            <img src={rutiaIcon} alt="" className="w-14 h-14 rounded-2xl opacity-90" />
+          </div>
+        )}
         <div className="absolute inset-0 bg-gradient-to-t from-[#142C50]/85 via-[#142C50]/35 to-[#142C50]/10" />
         <div className="absolute top-0 left-0 right-0 flex items-center justify-between px-4 pt-4">
           <button onClick={()=> setPantalla('HOME')} className="bg-white px-4 py-2 rounded-full text-[13px] font-extrabold shadow-md text-[#142C50] flex items-center gap-1.5 border border-white leading-none"><span className="text-[16px]">‹</span> Rutia</button>
@@ -46,7 +54,7 @@ export default function RutaSugerida({ itinerario, setItinerario, setPantalla, h
                 </div>
                 <div className={`flex-1 border rounded-2xl p-3 flex gap-3 shadow-sm text-left transition relative ${hecho ? 'bg-emerald-50 border-emerald-200' : 'bg-white border-[#7D8A9A]/30 hover:border-[#142C50]'}`}>
                   <button onClick={()=> abrirFichaPoi(p)} className="flex gap-3 flex-1 text-left min-w-0">
-                    <img src={p.imagen} alt={p.nombre} onError={(e)=>{ if(p.fallback && e.currentTarget.src!==p.fallback) e.currentTarget.src=p.fallback }} className={`w-16 h-16 rounded-xl object-cover border flex-shrink-0 ${hecho ? 'border-emerald-200 opacity-70' : 'border-[#7D8A9A]/30'}`} />
+                    <img src={p.imagen} alt={p.nombre} className={`w-16 h-16 rounded-xl object-cover border flex-shrink-0 ${hecho ? 'border-emerald-200 opacity-70' : 'border-[#7D8A9A]/30'}`} />
                     <div className="flex-1 min-w-0">
                       <p className={`text-sm font-extrabold leading-tight truncate ${hecho ? 'text-emerald-700 line-through' : 'text-[#142C50]'}`}>{p.nombre}</p>
                       <p className="text-xs text-[#7D8A9A] mt-0.5 font-medium">{p.horario}</p>

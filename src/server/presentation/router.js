@@ -9,11 +9,12 @@ export async function postRutaSugerir(body) {
   // 1. Router recibe
   // 2. Validator (Zod)
   const parsed = validarPreferencias(body)
-  logPaso(3, 'Capa de presentación', 'Recibe la solicitud y verifica tiempo, presupuesto e intereses', {
+  const subtextoPaso3 = {
     router: 'POST /api/v1/routes/generate',
     validator: parsed.success ? 'OK' : 'inválido',
-    detalle: parsed.success ? undefined : parsed.error.issues?.[0]?.message,
-  })
+  }
+  if (!parsed.success) subtextoPaso3.detalle = parsed.error.issues?.[0]?.message
+  logPaso(3, 'Capa de presentación', 'Recibe la solicitud y verifica tiempo, presupuesto e intereses', subtextoPaso3)
   if (!parsed.success) {
     const err = new Error(parsed.error.issues?.[0]?.message || "Revisa el formulario")
     err.status = 400
@@ -27,7 +28,7 @@ export async function postRutaSugerir(body) {
   // 4. Repo -> ODM ya dentro del controller
   // 5. Router arma HTTP 200 JSON (sin Nginx)
   logPaso(9, 'Capa de presentación', 'Escribe la ruta en formato JSON y envía la respuesta a la aplicación', {
-    controller: 'motorDeFiltrado', http: 200,
+    http: 200, proceso: 'armado del itinerario',
   })
   return {
     status: 200,

@@ -17,7 +17,8 @@ db.pois.insertMany([
     tiempoMin: 60,
     horario: "Mar-Dom 10:00-18:30",
     coords: [-33.4353, -70.6438],
-    imagen: "https://commons.wikimedia.org/wiki/Special:FilePath/Museo%20Nacional%20de%20Bellas%20Artes%20Santiago.jpg?width=400",
+    imagen: "src/assets/places/bellas-arte.jpg",
+    credito: "Foto: Pequeño mar, CC BY-SA 4.0",
     meta: { tipo: "museo", gratuito: true, sala: "Neoclásico" }
   },
   {
@@ -28,7 +29,8 @@ db.pois.insertMany([
     tiempoMin: 40,
     horario: "Lun-Dom 08:00-21:00",
     coords: [-33.433, -70.64],
-    imagen: "https://images.unsplash.com/photo-1445116572660-236099ec97a0?q=80&w=400",
+    imagen: "src/assets/places/emporio.jpg",
+    credito: "Foto: Carlos yo, CC BY-SA 4.0",
     meta: { tipo: "cafe", especialidad: "Helado artesanal" }
   },
   {
@@ -39,7 +41,8 @@ db.pois.insertMany([
     tiempoMin: 45,
     horario: "Lun-Dom 09:00-19:00",
     coords: [-33.44, -70.643],
-    imagen: "https://commons.wikimedia.org/wiki/Special:FilePath/Cerro%20Santa%20Lucia%20Santiago.jpg?width=400",
+    imagen: "src/assets/places/santa-lucia.jpg",
+    credito: "Foto: Rjcastillo, CC BY-SA 4.0",
     meta: { tipo: "parque", altura: "629m", senderos: true }
   },
   {
@@ -50,7 +53,8 @@ db.pois.insertMany([
     tiempoMin: 30,
     horario: "Lun-Dom 06:00-22:00",
     coords: [-33.438, -70.65],
-    imagen: "https://commons.wikimedia.org/wiki/Special:FilePath/Plaza_de_Armas_Santiago_Chile.jpg?width=400",
+    imagen: "src/assets/places/plaza-armas.jpg",
+    credito: "Foto: WeHaKa, CC BY-SA 4.0",
     meta: { tipo: "plaza", fundacion: "1541" }
   },
   {
@@ -61,7 +65,8 @@ db.pois.insertMany([
     tiempoMin: 50,
     horario: "Mar-Dom 10:00-18:00",
     coords: [-33.427, -70.634],
-    imagen: "https://commons.wikimedia.org/wiki/Special:FilePath/La_Chascona.jpg?width=400",
+    imagen: "src/assets/places/chascona.jpg",
+    credito: "Foto: David Berkowitz, CC BY 2.0",
     meta: { tipo: "casa-museo", poeta: "Neruda" }
   }
 ]);

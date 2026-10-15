@@ -57,7 +57,7 @@ export default function App() {
   }
 
   const handleGenerar = async () => {
-    logPaso(1, 'Interfaz', 'Usuario pulsa "Generar ruta"', preferencias)
+    logPaso(1, 'Cliente: interfaz', 'Recibe las preferencias y las entrega al cliente HTTP', preferencias)
     // La validación vive en la capa de presentación; la UI solo llama al cliente HTTP
     try {
       await generarRuta(preferencias)

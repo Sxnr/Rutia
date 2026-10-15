@@ -6,11 +6,14 @@ import { logPaso } from '../../shared/debug.js'
 // Capa Servidor: Enrutador (Express) - sin Nginx/PM2, directo
 // Flujo: HTTP POST /api/rutas/sugerir => Router -> Validator -> Controller
 export async function postRutaSugerir(body) {
-  logPaso(4, 'Router', 'El servidor recibe la petición POST /routes/generate')
   // 1. Router recibe
   // 2. Validator (Zod)
   const parsed = validarPreferencias(body)
-  logPaso(5, 'Validator', 'Zod valida el payload', { ok: parsed.success })
+  logPaso(3, 'Capa de presentación', 'Recibe la solicitud y verifica tiempo, presupuesto e intereses', {
+    router: 'POST /api/v1/routes/generate',
+    validator: parsed.success ? 'OK' : 'inválido',
+    detalle: parsed.success ? undefined : parsed.error.issues?.[0]?.message,
+  })
   if (!parsed.success) {
     const err = new Error(parsed.error.issues?.[0]?.message || "Revisa el formulario")
     err.status = 400
@@ -23,6 +26,9 @@ export async function postRutaSugerir(body) {
 
   // 4. Repo -> ODM ya dentro del controller
   // 5. Router arma HTTP 200 JSON (sin Nginx)
+  logPaso(9, 'Capa de presentación', 'Escribe la ruta en formato JSON y envía la respuesta a la aplicación', {
+    controller: 'motorDeFiltrado', http: 200,
+  })
   return {
     status: 200,
     data: itinerario
@@ -42,9 +48,7 @@ export async function getPoiDetalle(id) {
 
 // Recálculo de ruta ya armada: Router -> Validator -> Controller(negocio->datos)
 export async function postRutaRecalcular(body) {
-  logPaso(4, 'Router', 'El servidor recibe la petición POST /routes/recalculate')
   const parsed = validarParadas(body)
-  logPaso(5, 'Validator', 'Zod valida las paradas', { ok: parsed.success })
   if (!parsed.success) {
     const err = new Error("Validación fallida")
     err.status = 400

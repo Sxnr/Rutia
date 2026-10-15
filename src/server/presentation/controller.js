@@ -1,5 +1,4 @@
 import { sugerirRuta, recalcularItinerario } from '../business/routeService.js'
-import { logPaso } from '../../shared/debug.js'
 
 // controller.js — CAPA DE PRESENTACIÓN (delgado)
 // Traduce HTTP ↔ negocio. NO contiene reglas de la ruta.
@@ -32,7 +31,6 @@ function mapearParadas(paradasServicio) {
 }
 
 export async function motorDeFiltrado({ tiempo, presupuesto, intereses }) {
-  logPaso(6, 'Controller', 'Presentación traduce la petición HTTP a llamada de negocio')
   // Delega toda la lógica a la capa de negocio
   const { duracionTotalMin, costoTotalClp, paradas: paradasServicio, mensaje } = await sugerirRuta({ tiempo, presupuesto, intereses })
 
@@ -63,7 +61,6 @@ export async function motorDeFiltrado({ tiempo, presupuesto, intereses }) {
 // Recálculo de una ruta ya armada (eliminar / reordenar / vaciar paradas).
 // La capa de negocio recalcula duración y costo con datos de la capa de datos.
 export async function recalcularItinerarioController({ paradas }) {
-  logPaso(6, 'Controller', 'Presentación traduce el recálculo a llamada de negocio')
   const { duracionTotalMin, costoTotalClp, paradas: paradasServicio } = await recalcularItinerario({ paradas })
   const paradasMapeadas = mapearParadas(paradasServicio)
 

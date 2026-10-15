@@ -27,15 +27,14 @@ export function RouteProvider({ children }) {
     } catch { /* silencioso: la home muestra lista vacía */ }
   }
 
-  // State -> HTTP -> Router
+  // Cliente HTTP -> interfaz (paso 10 del flujo)
   async function generarRuta(nuevasPrefs) {
     const prefs = nuevasPrefs || preferencias
-    logPaso(2, 'Estado', 'Gestor de estado arma la petición con las preferencias', prefs)
     setLoading(true); setError(null)
     try {
       const data = await api.sugerirRuta(prefs)
       setItinerario(data)
-      logPaso(10, 'Estado → UI', 'Itinerario guardado en el estado; la interfaz lo renderiza', {
+      logPaso(10, 'Cliente: interfaz', 'Muestra las paradas en orden, la duración aproximada y el costo total', {
         paradas: data?.paradas?.length, duracion: data?.duracionTotal, costo: data?.costoTotal,
       })
       return data
@@ -69,16 +68,12 @@ export function RouteProvider({ children }) {
     if (!elegir) return
     const patch = await recalcularDesde(nuevasParadas)
     aplicar({ ...elegir, ...patch })
-    logPaso(10, 'Estado → UI', 'Ruta recalculada y guardada en el estado', {
-      paradas: nuevasParadas.length, duracion: patch?.duracionTotal, costo: patch?.costoTotal,
-    })
   }
 
   async function reordenarParadas(origen, destino, enGuardada = false) {
     const elegir = enGuardada ? rutaGuardada : itinerario
     if (!elegir?.paradas) return
     if (destino < 0 || destino >= elegir.paradas.length) return
-    logPaso(1, 'Interfaz', 'Usuario reordena una parada', { origen, destino })
     const nuevas = [...elegir.paradas]
     const [movida] = nuevas.splice(origen, 1)
     nuevas.splice(destino, 0, movida)
@@ -88,7 +83,6 @@ export function RouteProvider({ children }) {
   async function eliminarParada(id, enGuardada = false) {
     const elegir = enGuardada ? rutaGuardada : itinerario
     if (!elegir?.paradas) return
-    logPaso(1, 'Interfaz', 'Usuario elimina una parada', { id })
     const nuevas = elegir.paradas.filter(p => p.id !== id)
     await aplicarParadas(nuevas, enGuardada)
   }
@@ -96,7 +90,6 @@ export function RouteProvider({ children }) {
   async function vaciarItinerario(enGuardada = false) {
     const elegir = enGuardada ? rutaGuardada : itinerario
     if (!elegir) return
-    logPaso(1, 'Interfaz', 'Usuario vacía el itinerario')
     await aplicarParadas([], enGuardada)
   }
 

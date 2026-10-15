@@ -42,10 +42,11 @@ function coincidencias(poi, intereses) {
  * @returns {Promise<{ duracionTotalMin: number, costoTotalClp: number, paradas: object[], mensaje?: string }>}
  */
 export async function sugerirRuta({ tiempo, presupuesto, intereses }) {
-  logPaso(7, 'Negocio', 'Motor de filtrado aplica reglas (tiempo, presupuesto, intereses)', { tiempo, presupuesto, intereses })
   const minutosDisponibles = Math.round(tiempo * 60)
+  logPaso(4, 'Capa de negocio', 'Determina cuántos lugares incluir según el tiempo y solicita a la capa de datos los que cumplen el presupuesto', {
+    tiempo, presupuesto, intereses, minutosDisponibles,
+  })
 
-  logPaso(8, 'Datos', 'Repositorio consulta la colección de lugares')
   const candidatos = await poisRepository.buscarCandidatos({
     intereses,
     presupuesto,
@@ -105,6 +106,9 @@ export async function sugerirRuta({ tiempo, presupuesto, intereses }) {
     actual = elegido
   }
 
+  logPaso(8, 'Capa de negocio', 'Entre los lugares recibidos elige los que no superan tiempo ni presupuesto, los ordena por cercanía y calcula duración aproximada y costo total', {
+    paradas: paradas.length, duracionTotalMin: minutosDisponibles - minutosRestantes, costoTotalClp: presupuesto - dineroRestante,
+  })
   return {
     duracionTotalMin: minutosDisponibles - minutosRestantes,
     costoTotalClp: presupuesto - dineroRestante,
@@ -120,8 +124,6 @@ export async function sugerirRuta({ tiempo, presupuesto, intereses }) {
  * @returns {Promise<{ duracionTotalMin: number, costoTotalClp: number, paradas: object[] }>}
  */
 export async function recalcularItinerario({ paradas }) {
-  logPaso(7, 'Negocio', 'Recalcula duración y costo respetando el orden de paradas')
-  logPaso(8, 'Datos', 'Repositorio reconsulta cada lugar por id')
   const pois = []
   for (const p of paradas) {
     const id = typeof p === 'string' ? p : (p.id || p.poiId)

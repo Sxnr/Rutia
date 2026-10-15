@@ -5,7 +5,8 @@
  *  - NO conoce MongoDB (pide datos al repositorio).
  * Adaptado al prototipo: campos reales son id, categoria, costo, tiempoMin, coords, imagen.
  */
-import { poisRepository } from './repository.js'
+import { poisRepository } from '../data/repository.js'
+import { logPaso } from '../../shared/debug.js'
 
 const MINUTOS_TRASLADO_POR_KM = 15
 const MAX_PARADAS = 6
@@ -42,6 +43,9 @@ function coincidencias(poi, intereses) {
  */
 export async function sugerirRuta({ tiempo, presupuesto, intereses }) {
   const minutosDisponibles = Math.round(tiempo * 60)
+  logPaso(4, 'Capa de negocio', 'Determina cuántos lugares incluir según el tiempo y solicita a la capa de datos los que cumplen el presupuesto', {
+    tiempo, presupuesto, intereses, minutosDisponibles,
+  })
 
   const candidatos = await poisRepository.buscarCandidatos({
     intereses,
@@ -102,11 +106,59 @@ export async function sugerirRuta({ tiempo, presupuesto, intereses }) {
     actual = elegido
   }
 
+  logPaso(8, 'Capa de negocio', 'Entre los lugares recibidos elige los que no superan tiempo ni presupuesto, los ordena por cercanía y calcula duración aproximada y costo total', {
+    paradas: paradas.length, duracionTotalMin: minutosDisponibles - minutosRestantes, costoTotalClp: presupuesto - dineroRestante,
+  })
   return {
     duracionTotalMin: minutosDisponibles - minutosRestantes,
     costoTotalClp: presupuesto - dineroRestante,
     paradas,
   }
+}
+
+/**
+ * Recalcula duración (incluye traslados por coordenadas reales) y costo
+ * de una ruta ya armada, reconsultando cada lugar en la capa de datos.
+ * NO filtra ni ordena: respeta el orden de `paradas` recibido.
+ * @param {{ paradas: Array<{ id: string }> }} params paradas en orden (solo se usa el id)
+ * @returns {Promise<{ duracionTotalMin: number, costoTotalClp: number, paradas: object[] }>}
+ */
+export async function recalcularItinerario({ paradas }) {
+  const pois = []
+  for (const p of paradas) {
+    const id = typeof p === 'string' ? p : (p.id || p.poiId)
+    const poi = await poisRepository.findById(id) // capa de datos
+    if (poi) pois.push(poi)
+  }
+
+  const paradasOut = []
+  let minutosTotales = 0
+  let costoTotal = 0
+  let anterior = null
+
+  for (let i = 0; i < pois.length; i++) {
+    const poi = pois[i]
+    const traslado = anterior ? Math.ceil(distanciaKm(anterior, poi) * MINUTOS_TRASLADO_POR_KM) : 0
+    minutosTotales += traslado + poi.tiempoMin
+    costoTotal += poi.costo
+    paradasOut.push({
+      orden: i + 1,
+      poiId: String(poi.id),
+      nombre: poi.nombre,
+      duracionMin: poi.tiempoMin,
+      trasladoMin: traslado,
+      costoClp: poi.costo,
+      _poi: poi,
+    })
+    anterior = poi
+  }
+
+  return { duracionTotalMin: minutosTotales, costoTotalClp: costoTotal, paradas: paradasOut }
+}
+
+// Listado simple de lugares (la capa de negocio consulta a la de datos)
+export async function listarLugares() {
+  return poisRepository.findAll()
 }
 
 export { distanciaKm }

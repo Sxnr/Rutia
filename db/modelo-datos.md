@@ -16,7 +16,8 @@ Base: `santiago_inteligente` (MongoDB). Un documento por Punto de Interés, esqu
   tiempoMin: Number,       // duración estimada visita
   horario: String,         // "Mar-Dom 10:00-18:30"
   coords: [Number, Number],// [-33.4353, -70.6438]
-  imagen: String,          // URL Wikimedia / Unsplash (foto real)
+  imagen: String,          // ruta local src/assets/places/ (imagen con licencia libre)
+  credito: String,         // "Foto: <autor>, <licencia>" — ver CREDITS.md
   createdAt: Date
 }
 ```

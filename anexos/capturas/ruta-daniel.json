@@ -1,0 +1,12 @@
+{
+  "caso": "Daniel: 4h, $15.000, Museos+Gastronomía",
+  "dur": "3h 41m",
+  "costo": "$5.500",
+  "paradas": [
+    "Museo Nacional de Bellas Artes",
+    "Museo de Arte Contemporáneo",
+    "Emporio La Rosa - Parque Forestal",
+    "GAM - Centro Gabriela Mistral"
+  ],
+  "hayGastro": true
+}

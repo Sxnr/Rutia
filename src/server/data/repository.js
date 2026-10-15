@@ -1,10 +1,14 @@
-import { poisCollection } from '../data/poisCollection.js'
+import { poisCollection } from './db/poisCollection.js'
+import { logPaso } from '../../shared/debug.js'
 
 // Capa Servidor: Repositorio de POIs (Abstracción de BD) + ODM (Mongoose simulado)
 // Repo -> ODM -> CollPOI
 export const poisRepository = {
   // Nuevo: usado por routeService.js — solo filtra, no elige (cohesión)
   async buscarCandidatos({ intereses, presupuesto, duracionMaxMin }) {
+    logPaso(5, 'Capa de datos', 'Construye una consulta y la envía a la base de datos', {
+      intereses, presupuesto, duracionMaxMin,
+    })
     // Filtra por intereses y por límites individuales (no acumulado)
     const candidatos = poisCollection.filter(p =>
       intereses.includes(p.categoria) &&
@@ -12,6 +16,12 @@ export const poisRepository = {
       p.tiempoMin <= duracionMaxMin
     )
     await new Promise(r => setTimeout(r, 80))
+    logPaso(6, 'Base de datos (simulada)', 'Devuelve los lugares que cumplen el filtro, con su costo, duración y ubicación', {
+      resultado: candidatos.length,
+    })
+    logPaso(7, 'Capa de datos', 'Convierte la información en un formato que la capa de negocio puede usar y se la entrega', {
+      entrega: candidatos.length,
+    })
     // Retorna tal cual viene de BD (sin mapear), el servicio decide
     return candidatos
   },

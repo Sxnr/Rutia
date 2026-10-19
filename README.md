@@ -1,6 +1,6 @@
 # Rutia 🇨🇱
 
-> Para el turista de larga distancia al que le cuesta decidir qué visitar en Santiago entre tantas alternativas, Rutia entrega en minutos una ruta con pocos lugares, elegidos según su tiempo, presupuesto e intereses.
+> Para el turista de larga distancia al que le cuesta decidir qué visitar en Santiago entre tantas alternativas, Rutia entrega en segundos una ruta con pocos lugares, elegidos según su tiempo, presupuesto e intereses.
 
 ## 👥 Integrantes
 

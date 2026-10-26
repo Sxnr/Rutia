@@ -5,7 +5,6 @@
 ## 👥 Integrantes
 
 * **Francisco Carrera** - [@Sxnr](https://github.com/Sxnr)
-* **Francisco Carvajal** - [@Sn1k-12](https://github.com/Sn1k-12)
 * **Gerzon Toro** - [@gerzontoro](https://github.com/gerzontoro)
 
 ## 🧱 Stack (decisión firmada)

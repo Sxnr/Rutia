@@ -15,7 +15,7 @@ Decisión firmada en la [Propuesta del Hito 1](./docs/hito-1/propuesta.pdf), sec
 |---|---|---|
 | Backend (API) | Python + FastAPI + SQLAlchemy | ✅ Hito 2 · carpeta [`backend/`](./backend) |
 | Base de datos | PostgreSQL (alojado en Supabase) | ✅ Hito 2 · carpeta [`db/`](./db) |
-| App móvil | React Native + Expo | ⏳ Hito 3 · hoy existe el [prototipo web](./prototipo-web) |
+| App móvil | React Native + Expo (SDK 57) | 🚧 Hito 3 · inicio en [`mobile/`](./mobile), conectado a la API |
 
 Arquitectura: **monolito en tres capas** (presentación → negocio → datos).
 
@@ -35,6 +35,7 @@ db/
   modelo-datos.md   Diagrama entidad-relación y explicación de cada tabla
   catalogo/         lugares.csv + fotos con licencia libre
 postman/            Colección y entorno para probar la API
+mobile/             App móvil con Expo (Hito 3): pantallas, estado y cliente HTTP
 docs/
   hito-1/           Propuesta, láminas, diagramas y anexos del Hito 1
   hito-2/           Tabla de la API y documento técnico
@@ -133,6 +134,18 @@ Las fotos provienen de Wikimedia Commons con licencias libres; autoría y licenc
 * **Sin tokens de sesión.** El login verifica la contraseña, pero el cliente envía `usuario_id` en cada petición. En el Hito 3 se reemplaza por un token firmado.
 * **El costo y el horario se verificaron a mano** y pueden cambiar; cada lugar guarda su fuente y la fecha de verificación.
 * **El tiempo de traslado es una estimación** a pie (15 min por km en línea recta), no una ruta real por calles.
+
+## 📱 App móvil (inicio del Hito 3)
+
+Las pantallas del prototipo, en React Native con Expo y conectadas a esta API. Con el backend levantado con `--host 0.0.0.0`:
+
+```bash
+cd mobile
+npm install
+npx expo start                     # escanea el QR con Expo Go (misma red wifi)
+```
+
+Detalle, estructura y pendientes en [mobile/README.md](./mobile/README.md).
 
 ## 🖥️ Prototipo web (Hito 1)
 

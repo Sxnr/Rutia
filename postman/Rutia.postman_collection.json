@@ -1,0 +1,944 @@
+{
+  "info": {
+    "_postman_id": "54589118-71b8-45e6-b504-007adb1acb23",
+    "name": "Rutia API v1",
+    "description": "Colección del Hito 2. La carpeta 'Demo' contiene las 4 peticiones de la presentación en orden (crear, leer, actualizar, borrar). Ejecuta 'Rutas y usuarios' en orden porque cada petición usa variables de la anterior.",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "item": [
+    {
+      "name": "Demo (orden de la presentación)",
+      "item": [
+        {
+          "name": "1. Crear lugar (POST → 201)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/lugares",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "lugares"
+              ]
+            },
+            "description": "Crea un lugar nuevo. Guarda su id en la variable lugar_id para las siguientes peticiones.",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"slug\": \"barrio-lastarria\",\n  \"categoria\": \"historico\",\n  \"nombre_es\": \"Barrio Lastarria\",\n  \"nombre_en\": \"Lastarria Neighborhood\",\n  \"descripcion_es\": \"Barrio patrimonial con cafés, librerías y galerías.\",\n  \"descripcion_en\": \"Heritage neighborhood with cafés, bookshops and galleries.\",\n  \"comuna\": \"Santiago\",\n  \"latitud\": -33.4372,\n  \"longitud\": -70.6386,\n  \"costo_clp\": 0,\n  \"duracion_min\": 45,\n  \"horario_es\": \"Lun-Dom 10:00-20:00\",\n  \"horario_en\": \"Mon-Sun 10:00-20:00\",\n  \"contenido_rotativo\": false\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Código 201\", () => pm.response.to.have.status(201));",
+                  "const d = pm.response.json();",
+                  "pm.collectionVariables.set(\"lugar_id\", d.id);",
+                  "pm.test(\"Devuelve cabecera Location\", () => pm.response.to.have.header(\"Location\"));"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "2. Leer lugar (GET → 200)",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/lugares/{{lugar_id}}",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "lugares",
+                "{{lugar_id}}"
+              ]
+            },
+            "description": ""
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Código 200\", () => pm.response.to.have.status(200));",
+                  "pm.test(\"Es el lugar creado\", () => pm.expect(pm.response.json().slug).to.eql(\"barrio-lastarria\"));"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "3. Actualizar lugar (PUT → 200)",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/lugares/{{lugar_id}}",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "lugares",
+                "{{lugar_id}}"
+              ]
+            },
+            "description": "",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"slug\": \"barrio-lastarria\",\n  \"categoria\": \"historico\",\n  \"nombre_es\": \"Barrio Lastarria\",\n  \"nombre_en\": \"Lastarria Neighborhood\",\n  \"descripcion_es\": \"Barrio patrimonial con cafés, librerías, galerías y el GAM a pasos.\",\n  \"descripcion_en\": \"Heritage neighborhood with cafés, bookshops and galleries.\",\n  \"comuna\": \"Santiago\",\n  \"latitud\": -33.4372,\n  \"longitud\": -70.6386,\n  \"costo_clp\": 0,\n  \"duracion_min\": 60,\n  \"horario_es\": \"Lun-Dom 10:00-20:00\",\n  \"horario_en\": \"Mon-Sun 10:00-20:00\",\n  \"contenido_rotativo\": false\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Código 200\", () => pm.response.to.have.status(200));",
+                  "pm.test(\"Duración actualizada\", () => pm.expect(pm.response.json().duracion_min).to.eql(60));"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "4. Borrar lugar (DELETE → 204)",
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/lugares/{{lugar_id}}",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "lugares",
+                "{{lugar_id}}"
+              ]
+            },
+            "description": ""
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Código 204\", () => pm.response.to.have.status(204));"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "5. Comprobar borrado (GET → 404)",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/lugares/{{lugar_id}}",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "lugares",
+                "{{lugar_id}}"
+              ]
+            },
+            "description": ""
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Código 404\", () => pm.response.to.have.status(404));"
+                ]
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Rutas y usuarios",
+      "item": [
+        {
+          "name": "Registrar usuario (POST → 201)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/usuarios",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "usuarios"
+              ]
+            },
+            "description": "",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"nombre\": \"Daniel Turista\",\n  \"email\": \"daniel{{$timestamp}}@ejemplo.com\",\n  \"password\": \"clave-segura-123\",\n  \"idioma\": \"es\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Código 201\", () => pm.response.to.have.status(201));",
+                  "pm.collectionVariables.set(\"usuario_id\", pm.response.json().id);",
+                  "pm.collectionVariables.set(\"email\", pm.response.json().email);"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Iniciar sesión (POST → 200)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/usuarios/login",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "usuarios",
+                "login"
+              ]
+            },
+            "description": "",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"{{email}}\",\n  \"password\": \"clave-segura-123\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Código 200\", () => pm.response.to.have.status(200));"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Generar ruta caso Daniel (POST → 200)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/rutas/generar",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "rutas",
+                "generar"
+              ]
+            },
+            "description": "Turista con 4 horas, $15.000 e interés en museos y gastronomía (caso de uso del Hito 1).",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"tiempo_horas\": 4,\n  \"presupuesto_clp\": 15000,\n  \"intereses\": [\"museos\", \"gastronomia\"],\n  \"usuario_id\": {{usuario_id}}\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Código 200\", () => pm.response.to.have.status(200));",
+                  "const ids = pm.response.json().paradas.map(p => p.lugar.id);",
+                  "pm.collectionVariables.set(\"lugar_ids\", JSON.stringify(ids));",
+                  "pm.test(\"Respeta el presupuesto\", () => pm.expect(pm.response.json().costo_total_clp).to.be.at.most(15000));"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Guardar ruta (POST → 201)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/rutas",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "rutas"
+              ]
+            },
+            "description": "",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"usuario_id\": {{usuario_id}},\n  \"nombre\": \"Mi tarde en el centro\",\n  \"lugares\": {{lugar_ids}},\n  \"tiempo_horas\": 4,\n  \"presupuesto_clp\": 15000\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Código 201\", () => pm.response.to.have.status(201));",
+                  "pm.collectionVariables.set(\"ruta_id\", pm.response.json().id);"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Ver ruta guardada (GET → 200)",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/rutas/{{ruta_id}}",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "rutas",
+                "{{ruta_id}}"
+              ]
+            },
+            "description": ""
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Código 200\", () => pm.response.to.have.status(200));"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Listar rutas del usuario (GET → 200)",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/usuarios/{{usuario_id}}/rutas",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "usuarios",
+                "{{usuario_id}}",
+                "rutas"
+              ]
+            },
+            "description": ""
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Código 200\", () => pm.response.to.have.status(200));"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Renombrar ruta (PUT → 200)",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/rutas/{{ruta_id}}",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "rutas",
+                "{{ruta_id}}"
+              ]
+            },
+            "description": "",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"nombre\": \"Mi tarde (versión final)\",\n  \"lugares\": {{lugar_ids}}\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Código 200\", () => pm.response.to.have.status(200));"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Borrar ruta (DELETE → 204)",
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/rutas/{{ruta_id}}",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "rutas",
+                "{{ruta_id}}"
+              ]
+            },
+            "description": ""
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Código 204\", () => pm.response.to.have.status(204));"
+                ]
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Visitas",
+      "item": [
+        {
+          "name": "Marcar visitado (POST → 201)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/usuarios/{{usuario_id}}/visitas",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "usuarios",
+                "{{usuario_id}}",
+                "visitas"
+              ]
+            },
+            "description": "",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"lugar_id\": 1\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Código 201\", () => pm.response.to.have.status(201));",
+                  "pm.collectionVariables.set(\"visita_id\", pm.response.json().id);"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Listar visitas (GET → 200)",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/usuarios/{{usuario_id}}/visitas",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "usuarios",
+                "{{usuario_id}}",
+                "visitas"
+              ]
+            },
+            "description": ""
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Código 200\", () => pm.response.to.have.status(200));"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Borrar visita (DELETE → 204)",
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/visitas/{{visita_id}}",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "visitas",
+                "{{visita_id}}"
+              ]
+            },
+            "description": ""
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Código 204\", () => pm.response.to.have.status(204));"
+                ]
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Errores",
+      "item": [
+        {
+          "name": "Lugar inexistente en inglés (GET → 404)",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept-Language",
+                "value": "en"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/lugares/9999",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "lugares",
+                "9999"
+              ]
+            },
+            "description": ""
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Código 404\", () => pm.response.to.have.status(404));"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Datos inválidos (POST → 422)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/rutas/generar",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "rutas",
+                "generar"
+              ]
+            },
+            "description": "",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"tiempo_horas\": 0,\n  \"presupuesto_clp\": -5,\n  \"intereses\": []\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Código 422\", () => pm.response.to.have.status(422));"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Slug duplicado (POST → 409)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/lugares",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "lugares"
+              ]
+            },
+            "description": "",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"slug\": \"museo-bellas-artes\",\n  \"categoria\": \"historico\",\n  \"nombre_es\": \"Barrio Lastarria\",\n  \"nombre_en\": \"Lastarria Neighborhood\",\n  \"descripcion_es\": \"Barrio patrimonial con cafés, librerías y galerías.\",\n  \"descripcion_en\": \"Heritage neighborhood with cafés, bookshops and galleries.\",\n  \"comuna\": \"Santiago\",\n  \"latitud\": -33.4372,\n  \"longitud\": -70.6386,\n  \"costo_clp\": 0,\n  \"duracion_min\": 45,\n  \"horario_es\": \"Lun-Dom 10:00-20:00\",\n  \"horario_en\": \"Mon-Sun 10:00-20:00\",\n  \"contenido_rotativo\": false\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Código 409\", () => pm.response.to.have.status(409));"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Credenciales incorrectas (POST → 401)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/usuarios/login",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "usuarios",
+                "login"
+              ]
+            },
+            "description": "",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"nadie@ejemplo.com\",\n  \"password\": \"incorrecta\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Código 401\", () => pm.response.to.have.status(401));"
+                ]
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Consultas",
+      "item": [
+        {
+          "name": "Salud del servicio",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/health",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "health"
+              ]
+            },
+            "description": ""
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Código 200\", () => pm.response.to.have.status(200));"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Categorías",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/categorias",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "categorias"
+              ]
+            },
+            "description": ""
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Código 200\", () => pm.response.to.have.status(200));"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Lugares (museos gratis)",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/lugares?categoria=museos&costo_max=0",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "lugares"
+              ],
+              "query": [
+                {
+                  "key": "categoria",
+                  "value": "museos"
+                },
+                {
+                  "key": "costo_max",
+                  "value": "0"
+                }
+              ]
+            },
+            "description": ""
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Código 200\", () => pm.response.to.have.status(200));"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Lugares en inglés",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept-Language",
+                "value": "en"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/lugares?limit=5",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "lugares"
+              ],
+              "query": [
+                {
+                  "key": "limit",
+                  "value": "5"
+                }
+              ]
+            },
+            "description": ""
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Código 200\", () => pm.response.to.have.status(200));"
+                ]
+              }
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "variable": [
+    {
+      "key": "lugar_id",
+      "value": ""
+    },
+    {
+      "key": "usuario_id",
+      "value": ""
+    },
+    {
+      "key": "email",
+      "value": ""
+    },
+    {
+      "key": "lugar_ids",
+      "value": ""
+    },
+    {
+      "key": "ruta_id",
+      "value": ""
+    },
+    {
+      "key": "visita_id",
+      "value": ""
+    }
+  ]
+}

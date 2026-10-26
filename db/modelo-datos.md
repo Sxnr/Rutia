@@ -1,44 +1,93 @@
-# Modelo de Datos - Colección POIs (NoSQL - Esquemas Variables)
+# Modelo de datos · Rutia (PostgreSQL)
 
-> Capa Datos del diagrama técnico: `CollPOI` consumida por `Mongoose ODM -> Repo -> Controller`
+Base relacional en PostgreSQL, alojada en Supabase. El script de creación es [`schema.sql`](./schema.sql) y el catálogo de lugares se carga desde [`catalogo/lugares.csv`](./catalogo/lugares.csv).
 
-## Colección: `pois`
-Base: `santiago_inteligente` (MongoDB). Un documento por Punto de Interés, esquema variable según `categoria`.
+```mermaid
+erDiagram
+    CATEGORIAS ||--o{ LUGARES : "clasifica"
+    USUARIOS ||--o{ RUTAS : "guarda"
+    RUTAS ||--|{ RUTA_PARADAS : "tiene"
+    LUGARES ||--o{ RUTA_PARADAS : "aparece en"
+    USUARIOS ||--o{ VISITAS : "registra"
+    LUGARES ||--o{ VISITAS : "es visitado"
+    RUTAS |o--o{ VISITAS : "origen (opcional)"
 
-### Esquema base (común)
-```js
-{
-  _id: ObjectId,
-  id: String,              // ej: "poi_bellas_artes"
-  categoria: String,       // Museos | Gastronomía | Histórico | Parques | Shopping | Vida Nocturna
-  nombre: String,
-  costo: Number,           // CLP, 0 = gratis
-  tiempoMin: Number,       // duración estimada visita
-  horario: String,         // "Mar-Dom 10:00-18:30"
-  coords: [Number, Number],// [-33.4353, -70.6438]
-  imagen: String,          // ruta local src/assets/places/ (imagen con licencia libre)
-  credito: String,         // "Foto: <autor>, <licencia>" — ver CREDITS.md
-  createdAt: Date
-}
+    CATEGORIAS {
+        serial id PK
+        text codigo UK "museos, gastronomia..."
+        text nombre_es
+        text nombre_en
+    }
+    LUGARES {
+        serial id PK
+        text slug UK
+        int categoria_id FK
+        text nombre_es
+        text nombre_en
+        text descripcion_es
+        text descripcion_en
+        numeric latitud
+        numeric longitud
+        int costo_clp "CHECK >= 0"
+        int duracion_min "CHECK > 0"
+        text horario_es
+        text horario_en
+        bool contenido_rotativo
+        text imagen_archivo
+        date verificado_en
+        bool activo
+    }
+    USUARIOS {
+        serial id PK
+        text nombre
+        text email UK
+        text password_hash
+        char idioma "es | en"
+    }
+    RUTAS {
+        serial id PK
+        int usuario_id FK
+        text nombre
+        int tiempo_disponible_min
+        int presupuesto_clp
+        int duracion_total_min
+        int costo_total_clp
+    }
+    RUTA_PARADAS {
+        int ruta_id PK, FK
+        int orden PK
+        int lugar_id FK
+        int traslado_min
+    }
+    VISITAS {
+        serial id PK
+        int usuario_id FK
+        int lugar_id FK
+        int ruta_id FK "NULL si no vino de una ruta"
+        timestamptz visitado_en
+    }
 ```
 
-### Esquema variable (campo `meta`)
-```js
-// Museos
-meta: { tipo: "museo", gratuito: Boolean, sala: String }
+## Tablas
 
-// Gastronomía
-meta: { tipo: "cafe", especialidad: String, menu: [String] }
+| Tabla | Qué guarda | Reglas importantes |
+|---|---|---|
+| `categorias` | Los 6 intereses que el turista puede elegir | Fijas; se insertan en `schema.sql` |
+| `lugares` | Catálogo de puntos de interés, bilingüe | `slug` único; `costo_clp >= 0`; `duracion_min > 0`; `contenido_rotativo` marca los que cambian su oferta |
+| `usuarios` | Turistas registrados | `email` único y en minúsculas; la contraseña se guarda como hash PBKDF2, nunca en texto plano |
+| `rutas` | Rutas que el turista decidió guardar | Los totales los calcula el servidor; si se borra el usuario, se borran sus rutas (`CASCADE`) |
+| `ruta_paradas` | Lugares de cada ruta, en orden | Clave `(ruta_id, orden)`; un lugar no se repite en la misma ruta; un lugar que está en una ruta no se puede borrar (`RESTRICT`) |
+| `visitas` | Lugares que el turista marcó como visitados | Se permiten varias visitas al mismo lugar; si se borra la ruta de origen, la visita queda (`SET NULL`) |
 
-// Parques / Histórico
-meta: { tipo: "parque", altura: String, senderos: Boolean }
-// Histórico: { tipo: "palacio", cambioGuardia: String }
-```
+## Por qué relacional
 
-Relación con prototipo: `src/data/poisCollection.js` es el mock de esta colección. `src/server/repository.js` simula `ODM.find(filtros)`.
+Los datos de Rutia tienen relaciones claras (un usuario tiene rutas, una ruta tiene paradas, una parada apunta a un lugar) y reglas que la base debe hacer cumplir aunque el código falle: un costo no puede ser negativo, un email no se repite y un lugar en uso no se borra. Las claves foráneas y los `CHECK` de PostgreSQL garantizan esas reglas en un solo lugar.
 
-## Índices recomendados
-```js
-db.pois.createIndex({ categoria: 1 })
-db.pois.createIndex({ costo: 1, tiempoMin: 1 })
-```
+## Índices
+
+| Índice | Para qué |
+|---|---|
+| `lugares(categoria_id)` | Filtrar candidatos por interés al generar una ruta |
+| `lugares(costo_clp, duracion_min)` | Filtrar por presupuesto y tiempo |
+| `rutas(usuario_id)` | Listar las rutas de un usuario |
+| `visitas(usuario_id, lugar_id)` | Saber qué lugares ya visitó un usuario |

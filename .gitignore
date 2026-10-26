@@ -33,3 +33,11 @@ Thumbs.db
 # Testing / Coverage
 coverage/
 .nyc_output/
+
+# Python
+__pycache__/
+*.py[cod]
+.venv/
+venv/
+.pytest_cache/
+*.egg-info/

@@ -13,6 +13,7 @@ from pathlib import Path
 
 from pydantic import ValidationError
 
+from app.core.i18n import mensaje_validacion
 from app.presentation.schemas.lugares import LugarEntrada
 
 RAIZ_REPO = Path(__file__).resolve().parents[2]
@@ -39,13 +40,26 @@ def licencia_permitida(licencia: str) -> bool:
     return texto.startswith("CC BY") and "NC" not in texto and "ND" not in texto
 
 
+def _normalizar_planilla(datos: dict) -> None:
+    """Corrige lo que suelen cambiar las planillas en español al exportar a CSV."""
+    rotativo = (datos.get("contenido_rotativo") or "").lower()
+    if rotativo in ("verdadero", "si", "sí"):
+        datos["contenido_rotativo"] = "true"
+    elif rotativo == "falso":
+        datos["contenido_rotativo"] = "false"
+    for columna in ("latitud", "longitud"):
+        if datos.get(columna):
+            datos[columna] = datos[columna].replace(",", ".")  # -33,4353 → -33.4353
+
+
 def leer_y_validar() -> tuple[list[dict], list[str]]:
     """Devuelve (lugares válidos, lista de errores con número de fila)."""
     errores: list[str] = []
     lugares: list[dict] = []
     slugs: set[str] = set()
 
-    with open(ARCHIVO_CSV, encoding="utf-8", newline="") as archivo:
+    # utf-8-sig: acepta también el CSV que exportan Excel y Google Sheets (con marca BOM)
+    with open(ARCHIVO_CSV, encoding="utf-8-sig", newline="") as archivo:
         lector = csv.DictReader(archivo)
         faltantes = [c for c in COLUMNAS if c not in (lector.fieldnames or [])]
         if faltantes:
@@ -53,7 +67,10 @@ def leer_y_validar() -> tuple[list[dict], list[str]]:
 
         for numero, fila in enumerate(lector, start=2):  # fila 1 = encabezado
             # Celdas vacías → None (excepto descripciones, que pueden ser texto vacío)
-            datos = {c: (fila[c].strip() or None) for c in COLUMNAS}
+            datos = {c: ((fila.get(c) or "").strip() or None) for c in COLUMNAS}
+            if not any(datos.values()):
+                continue  # fila completamente vacía (las planillas suelen dejar algunas al final)
+            _normalizar_planilla(datos)
             datos["descripcion_es"] = datos["descripcion_es"] or ""
             datos["descripcion_en"] = datos["descripcion_en"] or ""
             prefijo = f"Fila {numero} ({datos['slug'] or 'sin slug'})"
@@ -63,7 +80,10 @@ def leer_y_validar() -> tuple[list[dict], list[str]]:
             except ValidationError as e:
                 for err in e.errors():
                     campo = ".".join(str(p) for p in err["loc"])
-                    errores.append(f"{prefijo}: columna '{campo}': {err['msg']}")
+                    texto = mensaje_validacion(err["type"], "es", err.get("ctx"), err["msg"])
+                    if campo in ("costo_clp", "duracion_min"):
+                        texto += " Escribe solo dígitos, sin $ ni puntos de miles (ej: 4500)."
+                    errores.append(f"{prefijo}: columna '{campo}': {texto}")
                 continue
 
             if lugar["slug"] in slugs:

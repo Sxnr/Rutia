@@ -145,6 +145,12 @@ def test_cantidad_elegida_por_el_turista(cliente):
         assert cliente.post("/api/v1/rutas/generar", json={**DANIEL, "cantidad": fuera_de_rango}).status_code == 400
 
 
+def test_tiempo_disponible_hasta_8_horas_como_en_el_hito_1(cliente):
+    assert _generar(cliente, tiempo_horas=8)["cantidad_objetivo"] == 5
+    r = cliente.post("/api/v1/rutas/generar", json={**DANIEL, "tiempo_horas": 9})
+    assert r.status_code == 400 and r.json()["error"]["detalles"][0]["campo"] == "tiempo_horas"
+
+
 def test_avisa_cuando_caben_menos_lugares_que_los_buscados(cliente):
     ruta = _generar(cliente, intereses=["parques"], cantidad=3)  # hay un solo parque en el catálogo
     assert len(ruta["paradas"]) == 1

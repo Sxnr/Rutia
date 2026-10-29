@@ -33,20 +33,24 @@ class UsuarioSalida(BaseModel):
 
 
 class UsuarioActualizar(BaseModel):
-    """Cuerpo de PUT /usuarios/{id}: rectificar los datos (Ley 21.719, derecho de rectificación)."""
+    """Cuerpo de PUT /usuarios/{id}: rectificar los datos (Ley 21.719, derecho de rectificación).
+
+    Se pide la contraseña actual para confirmar que el cambio lo hace el dueño de la cuenta.
+    """
 
     model_config = ConfigDict(extra="forbid")
 
     nombre: str = Field(min_length=1, max_length=80, examples=["Daniel Turista"])
     email: str = Field(max_length=254, pattern=PATRON_EMAIL, examples=["daniel@ejemplo.com"])
     idioma: Literal["es", "en"] = Field(examples=["en"])
+    password: str = Field(min_length=1, max_length=128, examples=["clave-segura-123"])
 
 
-class EliminarCuentaEntrada(BaseModel):
-    """Cuerpo de DELETE /usuarios/{id}: se pide la contraseña para confirmar.
+class ConfirmarContrasena(BaseModel):
+    """Cuerpo con la contraseña actual, para eliminar la cuenta o descargar sus datos.
 
-    TODO(Hito 3): con tokens, el servidor sabrá quién pide borrar la cuenta;
-    mientras tanto, la contraseña evita que alguien borre una cuenta ajena sabiendo su id.
+    TODO(Hito 3): con tokens, el servidor sabrá quién hace la petición; mientras tanto,
+    la contraseña evita que alguien actúe sobre una cuenta ajena sabiendo solo su id.
     """
 
     model_config = ConfigDict(extra="forbid")

@@ -1,7 +1,7 @@
 """Configuración común de pytest.
 
 Las pruebas de la API (test_api.py) usan una base SEPARADA, indicada en
-TEST_DATABASE_URL (en el sistema o en backend/.env), porque la recrean
+TEST_DATABASE_URL (en el sistema o en el .env de la raíz), porque la recrean
 desde cero en cada ejecución. NUNCA la apuntes a la base de la demo.
 """
 import os
@@ -9,7 +9,7 @@ from pathlib import Path
 
 from dotenv import load_dotenv
 
-load_dotenv(Path(__file__).resolve().parents[1] / ".env")
+load_dotenv(Path(__file__).resolve().parents[2] / ".env")
 
 URL_PRUEBAS = os.getenv("TEST_DATABASE_URL")
 if URL_PRUEBAS:

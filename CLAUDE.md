@@ -24,7 +24,7 @@ Cada capa solo llama a la de abajo.
 - Simple y explicable antes que ingenioso: cualquier integrante debe poder explicar cualquier línea.
 
 ## Seguridad
-- Nunca escribir credenciales en código ni en archivos versionados. Solo backend/.env (ignorado).
+- Nunca escribir credenciales en código ni en archivos versionados. Solo el .env de la raíz (ignorado).
 - Nunca datos personales reales: usuarios de prueba ficticios.
 
 ## Git

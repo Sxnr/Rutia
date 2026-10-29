@@ -1,7 +1,7 @@
 """Configuración del backend leída desde variables de entorno.
 
-Los valores reales viven en backend/.env (ignorado por git).
-backend/.env.example muestra qué variables hacen falta, sin valores reales.
+Los valores reales viven en el archivo .env de la RAÍZ del repositorio (ignorado por git).
+El .env.example de la raíz muestra qué variables hacen falta, sin valores reales.
 """
 import os
 from dataclasses import dataclass
@@ -13,8 +13,8 @@ from dotenv import load_dotenv
 RAIZ_BACKEND = Path(__file__).resolve().parents[2]
 RAIZ_REPO = RAIZ_BACKEND.parent
 
-# Carga backend/.env si existe. Las variables ya definidas en el sistema tienen prioridad.
-load_dotenv(RAIZ_BACKEND / ".env")
+# Carga el .env de la raíz si existe. Las variables ya definidas en el sistema tienen prioridad.
+load_dotenv(RAIZ_REPO / ".env")
 
 
 @dataclass(frozen=True)
@@ -42,7 +42,7 @@ def cargar_configuracion() -> Configuracion:
     database_url = os.getenv("DATABASE_URL", "").strip()
     if not database_url:
         raise RuntimeError(
-            "Falta DATABASE_URL. Copia backend/.env.example a backend/.env y completa la conexión."
+            "Falta DATABASE_URL. Copia .env.example como .env en la raíz del repositorio y completa la conexión."
         )
     origenes = os.getenv("CORS_ORIGINS", "http://localhost:8081,http://localhost:5173")
     return Configuracion(

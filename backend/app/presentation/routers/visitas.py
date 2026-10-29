@@ -16,7 +16,7 @@ IdUsuario = Annotated[int, Path(gt=0)]
 
 @router.post("/usuarios/{usuario_id}/visitas", response_model=VisitaSalida,
              status_code=status.HTTP_201_CREATED, summary="Marcar un lugar como visitado",
-             responses=respuestas_error(404, 422))
+             responses=respuestas_error(400, 404, 422))
 def registrar_visita(usuario_id: IdUsuario, datos: VisitaEntrada, servicio: Servicio,
                      idioma: Idioma, response: Response):
     visita = servicio.registrar(usuario_id, datos.lugar_id, datos.ruta_id)
@@ -25,13 +25,13 @@ def registrar_visita(usuario_id: IdUsuario, datos: VisitaEntrada, servicio: Serv
 
 
 @router.get("/usuarios/{usuario_id}/visitas", response_model=list[VisitaSalida],
-            summary="Listar visitas de un usuario (más recientes primero)", responses=respuestas_error(404))
+            summary="Listar visitas de un usuario (más recientes primero)", responses=respuestas_error(400, 404))
 def listar_visitas(usuario_id: IdUsuario, servicio: Servicio, idioma: Idioma):
     return [conversores.visita(v, idioma) for v in servicio.listar_de_usuario(usuario_id)]
 
 
 @router.delete("/visitas/{visita_id}", status_code=status.HTTP_204_NO_CONTENT,
-               summary="Borrar una visita", responses=respuestas_error(404))
+               summary="Borrar una visita", responses=respuestas_error(400, 404))
 def borrar_visita(visita_id: Annotated[int, Path(gt=0)], servicio: Servicio):
     servicio.borrar(visita_id)
     return Response(status_code=status.HTTP_204_NO_CONTENT)

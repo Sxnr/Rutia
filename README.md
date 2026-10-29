@@ -62,11 +62,15 @@ pip install -r requirements.txt
 
 ### 2. Configurar la conexión
 
+El archivo de configuración va en la **raíz** del repositorio, no dentro de `backend/`:
+
 ```bash
+cd ..                              # volver a la raíz del repositorio
 cp .env.example .env               # Windows: copy .env.example .env
+cd backend
 ```
 
-Abre `backend/.env` y completa `DATABASE_URL`:
+Abre el `.env` de la raíz y completa `DATABASE_URL`:
 
 * **Supabase:** en el proyecto, *Connect* → *Session pooler* → copia la cadena (puerto 5432), reemplaza `[YOUR-PASSWORD]` por la contraseña de la base y agrega `?sslmode=require` al final. Usa el *Session pooler* y no la conexión directa, porque la directa solo funciona con IPv6.
 * **PostgreSQL local:** `postgresql://usuario:clave@localhost:5432/rutia`
@@ -90,11 +94,11 @@ uvicorn app.main:app --reload
 * API: http://localhost:8000/api/v1/health → `{"estado":"ok","base_de_datos":"ok"}`
 * Documentación interactiva: http://localhost:8000/docs
 
-Para que un celular en la misma red wifi vea el backend: `uvicorn app.main:app --host 0.0.0.0 --port 8000`, y en `.env` cambia `PUBLIC_BASE_URL` por la IP del notebook.
+Para que un celular en la misma red wifi vea el backend: `uvicorn app.main:app --host 0.0.0.0 --port 8000`, y en el `.env` cambia `PUBLIC_BASE_URL` por la IP del notebook.
 
 ### 5. Probar
 
-**Postman:** importa `postman/Rutia.postman_collection.json` y `postman/Rutia.postman_environment.json`, y elige el entorno *Rutia local*. La carpeta **Demo** tiene las 4 peticiones de la presentación en orden: crear, leer, actualizar y borrar un lugar.
+**Postman:** importa `postman/Rutia.postman_collection.json` y `postman/Rutia.postman_environment.json`, y elige el entorno *Rutia local*. La carpeta **Demo** tiene las peticiones de la presentación en orden: crear, leer, actualizar y borrar un lugar, y luego comprobar el borrado. Las carpetas *Rutas y usuarios*, *Visitas* y *Cuenta* se ejecutan en ese orden.
 
 **Pruebas automáticas:**
 
@@ -102,7 +106,7 @@ Para que un celular en la misma red wifi vea el backend: `uvicorn app.main:app -
 pytest                             # pruebas del generador de rutas (no necesitan base)
 ```
 
-Las pruebas de la API completa necesitan una base **aparte**, porque la borran en cada ejecución. Agrega a `.env` una línea `TEST_DATABASE_URL=...` que apunte a un PostgreSQL local o a un segundo proyecto de Supabase, y vuelve a correr `pytest`. Nunca uses la base de la demo.
+Las pruebas de la API completa necesitan una base **aparte**, porque la borran en cada ejecución. Agrega al `.env` una línea `TEST_DATABASE_URL=...` que apunte a un PostgreSQL local o a un segundo proyecto de Supabase, y vuelve a correr `pytest`. Nunca uses la base de la demo.
 
 ## 🔌 API
 
@@ -112,11 +116,13 @@ Tabla completa de rutas, parámetros, códigos de estado y ejemplos en **[docs/h
 |---|---|
 | Lugares (CRUD) | `GET/POST /api/v1/lugares` · `GET/PUT/DELETE /api/v1/lugares/{id}` |
 | Rutas guardadas (CRUD) | `POST /api/v1/rutas` · `GET/PUT/DELETE /api/v1/rutas/{id}` · `GET /api/v1/usuarios/{id}/rutas` |
-| Generar ruta | `POST /api/v1/rutas/generar` |
-| Usuarios | `POST /api/v1/usuarios` · `POST /api/v1/usuarios/login` · `GET /api/v1/usuarios/{id}` |
+| Generar y recalcular ruta | `POST /api/v1/rutas/generar` · `POST /api/v1/rutas/recalcular` |
+| Usuarios (CRUD) | `POST /api/v1/usuarios` · `POST /api/v1/usuarios/login` · `GET/PUT/DELETE /api/v1/usuarios/{id}` · `GET /api/v1/usuarios/{id}/datos` |
 | Visitas | `POST/GET /api/v1/usuarios/{id}/visitas` · `DELETE /api/v1/visitas/{id}` |
 
-Todas las respuestas están en español o en inglés según la cabecera `Accept-Language`.
+- **Idioma:** todas las respuestas salen en español o en inglés según la cabecera `Accept-Language`.
+- **Códigos de error:** los errores de formato responden **400** y las reglas de negocio no cumplidas, **422**.
+- **Ley 21.719:** los usuarios pueden ver, corregir, descargar y eliminar sus datos.
 
 ## 🗂️ Catálogo de lugares
 
@@ -130,9 +136,10 @@ Las fotos provienen de Wikimedia Commons con licencias libres; autoría y licenc
 
 ## ⚠️ Limitaciones conocidas (Hito 2)
 
-* **Sin tokens de sesión.** El login verifica la contraseña, pero el cliente envía `usuario_id` en cada petición. En el Hito 3 se reemplaza por un token firmado.
+* **Sin tokens de sesión.** El login verifica la contraseña, pero el cliente envía `usuario_id` en cada petición. Para eliminar una cuenta se pide la contraseña. En el Hito 3 se reemplaza por un token firmado.
+* **El límite de intentos vive en la memoria del servidor:** 5 contraseñas incorrectas en 15 minutos. Se reinicia si el servidor se reinicia.
 * **El costo y el horario se verificaron a mano** y pueden cambiar; cada lugar guarda su fuente y la fecha de verificación.
-* **El tiempo de traslado es una estimación** a pie (15 min por km en línea recta), no una ruta real por calles.
+* **El tiempo de traslado es una estimación** a pie: línea recta × 1,3 a 4 km/h, unos 19,5 minutos por km. No es una ruta real por calles.
 
 ## 🖥️ Prototipo web (Hito 1)
 

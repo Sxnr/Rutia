@@ -1,6 +1,7 @@
 """Generador de rutas: el corazón de la lógica de negocio de Rutia.
 
-Portado de prototipo-web/src/server/business/routeService.js con el mismo comportamiento.
+Portado de prototipo-web/src/server/business/routeService.js y ajustado a las
+decisiones del equipo (Resumen integral del proyecto, sección 8).
 
 Son funciones "puras": reciben lugares y números, devuelven un resultado.
 No consultan la base ni saben de HTTP, por eso se pueden probar sin servidor.
@@ -11,11 +12,19 @@ import math
 from dataclasses import dataclass, field
 from typing import Any
 
-# Supuesto de traslado a pie por el centro de Santiago: 1 km ≈ 15 minutos (4 km/h).
-MINUTOS_TRASLADO_POR_KM = 15
+# --- Traslado estimado a pie (supuestos declarados del equipo) ---
+# Las calles no son rectas: la distancia real se estima como la línea recta × 1,3.
+FACTOR_CALLES = 1.3
+# Velocidad de caminata de un turista: 4 km/h.
+VELOCIDAD_CAMINATA_KMH = 4
+# Resultado: 1 km en línea recta ≈ 1,3 km caminando ≈ 19,5 minutos.
 
-# Promesa de Rutia: "pocos lugares". Más de 6 paradas deja de ser una ruta cómoda.
-MAX_PARADAS = 6
+# --- Cantidad de lugares: la promesa de Rutia es "pocos lugares" ---
+CANTIDAD_MIN = 2
+CANTIDAD_MAX = 5
+# Si el turista no elige la cantidad, se sugiere según su tiempo:
+# hasta 2 h → 2 lugares; hasta 3 h → 3; hasta 5 h → 4; más de 5 h → 5.
+TABLA_CANTIDAD = [(120, 2), (180, 3), (300, 4)]  # (hasta estos minutos, cantidad)
 
 RADIO_TIERRA_KM = 6371
 
@@ -34,6 +43,14 @@ class ResultadoRuta:
     costo_total_clp: int = 0
 
 
+def cantidad_sugerida(minutos_disponibles: int) -> int:
+    """Cuántos lugares conviene visitar según el tiempo disponible (tabla del equipo)."""
+    for hasta_minutos, cantidad in TABLA_CANTIDAD:
+        if minutos_disponibles <= hasta_minutos:
+            return cantidad
+    return CANTIDAD_MAX
+
+
 def distancia_km(a, b) -> float:
     """Distancia en línea recta entre dos lugares (fórmula de Haversine)."""
     lat1, lon1 = math.radians(a.latitud), math.radians(a.longitud)
@@ -45,19 +62,21 @@ def distancia_km(a, b) -> float:
 
 
 def minutos_traslado(desde, hasta) -> int:
+    """Minutos caminando entre dos lugares: línea recta × factor de calles, a 4 km/h."""
     if desde is None:
         return 0
-    return math.ceil(distancia_km(desde, hasta) * MINUTOS_TRASLADO_POR_KM)
+    km_caminando = distancia_km(desde, hasta) * FACTOR_CALLES
+    return math.ceil(km_caminando / VELOCIDAD_CAMINATA_KMH * 60)
 
 
-def generar_ruta(candidatos: list, minutos_disponibles: int, presupuesto_clp: int) -> ResultadoRuta:
-    """Arma una ruta con un algoritmo goloso (greedy).
+def generar_ruta(candidatos: list, minutos_disponibles: int, presupuesto_clp: int, cantidad: int) -> ResultadoRuta:
+    """Arma una ruta de hasta `cantidad` lugares con un algoritmo goloso (greedy).
 
     1. Ordena los candidatos: primero los más baratos (empate: el de menor id).
     2. La primera parada es el primer candidato que cabe.
     3. Desde ahí, siempre agrega el lugar MÁS CERCANO que todavía cabe
        en el tiempo (visita + traslado) y en el presupuesto que quedan.
-    4. Se detiene al llegar a MAX_PARADAS o cuando ya nada cabe.
+    4. Se detiene al llegar a la cantidad pedida o cuando ya nada cabe.
     """
     pendientes = sorted(candidatos, key=lambda lugar: (lugar.costo_clp, lugar.id))
     resultado = ResultadoRuta()
@@ -65,7 +84,7 @@ def generar_ruta(candidatos: list, minutos_disponibles: int, presupuesto_clp: in
     dinero_restante = presupuesto_clp
     actual = None
 
-    while pendientes and len(resultado.paradas) < MAX_PARADAS:
+    while pendientes and len(resultado.paradas) < cantidad:
         elegido = None
         mejor_traslado = None
 
@@ -98,8 +117,8 @@ def generar_ruta(candidatos: list, minutos_disponibles: int, presupuesto_clp: in
 def calcular_itinerario(lugares_en_orden: list) -> ResultadoRuta:
     """Calcula traslados y totales de una ruta que ya viene ordenada (no reordena ni filtra).
 
-    Se usa al guardar o editar una ruta: el servidor recalcula los totales
-    en vez de confiar en lo que mande el cliente.
+    Se usa al recalcular, guardar o editar una ruta: el servidor recalcula los
+    totales en vez de confiar en lo que mande el cliente.
     """
     resultado = ResultadoRuta()
     anterior = None

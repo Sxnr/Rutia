@@ -30,3 +30,11 @@ class DatosInvalidos(ErrorRutia):
 
 class NoAutorizado(ErrorRutia):
     """Credenciales incorrectas."""
+
+
+class DemasiadosIntentos(ErrorRutia):
+    """Se superó el límite de intentos (por ejemplo, contraseñas fallidas)."""
+
+    def __init__(self, codigo: str, /, segundos_espera: int, **datos):
+        super().__init__(codigo, minutos=max(1, -(-segundos_espera // 60)), **datos)
+        self.segundos_espera = segundos_espera  # para la cabecera Retry-After

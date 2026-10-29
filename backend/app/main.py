@@ -7,6 +7,7 @@ import logging
 
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi.openapi.utils import get_openapi
 from fastapi.staticfiles import StaticFiles
 
 from app.core.config import config
@@ -41,6 +42,30 @@ for modulo in (salud, lugares, usuarios, rutas, visitas):
 # Fotos del catálogo (db/catalogo/fotos) en http://localhost:8000/fotos/<archivo>
 config.carpeta_fotos.mkdir(parents=True, exist_ok=True)
 app.mount("/fotos", StaticFiles(directory=config.carpeta_fotos), name="fotos")
+
+
+def documentacion_openapi() -> dict:
+    """Documentación de /docs ajustada a Rutia.
+
+    FastAPI documenta por defecto los errores de formato como 422 "Validation Error";
+    en Rutia esos errores responden 400 con el formato común (ver manejadores_error.py),
+    así que se quita esa entrada para que /docs muestre lo que la API responde de verdad.
+    """
+    if app.openapi_schema:
+        return app.openapi_schema
+    esquema = get_openapi(title=app.title, version=app.version, description=app.description, routes=app.routes)
+    for operaciones in esquema.get("paths", {}).values():
+        for operacion in operaciones.values():
+            respuestas = operacion.get("responses", {})
+            if respuestas.get("422", {}).get("description") == "Validation Error":
+                del respuestas["422"]
+    for nombre in ("HTTPValidationError", "ValidationError"):
+        esquema.get("components", {}).get("schemas", {}).pop(nombre, None)
+    app.openapi_schema = esquema
+    return esquema
+
+
+app.openapi = documentacion_openapi
 
 
 @app.get("/", include_in_schema=False)

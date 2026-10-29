@@ -20,7 +20,7 @@ RAIZ_REPO = Path(__file__).resolve().parents[2]
 ARCHIVO_CSV = RAIZ_REPO / "db" / "catalogo" / "lugares.csv"
 CARPETA_FOTOS = RAIZ_REPO / "db" / "catalogo" / "fotos"
 
-CATEGORIAS = {"museos", "gastronomia", "historico", "parques", "shopping", "vida_nocturna"}
+CATEGORIAS = {"museos", "parques", "patrimonio", "restaurantes"}
 COLUMNAS = [
     "slug", "categoria", "nombre_es", "nombre_en", "descripcion_es", "descripcion_en",
     "direccion", "comuna", "latitud", "longitud", "costo_clp", "duracion_min",

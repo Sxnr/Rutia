@@ -14,7 +14,7 @@ erDiagram
 
     CATEGORIAS {
         serial id PK
-        text codigo UK "museos, gastronomia..."
+        text codigo UK "museos, parques..."
         text nombre_es
         text nombre_en
     }
@@ -72,7 +72,7 @@ erDiagram
 
 | Tabla | Qué guarda | Reglas importantes |
 |---|---|---|
-| `categorias` | Los 6 intereses que el turista puede elegir | Fijas; se insertan en `schema.sql` |
+| `categorias` | Los 4 intereses que el turista puede elegir: museos, parques, patrimonio y restaurantes | Fijas; se insertan en `schema.sql` |
 | `lugares` | Catálogo de puntos de interés, bilingüe | `slug` único; `costo_clp >= 0`; `duracion_min > 0`; `contenido_rotativo` marca los que cambian su oferta |
 | `usuarios` | Turistas registrados | `email` único y en minúsculas; la contraseña se guarda como hash PBKDF2, nunca en texto plano |
 | `rutas` | Rutas que el turista decidió guardar | Los totales los calcula el servidor; si se borra el usuario, se borran sus rutas (`CASCADE`) |

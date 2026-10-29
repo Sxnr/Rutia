@@ -19,12 +19,12 @@ Cada capa solo llama a la de abajo.
 ## Convenciones
 - Código y comentarios en español; nombres en español sin tildes.
 - Todo texto visible al usuario es bilingüe ES/EN (cabecera Accept-Language).
-- Errores con formato { "error": { "codigo", "mensaje", "detalles" } } y código HTTP correcto. Nunca 200 para un error.
+- Errores con formato { "error": { "codigo", "mensaje", "detalles" } } y código HTTP correcto: 400 formato, 422 reglas de negocio. Nunca 200 para un error.
 - Prefijo de API: /api/v1.
 - Simple y explicable antes que ingenioso: cualquier integrante debe poder explicar cualquier línea.
 
 ## Seguridad
-- Nunca escribir credenciales en código ni en archivos versionados. Solo backend/.env (ignorado).
+- Nunca escribir credenciales en código ni en archivos versionados. Solo el .env de la raíz (ignorado).
 - Nunca datos personales reales: usuarios de prueba ficticios.
 
 ## Git

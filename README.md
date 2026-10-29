@@ -149,7 +149,7 @@ Las pantallas del prototipo, en React Native con Expo y conectadas a esta API. C
 ```bash
 cd mobile
 npm install
-npx expo start                     # escanea el QR con Expo Go (misma red wifi)
+npx expo start                     # en Android, escanea el QR con Expo Go (misma red wifi)
 ```
 
 Detalle, estructura y pendientes en [mobile/README.md](./mobile/README.md).

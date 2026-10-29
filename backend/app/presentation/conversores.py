@@ -3,11 +3,14 @@
 Es trabajo de presentación: elegir nombre_es o nombre_en y armar la URL
 pública de la foto no son reglas de negocio, son formato de respuesta.
 """
+from datetime import datetime
+
 from app.business.generador_rutas import ResultadoRuta
 from app.business.rutas_service import RutaCalculada
 from app.core.config import config
 from app.core.i18n import mensaje
 from app.data.models import Categoria, Lugar, Ruta, Usuario, Visita
+from app.presentation.schemas.datos_personales import DatosPersonalesSalida
 from app.presentation.schemas.lugares import CategoriaSalida, ImagenSalida, LugarSalida
 from app.presentation.schemas.rutas import (
     ParadaSalida,
@@ -132,4 +135,14 @@ def visita(v: Visita, idioma: str) -> VisitaSalida:
     return VisitaSalida(
         id=v.id, usuario_id=v.usuario_id, ruta_id=v.ruta_id,
         visitado_en=v.visitado_en, lugar=lugar(v.lugar, idioma),
+    )
+
+
+def datos_personales(u: Usuario, rutas: list[Ruta], visitas: list[Visita], idioma: str,
+                     exportado_en: datetime) -> DatosPersonalesSalida:
+    return DatosPersonalesSalida(
+        exportado_en=exportado_en,
+        usuario=usuario(u),
+        rutas=[ruta(r, idioma) for r in rutas],
+        visitas=[visita(v, idioma) for v in visitas],
     )

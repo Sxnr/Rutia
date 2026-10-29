@@ -53,6 +53,10 @@ MENSAJES: dict[str, dict[str, str]] = {
         "es": "No existe una visita con id {id}.",
         "en": "There is no visit with id {id}.",
     },
+    "CONTRASENA_INCORRECTA": {
+        "es": "La contraseña no es correcta.",
+        "en": "The password is not correct.",
+    },
     "DEMASIADOS_INTENTOS": {
         "es": "Demasiados intentos fallidos. Espera {minutos} minuto(s) e inténtalo de nuevo.",
         "en": "Too many failed attempts. Wait {minutos} minute(s) and try again.",

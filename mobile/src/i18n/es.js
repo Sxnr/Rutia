@@ -43,7 +43,7 @@ const es = {
     pie: 'Solo verás lugares que encajan en tu tiempo y presupuesto.',
   },
   validacion: {
-    tiempoRango: 'Elige entre 1 y 12 horas.',
+    tiempoRango: 'Elige entre 1 y 8 horas.',
     presupuestoRango: 'Ingresa un monto entre $0 y $1.000.000.',
     interesesMinimo: 'Elige al menos un interés.',
     nombreRequerido: 'Escribe tu nombre.',

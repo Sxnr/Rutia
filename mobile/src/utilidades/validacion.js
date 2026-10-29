@@ -5,7 +5,7 @@
 
 export const LIMITES = {
   tiempoMinHoras: 1,
-  tiempoMaxHoras: 12,
+  tiempoMaxHoras: 8, // como el selector del Hito 1
   presupuestoMax: 1_000_000,
   passwordMin: 8,
   nombreMax: 80,

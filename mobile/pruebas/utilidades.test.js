@@ -35,7 +35,7 @@ test('validación de preferencias con los mismos límites del backend', () => {
   assert.equal(validarPreferencias({ tiempoHoras: 4, presupuesto: 15000, intereses: ['museos'] }).valido, true)
   const malo = validarPreferencias({ tiempoHoras: 0, presupuesto: -1, intereses: [] })
   assert.deepEqual(Object.keys(malo.errores).sort(), ['intereses', 'presupuesto', 'tiempo'])
-  assert.equal(validarPreferencias({ tiempoHoras: 13, presupuesto: 0, intereses: ['museos'] }).errores.tiempo, 'validacion.tiempoRango')
+  assert.equal(validarPreferencias({ tiempoHoras: 9, presupuesto: 0, intereses: ['museos'] }).errores.tiempo, 'validacion.tiempoRango')
   assert.equal(validarPreferencias({ tiempoHoras: 4, presupuesto: 1_000_001, intereses: ['museos'] }).valido, false)
 })
 

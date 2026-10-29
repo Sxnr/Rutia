@@ -43,7 +43,7 @@ const en = {
     pie: 'You will only see places that fit your time and budget.',
   },
   validacion: {
-    tiempoRango: 'Choose between 1 and 12 hours.',
+    tiempoRango: 'Choose between 1 and 8 hours.',
     presupuestoRango: 'Enter an amount between $0 and $1,000,000.',
     interesesMinimo: 'Choose at least one interest.',
     nombreRequerido: 'Enter your name.',

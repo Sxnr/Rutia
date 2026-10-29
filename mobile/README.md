@@ -92,7 +92,7 @@ Reglas:
 ## Pendiente para el Hito 3
 
 * **Sesión con token (JWT):** hoy la app guarda el usuario y envía `usuario_id` en cada petición.
-* **Pantallas de la Ley 21.719:** corregir nombre, correo e idioma, descargar mis datos y eliminar la cuenta. La API ya las tiene: `PUT` y `DELETE /usuarios/{id}`, `GET /usuarios/{id}/datos`.
+* **Pantallas de la Ley 21.719:** corregir nombre, correo e idioma, descargar mis datos y eliminar la cuenta, las tres con la contraseña. La API ya las tiene: `PUT` y `DELETE /usuarios/{id}`, `POST /usuarios/{id}/datos`.
 * **Reordenar la ruta sugerida antes de guardarla**, con `POST /rutas/recalcular`.
 * **Elegir cuántos lugares** (de 2 a 5) al crear la ruta: la API ya recibe `cantidad`.
 * **Mapa de la ruta** con las paradas.

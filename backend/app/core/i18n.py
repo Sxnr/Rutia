@@ -83,6 +83,18 @@ MENSAJES: dict[str, dict[str, str]] = {
         "es": "Con tu tiempo y presupuesto caben {caben} de los {buscados} lugares buscados.",
         "en": "With your time and budget, {caben} of the {buscados} places fit.",
     },
+    "RUTA_EXCEDE_TIEMPO": {
+        "es": "Con este orden la ruta supera tu tiempo disponible.",
+        "en": "In this order, the route exceeds your available time.",
+    },
+    "RUTA_EXCEDE_PRESUPUESTO": {
+        "es": "La ruta supera tu presupuesto.",
+        "en": "The route exceeds your budget.",
+    },
+    "RUTA_EXCEDE_TIEMPO_Y_PRESUPUESTO": {
+        "es": "Con este orden la ruta supera tu tiempo disponible y tu presupuesto.",
+        "en": "In this order, the route exceeds your available time and your budget.",
+    },
 }
 
 # Traducción de los errores de validación de Pydantic (campo por campo).

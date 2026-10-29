@@ -18,6 +18,16 @@ class GenerarRutaEntrada(BaseModel):
     incluir_visitados: bool = False
 
 
+class RecalcularEntrada(BaseModel):
+    """Cuerpo de POST /rutas/recalcular: la ruta reordenada o con paradas quitadas."""
+
+    model_config = ConfigDict(extra="forbid")
+
+    lugares: list[int] = Field(min_length=1, max_length=10, examples=[[3, 1, 2]])
+    tiempo_horas: float | None = Field(default=None, gt=0, le=12, examples=[4])
+    presupuesto_clp: int | None = Field(default=None, ge=0, le=1_000_000, examples=[15000])
+
+
 class ParadaSalida(BaseModel):
     orden: int
     traslado_min: int
@@ -30,6 +40,17 @@ class RutaGeneradaSalida(BaseModel):
     cantidad_objetivo: int  # cuántos lugares se buscaron (pedidos o sugeridos por el tiempo)
     duracion_total_min: int
     costo_total_clp: int
+    paradas: list[ParadaSalida]
+    mensaje: str | None = None
+
+
+class RutaRecalculadaSalida(BaseModel):
+    tiempo_disponible_min: int | None
+    presupuesto_clp: int | None
+    duracion_total_min: int
+    costo_total_clp: int
+    excede_tiempo: bool
+    excede_presupuesto: bool
     paradas: list[ParadaSalida]
     mensaje: str | None = None
 

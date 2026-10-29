@@ -1,4 +1,4 @@
-"""Rutas HTTP de rutas turísticas: generar una sugerencia y CRUD de rutas guardadas."""
+"""Rutas HTTP de rutas turísticas: generar y recalcular una sugerencia, y CRUD de rutas guardadas."""
 from typing import Annotated
 
 from fastapi import APIRouter, Depends, Path, Response, status
@@ -9,9 +9,11 @@ from app.presentation.dependencias import Idioma, servicio_rutas
 from app.presentation.schemas.comunes import respuestas_error
 from app.presentation.schemas.rutas import (
     GenerarRutaEntrada,
+    RecalcularEntrada,
     RutaActualizar,
     RutaEntrada,
     RutaGeneradaSalida,
+    RutaRecalculadaSalida,
     RutaResumen,
     RutaSalida,
 )
@@ -29,6 +31,14 @@ def generar_ruta(datos: GenerarRutaEntrada, servicio: Servicio, idioma: Idioma):
         datos.usuario_id, datos.incluir_visitados, datos.cantidad,
     )
     return conversores.ruta_generada(generada, idioma)
+
+
+@router.post("/rutas/recalcular", response_model=RutaRecalculadaSalida,
+             summary="Recalcular traslados y totales de una ruta reordenada (no la guarda)",
+             responses=respuestas_error(400, 422))
+def recalcular_ruta(datos: RecalcularEntrada, servicio: Servicio, idioma: Idioma):
+    recalculada = servicio.recalcular(datos.lugares, datos.tiempo_horas, datos.presupuesto_clp)
+    return conversores.ruta_recalculada(recalculada, idioma)
 
 
 @router.post("/rutas", response_model=RutaSalida, status_code=status.HTTP_201_CREATED,

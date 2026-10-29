@@ -117,8 +117,8 @@ def generar_ruta(candidatos: list, minutos_disponibles: int, presupuesto_clp: in
 def calcular_itinerario(lugares_en_orden: list) -> ResultadoRuta:
     """Calcula traslados y totales de una ruta que ya viene ordenada (no reordena ni filtra).
 
-    Se usa al guardar o editar una ruta: el servidor recalcula los totales
-    en vez de confiar en lo que mande el cliente.
+    Se usa al recalcular, guardar o editar una ruta: el servidor recalcula los
+    totales en vez de confiar en lo que mande el cliente.
     """
     resultado = ResultadoRuta()
     anterior = None

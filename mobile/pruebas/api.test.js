@@ -34,6 +34,7 @@ describe('cliente HTTP contra el backend', { skip: !backendDisponible && `backen
 
   test('categorías y lugares en el idioma pedido', async () => {
     const categorias = await api.categorias()
+    assert.deepEqual(categorias.map((c) => c.codigo), ['museos', 'parques', 'patrimonio', 'restaurantes'])
     assert.ok(categorias.some((c) => c.codigo === 'museos' && c.nombre === 'Museos'))
     idioma = 'en'
     const enIngles = await api.categorias()
@@ -48,8 +49,9 @@ describe('cliente HTTP contra el backend', { skip: !backendDisponible && `backen
   })
 
   test('generar ruta del caso Daniel', async () => {
-    const ruta = await api.generarRuta({ tiempoHoras: 4, presupuesto: 15000, intereses: ['museos', 'gastronomia'] })
-    assert.ok(ruta.paradas.length >= 1)
+    const ruta = await api.generarRuta({ tiempoHoras: 4, presupuesto: 15000, intereses: ['museos', 'restaurantes'] })
+    assert.equal(ruta.cantidad_objetivo, 4) // 4 horas → 4 lugares sugeridos
+    assert.ok(ruta.paradas.length >= 1 && ruta.paradas.length <= 4)
     assert.ok(ruta.costo_total_clp <= 15000)
     assert.ok(ruta.duracion_total_min <= 240)
     lugaresRuta = ruta.paradas.map((p) => p.lugar.id)
@@ -95,7 +97,7 @@ describe('cliente HTTP contra el backend', { skip: !backendDisponible && `backen
     })
     idioma = 'es'
     await assert.rejects(api.generarRuta({ tiempoHoras: 0, presupuesto: -1, intereses: [] }), (e) => {
-      assert.equal(e.status, 422)
+      assert.equal(e.status, 400) // formato inválido
       assert.equal(e.detalles.length, 3)
       return true
     })

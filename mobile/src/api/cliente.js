@@ -11,7 +11,7 @@ export class ErrorApi extends Error {
     this.status = status // 0 = no hubo respuesta del servidor
     this.codigo = codigo // ej: "LUGAR_NO_ENCONTRADO", "SIN_CONEXION"
     this.mensaje = mensaje // texto del backend, ya traducido (null si no hubo respuesta)
-    this.detalles = detalles // errores por campo en un 422
+    this.detalles = detalles // errores por campo en un 400 (formato inválido)
   }
 }
 

@@ -133,7 +133,7 @@ def test_generar_ruta_caso_daniel(cliente):
     ruta = _generar(cliente)
     assert ruta["cantidad_objetivo"] == 4  # 4 horas → 4 lugares sugeridos
     assert len(ruta["paradas"]) == 4
-    assert ruta["costo_total_clp"] == 5500
+    assert ruta["costo_total_clp"] == 4590
     assert ruta["duracion_total_min"] <= 240
     assert ruta["mensaje"] is None
 
@@ -143,6 +143,12 @@ def test_cantidad_elegida_por_el_turista(cliente):
     assert ruta["cantidad_objetivo"] == 2 and len(ruta["paradas"]) == 2
     for fuera_de_rango in (1, 6):
         assert cliente.post("/api/v1/rutas/generar", json={**DANIEL, "cantidad": fuera_de_rango}).status_code == 400
+
+
+def test_tiempo_disponible_hasta_8_horas_como_en_el_hito_1(cliente):
+    assert _generar(cliente, tiempo_horas=8)["cantidad_objetivo"] == 5
+    r = cliente.post("/api/v1/rutas/generar", json={**DANIEL, "tiempo_horas": 9})
+    assert r.status_code == 400 and r.json()["error"]["detalles"][0]["campo"] == "tiempo_horas"
 
 
 def test_avisa_cuando_caben_menos_lugares_que_los_buscados(cliente):

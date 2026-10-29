@@ -720,10 +720,10 @@
                 "{{usuario_id}}"
               ]
             },
-            "description": "Derecho de rectificación (Ley 21.719).",
+            "description": "Derecho de rectificación (Ley 21.719). Pide la contraseña actual.",
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"nombre\": \"Daniel Miller\",\n  \"email\": \"{{email}}\",\n  \"idioma\": \"en\"\n}",
+              "raw": "{\n  \"nombre\": \"Daniel Miller\",\n  \"email\": \"{{email}}\",\n  \"idioma\": \"en\",\n  \"password\": \"clave-segura-123\"\n}",
               "options": {
                 "raw": {
                   "language": "json"
@@ -744,10 +744,58 @@
           ]
         },
         {
-          "name": "Descargar mis datos (GET → 200)",
+          "name": "Corregir mis datos con contraseña incorrecta (PUT → 401)",
           "request": {
-            "method": "GET",
-            "header": [],
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/usuarios/{{usuario_id}}",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "usuarios",
+                "{{usuario_id}}"
+              ]
+            },
+            "description": "Sin la contraseña correcta no cambia nada.",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"nombre\": \"Intruso\",\n  \"email\": \"{{email}}\",\n  \"idioma\": \"es\",\n  \"password\": \"incorrecta\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Código 401\", () => pm.response.to.have.status(401));"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Descargar mis datos (POST → 200)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
             "url": {
               "raw": "{{base_url}}/usuarios/{{usuario_id}}/datos",
               "host": [
@@ -759,7 +807,16 @@
                 "datos"
               ]
             },
-            "description": "Derecho de portabilidad (Ley 21.719): perfil, rutas y visitas en JSON."
+            "description": "Derecho de portabilidad (Ley 21.719): perfil, rutas y visitas en JSON. Es POST porque la contraseña viaja en el cuerpo.",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"password\": \"clave-segura-123\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
           },
           "event": [
             {

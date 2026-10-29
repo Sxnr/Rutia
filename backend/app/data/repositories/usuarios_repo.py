@@ -21,3 +21,15 @@ class UsuariosRepositorio:
         self.sesion.commit()
         self.sesion.refresh(usuario)
         return usuario
+
+    def actualizar(self, usuario: Usuario, datos: dict) -> Usuario:
+        for campo, valor in datos.items():
+            setattr(usuario, campo, valor)
+        self.sesion.commit()
+        self.sesion.refresh(usuario)
+        return usuario
+
+    def borrar(self, usuario: Usuario) -> None:
+        """Borra el usuario; la base borra en cascada sus rutas, paradas y visitas (ON DELETE CASCADE)."""
+        self.sesion.delete(usuario)
+        self.sesion.commit()

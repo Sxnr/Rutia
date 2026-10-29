@@ -2,7 +2,10 @@
 
     { "error": { "codigo": "...", "mensaje": "...", "detalles": [...] } }
 
-Aquí, y solo aquí, se decide qué código HTTP corresponde a cada error de negocio.
+Aquí, y solo aquí, se decide qué código HTTP corresponde a cada error.
+Validación en dos niveles del servidor (documento del Hito 1, sección 5):
+- Presentación: formato y tipos (campo faltante, texto donde va número, negativo) → 400.
+- Negocio: reglas de Rutia (categoría inexistente, lugar repetido en una ruta) → 422.
 """
 import logging
 
@@ -11,7 +14,7 @@ from fastapi.exceptions import RequestValidationError
 from fastapi.responses import JSONResponse
 from starlette.exceptions import HTTPException as StarletteHTTPException
 
-from app.core.errores import Conflicto, DatosInvalidos, ErrorRutia, NoAutorizado, NoEncontrado
+from app.core.errores import Conflicto, DatosInvalidos, DemasiadosIntentos, ErrorRutia, NoAutorizado, NoEncontrado
 from app.core.i18n import idioma_desde_cabecera, mensaje, mensaje_validacion
 
 log = logging.getLogger("rutia.errores")
@@ -22,6 +25,7 @@ CODIGO_HTTP = {
     Conflicto: 409,
     DatosInvalidos: 422,
     NoAutorizado: 401,
+    DemasiadosIntentos: 429,
 }
 
 
@@ -29,19 +33,24 @@ def _idioma(request: Request) -> str:
     return idioma_desde_cabecera(request.headers.get("accept-language"))
 
 
-def _respuesta(status: int, codigo: str, texto: str, detalles: list | None = None) -> JSONResponse:
+def _respuesta(status: int, codigo: str, texto: str, detalles: list | None = None, cabeceras: dict | None = None) -> JSONResponse:
     return JSONResponse(
         status_code=status,
         content={"error": {"codigo": codigo, "mensaje": texto, "detalles": detalles or []}},
+        headers=cabeceras,
     )
 
 
 async def _error_rutia(request: Request, exc: ErrorRutia) -> JSONResponse:
     status = next((s for tipo, s in CODIGO_HTTP.items() if isinstance(exc, tipo)), 400)
-    return _respuesta(status, exc.codigo, mensaje(exc.codigo, _idioma(request), **exc.datos))
+    cabeceras = None
+    if isinstance(exc, DemasiadosIntentos):
+        cabeceras = {"Retry-After": str(exc.segundos_espera)}  # cuántos segundos esperar (estándar HTTP)
+    return _respuesta(status, exc.codigo, mensaje(exc.codigo, _idioma(request), **exc.datos), cabeceras=cabeceras)
 
 
 async def _error_validacion(request: Request, exc: RequestValidationError) -> JSONResponse:
+    """Datos con formato inválido (los revisa Pydantic en la capa de presentación) → 400."""
     idioma = _idioma(request)
     detalles = []
     for error in exc.errors():
@@ -53,7 +62,7 @@ async def _error_validacion(request: Request, exc: RequestValidationError) -> JS
             "campo": ".".join(partes) or "cuerpo",
             "mensaje": mensaje_validacion(error.get("type", ""), idioma, error.get("ctx"), error.get("msg", "")),
         })
-    return _respuesta(422, "VALIDACION", mensaje("VALIDACION", idioma), detalles)
+    return _respuesta(400, "VALIDACION", mensaje("VALIDACION", idioma), detalles)
 
 
 async def _error_http(request: Request, exc: StarletteHTTPException) -> JSONResponse:

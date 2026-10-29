@@ -11,9 +11,21 @@ class GenerarRutaEntrada(BaseModel):
 
     tiempo_horas: float = Field(gt=0, le=12, examples=[4])
     presupuesto_clp: int = Field(ge=0, le=1_000_000, examples=[15000])
-    intereses: list[str] = Field(min_length=1, max_length=6, examples=[["museos", "gastronomia"]])
+    intereses: list[str] = Field(min_length=1, max_length=4, examples=[["museos", "restaurantes"]])
+    # Opcional: cuántos lugares quiere el turista. Si no viene, se sugiere según su tiempo.
+    cantidad: int | None = Field(default=None, ge=2, le=5, examples=[None])
     usuario_id: int | None = Field(default=None, examples=[None])  # TODO(Hito 3): sale del token
     incluir_visitados: bool = False
+
+
+class RecalcularEntrada(BaseModel):
+    """Cuerpo de POST /rutas/recalcular: la ruta reordenada o con paradas quitadas."""
+
+    model_config = ConfigDict(extra="forbid")
+
+    lugares: list[int] = Field(min_length=1, max_length=10, examples=[[3, 1, 2]])
+    tiempo_horas: float | None = Field(default=None, gt=0, le=12, examples=[4])
+    presupuesto_clp: int | None = Field(default=None, ge=0, le=1_000_000, examples=[15000])
 
 
 class ParadaSalida(BaseModel):
@@ -25,8 +37,20 @@ class ParadaSalida(BaseModel):
 class RutaGeneradaSalida(BaseModel):
     tiempo_disponible_min: int
     presupuesto_clp: int
+    cantidad_objetivo: int  # cuántos lugares se buscaron (pedidos o sugeridos por el tiempo)
     duracion_total_min: int
     costo_total_clp: int
+    paradas: list[ParadaSalida]
+    mensaje: str | None = None
+
+
+class RutaRecalculadaSalida(BaseModel):
+    tiempo_disponible_min: int | None
+    presupuesto_clp: int | None
+    duracion_total_min: int
+    costo_total_clp: int
+    excede_tiempo: bool
+    excede_presupuesto: bool
     paradas: list[ParadaSalida]
     mensaje: str | None = None
 

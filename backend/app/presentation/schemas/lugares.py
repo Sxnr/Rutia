@@ -20,7 +20,7 @@ class LugarEntrada(BaseModel):
 
     slug: str = Field(min_length=3, max_length=80, pattern=r"^[a-z0-9]+(-[a-z0-9]+)*$",
                       examples=["barrio-lastarria"])
-    categoria: str = Field(min_length=1, max_length=40, examples=["historico"])
+    categoria: str = Field(min_length=1, max_length=40, examples=["patrimonio"])
     nombre_es: str = Field(min_length=1, max_length=120, examples=["Barrio Lastarria"])
     nombre_en: str = Field(min_length=1, max_length=120, examples=["Lastarria Neighborhood"])
     descripcion_es: str = Field(default="", max_length=600)

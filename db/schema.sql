@@ -13,11 +13,11 @@ DROP TABLE IF EXISTS lugares;
 DROP TABLE IF EXISTS categorias;
 
 -- ---------------------------------------------------------------------
--- categorias: catálogo fijo de intereses que el turista puede elegir.
+-- categorias: los 4 intereses que el turista puede elegir (glosario del equipo).
 -- ---------------------------------------------------------------------
 CREATE TABLE categorias (
     id          SERIAL PRIMARY KEY,
-    codigo      TEXT NOT NULL UNIQUE,          -- valor que usa la API: 'museos'
+    codigo      TEXT NOT NULL UNIQUE,          -- valor que usa la API: 'museos', 'parques', 'patrimonio' o 'restaurantes'
     nombre_es   TEXT NOT NULL,
     nombre_en   TEXT NOT NULL
 );
@@ -120,9 +120,7 @@ CREATE INDEX idx_visitas_usuario_lugar ON visitas (usuario_id, lugar_id);
 -- con:  cd backend && python -m scripts.cargar_catalogo
 -- ---------------------------------------------------------------------
 INSERT INTO categorias (codigo, nombre_es, nombre_en) VALUES
-    ('museos',        'Museos',        'Museums'),
-    ('gastronomia',   'Gastronomía',   'Food & drink'),
-    ('historico',     'Histórico',     'Historic sites'),
-    ('parques',       'Parques',       'Parks'),
-    ('shopping',      'Shopping',      'Shopping'),
-    ('vida_nocturna', 'Vida nocturna', 'Nightlife');
+    ('museos',       'Museos',       'Museums'),
+    ('parques',      'Parques',      'Parks'),
+    ('patrimonio',   'Patrimonio',   'Heritage'),
+    ('restaurantes', 'Restaurantes', 'Restaurants');

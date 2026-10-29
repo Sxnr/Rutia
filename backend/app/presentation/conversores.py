@@ -3,13 +3,22 @@
 Es trabajo de presentación: elegir nombre_es o nombre_en y armar la URL
 pública de la foto no son reglas de negocio, son formato de respuesta.
 """
+from datetime import datetime
+
 from app.business.generador_rutas import ResultadoRuta
-from app.business.rutas_service import RutaGenerada
+from app.business.rutas_service import RutaCalculada
 from app.core.config import config
 from app.core.i18n import mensaje
 from app.data.models import Categoria, Lugar, Ruta, Usuario, Visita
+from app.presentation.schemas.datos_personales import DatosPersonalesSalida
 from app.presentation.schemas.lugares import CategoriaSalida, ImagenSalida, LugarSalida
-from app.presentation.schemas.rutas import ParadaSalida, RutaGeneradaSalida, RutaResumen, RutaSalida
+from app.presentation.schemas.rutas import (
+    ParadaSalida,
+    RutaGeneradaSalida,
+    RutaRecalculadaSalida,
+    RutaResumen,
+    RutaSalida,
+)
 from app.presentation.schemas.usuarios import UsuarioSalida
 from app.presentation.schemas.visitas import VisitaSalida
 
@@ -52,18 +61,39 @@ def lugar(l: Lugar, idioma: str) -> LugarSalida:
     )
 
 
-def ruta_generada(r: RutaGenerada, idioma: str) -> RutaGeneradaSalida:
-    resultado: ResultadoRuta = r.resultado
+def _paradas(resultado: ResultadoRuta, idioma: str) -> list[ParadaSalida]:
+    return [
+        ParadaSalida(orden=p.orden, traslado_min=p.traslado_min, lugar=lugar(p.lugar, idioma))
+        for p in resultado.paradas
+    ]
+
+
+def _mensaje(r: RutaCalculada, idioma: str) -> str | None:
+    return mensaje(r.mensaje_codigo, idioma, **r.mensaje_datos) if r.mensaje_codigo else None
+
+
+def ruta_generada(r: RutaCalculada, idioma: str) -> RutaGeneradaSalida:
     return RutaGeneradaSalida(
         tiempo_disponible_min=r.tiempo_disponible_min,
         presupuesto_clp=r.presupuesto_clp,
-        duracion_total_min=resultado.duracion_total_min,
-        costo_total_clp=resultado.costo_total_clp,
-        paradas=[
-            ParadaSalida(orden=p.orden, traslado_min=p.traslado_min, lugar=lugar(p.lugar, idioma))
-            for p in resultado.paradas
-        ],
-        mensaje=mensaje(r.mensaje_codigo, idioma) if r.mensaje_codigo else None,
+        cantidad_objetivo=r.cantidad_objetivo,
+        duracion_total_min=r.resultado.duracion_total_min,
+        costo_total_clp=r.resultado.costo_total_clp,
+        paradas=_paradas(r.resultado, idioma),
+        mensaje=_mensaje(r, idioma),
+    )
+
+
+def ruta_recalculada(r: RutaCalculada, idioma: str) -> RutaRecalculadaSalida:
+    return RutaRecalculadaSalida(
+        tiempo_disponible_min=r.tiempo_disponible_min,
+        presupuesto_clp=r.presupuesto_clp,
+        duracion_total_min=r.resultado.duracion_total_min,
+        costo_total_clp=r.resultado.costo_total_clp,
+        excede_tiempo=r.excede_tiempo,
+        excede_presupuesto=r.excede_presupuesto,
+        paradas=_paradas(r.resultado, idioma),
+        mensaje=_mensaje(r, idioma),
     )
 
 
@@ -105,4 +135,14 @@ def visita(v: Visita, idioma: str) -> VisitaSalida:
     return VisitaSalida(
         id=v.id, usuario_id=v.usuario_id, ruta_id=v.ruta_id,
         visitado_en=v.visitado_en, lugar=lugar(v.lugar, idioma),
+    )
+
+
+def datos_personales(u: Usuario, rutas: list[Ruta], visitas: list[Visita], idioma: str,
+                     exportado_en: datetime) -> DatosPersonalesSalida:
+    return DatosPersonalesSalida(
+        exportado_en=exportado_en,
+        usuario=usuario(u),
+        rutas=[ruta(r, idioma) for r in rutas],
+        visitas=[visita(v, idioma) for v in visitas],
     )

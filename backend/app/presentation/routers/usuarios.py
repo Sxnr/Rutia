@@ -25,7 +25,7 @@ def registrar(datos: UsuarioEntrada, servicio: Servicio, response: Response):
 
 
 @router.post("/usuarios/login", response_model=UsuarioSalida, summary="Iniciar sesión",
-             responses=respuestas_error(400, 401))
+             responses=respuestas_error(400, 401, 429))
 def iniciar_sesion(datos: LoginEntrada, servicio: Servicio):
     return conversores.usuario(servicio.iniciar_sesion(datos.email, datos.password))
 

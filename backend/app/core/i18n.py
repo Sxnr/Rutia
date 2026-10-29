@@ -53,6 +53,10 @@ MENSAJES: dict[str, dict[str, str]] = {
         "es": "No existe una visita con id {id}.",
         "en": "There is no visit with id {id}.",
     },
+    "DEMASIADOS_INTENTOS": {
+        "es": "Demasiados intentos fallidos. Espera {minutos} minuto(s) e inténtalo de nuevo.",
+        "en": "Too many failed attempts. Wait {minutos} minute(s) and try again.",
+    },
     # Errores generales
     "VALIDACION": {
         "es": "Revisa el formato de los datos enviados.",

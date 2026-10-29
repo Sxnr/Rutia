@@ -14,7 +14,7 @@ from fastapi.exceptions import RequestValidationError
 from fastapi.responses import JSONResponse
 from starlette.exceptions import HTTPException as StarletteHTTPException
 
-from app.core.errores import Conflicto, DatosInvalidos, ErrorRutia, NoAutorizado, NoEncontrado
+from app.core.errores import Conflicto, DatosInvalidos, DemasiadosIntentos, ErrorRutia, NoAutorizado, NoEncontrado
 from app.core.i18n import idioma_desde_cabecera, mensaje, mensaje_validacion
 
 log = logging.getLogger("rutia.errores")
@@ -25,6 +25,7 @@ CODIGO_HTTP = {
     Conflicto: 409,
     DatosInvalidos: 422,
     NoAutorizado: 401,
+    DemasiadosIntentos: 429,
 }
 
 
@@ -32,16 +33,20 @@ def _idioma(request: Request) -> str:
     return idioma_desde_cabecera(request.headers.get("accept-language"))
 
 
-def _respuesta(status: int, codigo: str, texto: str, detalles: list | None = None) -> JSONResponse:
+def _respuesta(status: int, codigo: str, texto: str, detalles: list | None = None, cabeceras: dict | None = None) -> JSONResponse:
     return JSONResponse(
         status_code=status,
         content={"error": {"codigo": codigo, "mensaje": texto, "detalles": detalles or []}},
+        headers=cabeceras,
     )
 
 
 async def _error_rutia(request: Request, exc: ErrorRutia) -> JSONResponse:
     status = next((s for tipo, s in CODIGO_HTTP.items() if isinstance(exc, tipo)), 400)
-    return _respuesta(status, exc.codigo, mensaje(exc.codigo, _idioma(request), **exc.datos))
+    cabeceras = None
+    if isinstance(exc, DemasiadosIntentos):
+        cabeceras = {"Retry-After": str(exc.segundos_espera)}  # cuántos segundos esperar (estándar HTTP)
+    return _respuesta(status, exc.codigo, mensaje(exc.codigo, _idioma(request), **exc.datos), cabeceras=cabeceras)
 
 
 async def _error_validacion(request: Request, exc: RequestValidationError) -> JSONResponse:

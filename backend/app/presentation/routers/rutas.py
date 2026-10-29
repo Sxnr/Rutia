@@ -26,7 +26,7 @@ IdRuta = Annotated[int, Path(gt=0, description="Id de la ruta")]
 def generar_ruta(datos: GenerarRutaEntrada, servicio: Servicio, idioma: Idioma):
     generada = servicio.generar(
         datos.tiempo_horas, datos.presupuesto_clp, datos.intereses,
-        datos.usuario_id, datos.incluir_visitados,
+        datos.usuario_id, datos.incluir_visitados, datos.cantidad,
     )
     return conversores.ruta_generada(generada, idioma)
 

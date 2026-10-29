@@ -1,6 +1,6 @@
 """Servicio de rutas: generar una ruta sugerida y administrar las rutas guardadas."""
 import math
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 
 from sqlalchemy.orm import Session
 
@@ -20,7 +20,9 @@ class RutaGenerada:
     resultado: ResultadoRuta
     tiempo_disponible_min: int
     presupuesto_clp: int
-    mensaje_codigo: str | None = None  # código de i18n cuando no hay paradas
+    cantidad_objetivo: int  # cuántos lugares se buscaron (pedidos o sugeridos por el tiempo)
+    mensaje_codigo: str | None = None  # código de i18n para avisar algo al usuario
+    mensaje_datos: dict = field(default_factory=dict)
 
 
 class RutasServicio:
@@ -35,7 +37,7 @@ class RutasServicio:
     # Generar ruta sugerida (no se guarda)
     # ------------------------------------------------------------------
     def generar(self, tiempo_horas: float, presupuesto_clp: int, intereses: list[str],
-                usuario_id: int | None, incluir_visitados: bool) -> RutaGenerada:
+                usuario_id: int | None, incluir_visitados: bool, cantidad: int | None) -> RutaGenerada:
         minutos_disponibles = math.floor(tiempo_horas * 60)
         categorias = self._categorias_validas(intereses)
         if usuario_id is not None:
@@ -51,10 +53,19 @@ class RutasServicio:
             visitados = self.visitas.ids_lugares_visitados(usuario_id)
             candidatos = [l for l in candidatos if l.id not in visitados or l.contenido_rotativo]
 
-        # 3. El generador elige y ordena las paradas
-        resultado = generador_rutas.generar_ruta(candidatos, minutos_disponibles, presupuesto_clp)
-        mensaje = "SIN_LUGARES_COMPATIBLES" if not resultado.paradas else None
-        return RutaGenerada(resultado, minutos_disponibles, presupuesto_clp, mensaje)
+        # 3. Cuántos lugares buscar: los que pidió el turista o los sugeridos para su tiempo
+        objetivo = cantidad or generador_rutas.cantidad_sugerida(minutos_disponibles)
+
+        # 4. El generador elige y ordena las paradas
+        resultado = generador_rutas.generar_ruta(candidatos, minutos_disponibles, presupuesto_clp, objetivo)
+        ruta = RutaGenerada(resultado, minutos_disponibles, presupuesto_clp, cantidad_objetivo=objetivo)
+        if not resultado.paradas:
+            ruta.mensaje_codigo = "SIN_LUGARES_COMPATIBLES"
+        elif len(resultado.paradas) < objetivo:
+            # Sin callejones sin salida: se explica por qué hay menos lugares de los buscados
+            ruta.mensaje_codigo = "MENOS_LUGARES_QUE_LOS_BUSCADOS"
+            ruta.mensaje_datos = {"caben": len(resultado.paradas), "buscados": objetivo}
+        return ruta
 
     # ------------------------------------------------------------------
     # Rutas guardadas

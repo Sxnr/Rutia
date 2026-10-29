@@ -79,6 +79,10 @@ MENSAJES: dict[str, dict[str, str]] = {
         "es": "No encontramos lugares compatibles. Prueba ampliando tu tiempo o tu presupuesto.",
         "en": "We found no matching places. Try increasing your time or budget.",
     },
+    "MENOS_LUGARES_QUE_LOS_BUSCADOS": {
+        "es": "Con tu tiempo y presupuesto caben {caben} de los {buscados} lugares buscados.",
+        "en": "With your time and budget, {caben} of the {buscados} places fit.",
+    },
 }
 
 # Traducción de los errores de validación de Pydantic (campo por campo).

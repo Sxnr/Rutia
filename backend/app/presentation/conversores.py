@@ -57,13 +57,14 @@ def ruta_generada(r: RutaGenerada, idioma: str) -> RutaGeneradaSalida:
     return RutaGeneradaSalida(
         tiempo_disponible_min=r.tiempo_disponible_min,
         presupuesto_clp=r.presupuesto_clp,
+        cantidad_objetivo=r.cantidad_objetivo,
         duracion_total_min=resultado.duracion_total_min,
         costo_total_clp=resultado.costo_total_clp,
         paradas=[
             ParadaSalida(orden=p.orden, traslado_min=p.traslado_min, lugar=lugar(p.lugar, idioma))
             for p in resultado.paradas
         ],
-        mensaje=mensaje(r.mensaje_codigo, idioma) if r.mensaje_codigo else None,
+        mensaje=mensaje(r.mensaje_codigo, idioma, **r.mensaje_datos) if r.mensaje_codigo else None,
     )
 
 

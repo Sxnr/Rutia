@@ -1,8 +1,8 @@
 {
   "info": {
-    "_postman_id": "54589118-71b8-45e6-b504-007adb1acb23",
+    "_postman_id": "e2cbd2af-a0d3-5be9-a64a-6f9c117b3c38",
     "name": "Rutia API v1",
-    "description": "Colección del Hito 2. La carpeta 'Demo' contiene las 4 peticiones de la presentación en orden (crear, leer, actualizar, borrar). Ejecuta 'Rutas y usuarios' en orden porque cada petición usa variables de la anterior.",
+    "description": "Colección del Hito 2. La carpeta 'Demo' tiene las 4 peticiones de la presentación en orden (crear, leer, actualizar y borrar) y la comprobación del borrado. Ejecuta 'Rutas y usuarios', 'Visitas' y 'Cuenta' en ese orden: cada petición usa variables de la anterior.",
     "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
   },
   "item": [
@@ -28,10 +28,10 @@
                 "lugares"
               ]
             },
-            "description": "Crea un lugar nuevo. Guarda su id en la variable lugar_id para las siguientes peticiones.",
+            "description": "Crea un lugar nuevo y guarda su id en lugar_id. Si responde 409, el lugar quedó de un ensayo anterior: ejecuta 4. Borrar lugar.",
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"slug\": \"barrio-lastarria\",\n  \"categoria\": \"historico\",\n  \"nombre_es\": \"Barrio Lastarria\",\n  \"nombre_en\": \"Lastarria Neighborhood\",\n  \"descripcion_es\": \"Barrio patrimonial con cafés, librerías y galerías.\",\n  \"descripcion_en\": \"Heritage neighborhood with cafés, bookshops and galleries.\",\n  \"comuna\": \"Santiago\",\n  \"latitud\": -33.4372,\n  \"longitud\": -70.6386,\n  \"costo_clp\": 0,\n  \"duracion_min\": 45,\n  \"horario_es\": \"Lun-Dom 10:00-20:00\",\n  \"horario_en\": \"Mon-Sun 10:00-20:00\",\n  \"contenido_rotativo\": false\n}",
+              "raw": "{\n  \"slug\": \"barrio-lastarria\",\n  \"categoria\": \"patrimonio\",\n  \"nombre_es\": \"Barrio Lastarria\",\n  \"nombre_en\": \"Lastarria Neighborhood\",\n  \"descripcion_es\": \"Barrio patrimonial con cafés, librerías y galerías.\",\n  \"descripcion_en\": \"Heritage neighborhood with cafés, bookshops and galleries.\",\n  \"comuna\": \"Santiago\",\n  \"latitud\": -33.4372,\n  \"longitud\": -70.6386,\n  \"costo_clp\": 0,\n  \"duracion_min\": 45,\n  \"horario_es\": \"Lun-Dom 10:00-20:00\",\n  \"horario_en\": \"Mon-Sun 10:00-20:00\",\n  \"contenido_rotativo\": false\n}",
               "options": {
                 "raw": {
                   "language": "json"
@@ -46,8 +46,7 @@
                 "type": "text/javascript",
                 "exec": [
                   "pm.test(\"Código 201\", () => pm.response.to.have.status(201));",
-                  "const d = pm.response.json();",
-                  "pm.collectionVariables.set(\"lugar_id\", d.id);",
+                  "pm.collectionVariables.set(\"lugar_id\", pm.response.json().id);",
                   "pm.test(\"Devuelve cabecera Location\", () => pm.response.to.have.header(\"Location\"));"
                 ]
               }
@@ -69,7 +68,7 @@
                 "{{lugar_id}}"
               ]
             },
-            "description": ""
+            "description": "Muestra que el dato quedó guardado en la base."
           },
           "event": [
             {
@@ -107,7 +106,7 @@
             "description": "",
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"slug\": \"barrio-lastarria\",\n  \"categoria\": \"historico\",\n  \"nombre_es\": \"Barrio Lastarria\",\n  \"nombre_en\": \"Lastarria Neighborhood\",\n  \"descripcion_es\": \"Barrio patrimonial con cafés, librerías, galerías y el GAM a pasos.\",\n  \"descripcion_en\": \"Heritage neighborhood with cafés, bookshops and galleries.\",\n  \"comuna\": \"Santiago\",\n  \"latitud\": -33.4372,\n  \"longitud\": -70.6386,\n  \"costo_clp\": 0,\n  \"duracion_min\": 60,\n  \"horario_es\": \"Lun-Dom 10:00-20:00\",\n  \"horario_en\": \"Mon-Sun 10:00-20:00\",\n  \"contenido_rotativo\": false\n}",
+              "raw": "{\n  \"slug\": \"barrio-lastarria\",\n  \"categoria\": \"patrimonio\",\n  \"nombre_es\": \"Barrio Lastarria\",\n  \"nombre_en\": \"Lastarria Neighborhood\",\n  \"descripcion_es\": \"Barrio patrimonial con cafés, librerías, galerías y el GAM a pasos.\",\n  \"descripcion_en\": \"Heritage neighborhood with cafés, bookshops and galleries.\",\n  \"comuna\": \"Santiago\",\n  \"latitud\": -33.4372,\n  \"longitud\": -70.6386,\n  \"costo_clp\": 0,\n  \"duracion_min\": 60,\n  \"horario_es\": \"Lun-Dom 10:00-20:00\",\n  \"horario_en\": \"Mon-Sun 10:00-20:00\",\n  \"contenido_rotativo\": false\n}",
               "options": {
                 "raw": {
                   "language": "json"
@@ -298,10 +297,10 @@
                 "generar"
               ]
             },
-            "description": "Turista con 4 horas, $15.000 e interés en museos y gastronomía (caso de uso del Hito 1).",
+            "description": "Turista con 4 horas, $15.000 e interés en museos y restaurantes (caso de uso del Hito 1). Sin 'cantidad', el servidor busca 4 lugares por las 4 horas.",
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"tiempo_horas\": 4,\n  \"presupuesto_clp\": 15000,\n  \"intereses\": [\"museos\", \"gastronomia\"],\n  \"usuario_id\": {{usuario_id}}\n}",
+              "raw": "{\n  \"tiempo_horas\": 4,\n  \"presupuesto_clp\": 15000,\n  \"intereses\": [\"museos\", \"restaurantes\"],\n  \"usuario_id\": {{usuario_id}}\n}",
               "options": {
                 "raw": {
                   "language": "json"
@@ -318,7 +317,96 @@
                   "pm.test(\"Código 200\", () => pm.response.to.have.status(200));",
                   "const ids = pm.response.json().paradas.map(p => p.lugar.id);",
                   "pm.collectionVariables.set(\"lugar_ids\", JSON.stringify(ids));",
+                  "pm.collectionVariables.set(\"lugar_ids_invertidos\", JSON.stringify([...ids].reverse()));",
                   "pm.test(\"Respeta el presupuesto\", () => pm.expect(pm.response.json().costo_total_clp).to.be.at.most(15000));"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Generar ruta con 2 lugares (POST → 200)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/rutas/generar",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "rutas",
+                "generar"
+              ]
+            },
+            "description": "",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"tiempo_horas\": 4,\n  \"presupuesto_clp\": 15000,\n  \"intereses\": [\n    \"museos\",\n    \"restaurantes\"\n  ],\n  \"cantidad\": 2\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Código 200\", () => pm.response.to.have.status(200));",
+                  "pm.test(\"Dos paradas\", () => pm.expect(pm.response.json().paradas.length).to.eql(2));"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Recalcular ruta invertida (POST → 200)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/rutas/recalcular",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "rutas",
+                "recalcular"
+              ]
+            },
+            "description": "La app envía el nuevo orden y el servidor recalcula traslados y totales con los datos de la base.",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"lugares\": {{lugar_ids_invertidos}},\n  \"tiempo_horas\": 4,\n  \"presupuesto_clp\": 15000\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Código 200\", () => pm.response.to.have.status(200));",
+                  "pm.test(\"Primera parada sin traslado\", () => pm.expect(pm.response.json().paradas[0].traslado_min).to.eql(0));"
                 ]
               }
             }
@@ -610,8 +698,259 @@
       ]
     },
     {
+      "name": "Cuenta (Ley 21.719)",
+      "item": [
+        {
+          "name": "Corregir mis datos (PUT → 200)",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/usuarios/{{usuario_id}}",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "usuarios",
+                "{{usuario_id}}"
+              ]
+            },
+            "description": "Derecho de rectificación (Ley 21.719).",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"nombre\": \"Daniel Miller\",\n  \"email\": \"{{email}}\",\n  \"idioma\": \"en\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Código 200\", () => pm.response.to.have.status(200));"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Descargar mis datos (GET → 200)",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/usuarios/{{usuario_id}}/datos",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "usuarios",
+                "{{usuario_id}}",
+                "datos"
+              ]
+            },
+            "description": "Derecho de portabilidad (Ley 21.719): perfil, rutas y visitas en JSON."
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Código 200\", () => pm.response.to.have.status(200));",
+                  "pm.test(\"Incluye rutas y visitas\", () => { const d = pm.response.json(); pm.expect(d).to.have.property(\"rutas\"); pm.expect(d).to.have.property(\"visitas\"); });"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Eliminar cuenta con contraseña incorrecta (DELETE → 401)",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/usuarios/{{usuario_id}}",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "usuarios",
+                "{{usuario_id}}"
+              ]
+            },
+            "description": "",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"password\": \"incorrecta\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Código 401\", () => pm.response.to.have.status(401));"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Eliminar cuenta (DELETE → 204)",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/usuarios/{{usuario_id}}",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "usuarios",
+                "{{usuario_id}}"
+              ]
+            },
+            "description": "Derecho de supresión (Ley 21.719): borra la cuenta y, en cascada, sus rutas y visitas. Se pide la contraseña.",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"password\": \"clave-segura-123\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Código 204\", () => pm.response.to.have.status(204));"
+                ]
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
       "name": "Errores",
       "item": [
+        {
+          "name": "Formato inválido (POST → 400)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/rutas/generar",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "rutas",
+                "generar"
+              ]
+            },
+            "description": "Error de formato: lo detecta la capa de presentación.",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"tiempo_horas\": 0,\n  \"presupuesto_clp\": -5,\n  \"intereses\": []\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Código 400\", () => pm.response.to.have.status(400));"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Regla de negocio: categoría inexistente (POST → 422)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/rutas/generar",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "rutas",
+                "generar"
+              ]
+            },
+            "description": "El formato es correcto, pero la regla no se cumple: lo detecta la capa de negocio.",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"tiempo_horas\": 4,\n  \"presupuesto_clp\": 15000,\n  \"intereses\": [\n    \"playas\"\n  ]\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Código 422\", () => pm.response.to.have.status(422));"
+                ]
+              }
+            }
+          ]
+        },
         {
           "name": "Lugar inexistente en inglés (GET → 404)",
           "request": {
@@ -647,49 +986,6 @@
           ]
         },
         {
-          "name": "Datos inválidos (POST → 422)",
-          "request": {
-            "method": "POST",
-            "header": [
-              {
-                "key": "Content-Type",
-                "value": "application/json"
-              }
-            ],
-            "url": {
-              "raw": "{{base_url}}/rutas/generar",
-              "host": [
-                "{{base_url}}"
-              ],
-              "path": [
-                "rutas",
-                "generar"
-              ]
-            },
-            "description": "",
-            "body": {
-              "mode": "raw",
-              "raw": "{\n  \"tiempo_horas\": 0,\n  \"presupuesto_clp\": -5,\n  \"intereses\": []\n}",
-              "options": {
-                "raw": {
-                  "language": "json"
-                }
-              }
-            }
-          },
-          "event": [
-            {
-              "listen": "test",
-              "script": {
-                "type": "text/javascript",
-                "exec": [
-                  "pm.test(\"Código 422\", () => pm.response.to.have.status(422));"
-                ]
-              }
-            }
-          ]
-        },
-        {
           "name": "Slug duplicado (POST → 409)",
           "request": {
             "method": "POST",
@@ -711,7 +1007,7 @@
             "description": "",
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"slug\": \"museo-bellas-artes\",\n  \"categoria\": \"historico\",\n  \"nombre_es\": \"Barrio Lastarria\",\n  \"nombre_en\": \"Lastarria Neighborhood\",\n  \"descripcion_es\": \"Barrio patrimonial con cafés, librerías y galerías.\",\n  \"descripcion_en\": \"Heritage neighborhood with cafés, bookshops and galleries.\",\n  \"comuna\": \"Santiago\",\n  \"latitud\": -33.4372,\n  \"longitud\": -70.6386,\n  \"costo_clp\": 0,\n  \"duracion_min\": 45,\n  \"horario_es\": \"Lun-Dom 10:00-20:00\",\n  \"horario_en\": \"Mon-Sun 10:00-20:00\",\n  \"contenido_rotativo\": false\n}",
+              "raw": "{\n  \"slug\": \"museo-bellas-artes\",\n  \"categoria\": \"patrimonio\",\n  \"nombre_es\": \"Barrio Lastarria\",\n  \"nombre_en\": \"Lastarria Neighborhood\",\n  \"descripcion_es\": \"Barrio patrimonial con cafés, librerías y galerías.\",\n  \"descripcion_en\": \"Heritage neighborhood with cafés, bookshops and galleries.\",\n  \"comuna\": \"Santiago\",\n  \"latitud\": -33.4372,\n  \"longitud\": -70.6386,\n  \"costo_clp\": 0,\n  \"duracion_min\": 45,\n  \"horario_es\": \"Lun-Dom 10:00-20:00\",\n  \"horario_en\": \"Mon-Sun 10:00-20:00\",\n  \"contenido_rotativo\": false\n}",
               "options": {
                 "raw": {
                   "language": "json"
@@ -930,6 +1226,10 @@
     },
     {
       "key": "lugar_ids",
+      "value": ""
+    },
+    {
+      "key": "lugar_ids_invertidos",
       "value": ""
     },
     {

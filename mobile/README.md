@@ -17,7 +17,7 @@ Todo es bilingüe: los textos de la app están en `src/i18n/` y los de los lugar
 ## Requisitos
 
 * **Node.js 22 o superior** (también sirve 20.19.4 o superior).
-* **Expo Go** en un celular **Android**, actualizado desde Google Play. El proyecto usa **Expo SDK 57** y Expo Go solo abre proyectos de la versión que soporta.
+* **Expo Go para SDK 57** en un celular **Android**. El proyecto usa **Expo SDK 57** y Expo Go solo abre proyectos de su versión, pero la de Google Play ya es la 58. Desinstala esa y descarga el APK oficial, [Expo Go 57.0.9](https://github.com/expo/expo-go-releases/releases/download/Expo-Go-57.0.9/Expo-Go-57.0.9.apk). Después, en la página de Expo Go en Google Play, desactiva la actualización automática. El paso a SDK 58 queda para el Hito 3.
 * **iPhone:** la Expo Go de la App Store no abre proyectos SDK 57. Probarla en iPhone exige una cuenta de Apple Developer (`eas go` y TestFlight); para el curso, usa Android o el navegador.
 * El **backend levantado** (ver el [README principal](../README.md)).
 

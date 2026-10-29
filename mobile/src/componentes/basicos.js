@@ -106,8 +106,10 @@ export function Campo({ etiqueta, error, ...props }) {
 export function Aviso({ texto, tipo = 'error' }) {
   if (!texto) return null
   return (
-    <View style={[estilos.aviso, tipo === 'exito' && estilos.avisoExito]}>
-      <Text style={[estilos.avisoTexto, tipo === 'exito' && estilos.avisoTextoExito]}>{texto}</Text>
+    <View style={[estilos.aviso, tipo === 'exito' && estilos.avisoExito, tipo === 'info' && estilos.avisoInfo]}>
+      <Text style={[estilos.avisoTexto, tipo === 'exito' && estilos.avisoTextoExito, tipo === 'info' && estilos.avisoTextoInfo]}>
+        {texto}
+      </Text>
     </View>
   )
 }
@@ -185,4 +187,6 @@ export const estilos = StyleSheet.create({
   avisoExito: { backgroundColor: colores.exitoFondo, borderColor: colores.exitoBorde },
   avisoTexto: { color: colores.error, fontSize: 13, fontWeight: '600' },
   avisoTextoExito: { color: colores.exito },
+  avisoInfo: { backgroundColor: colores.blanco, borderColor: colores.borde },
+  avisoTextoInfo: { color: colores.azul },
 })

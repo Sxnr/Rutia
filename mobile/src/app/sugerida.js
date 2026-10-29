@@ -103,6 +103,8 @@ export default function RutaSugerida() {
             <Vacio icono="🧭" texto={sugerida.mensaje} accion={t('sugerida.ajustar')} onAccion={() => router.back()} />
           ) : (
             <>
+              {/* Si caben menos lugares de los buscados, el servidor explica por qué */}
+              <Aviso tipo="info" texto={sugerida.mensaje} />
               <Text style={estilos.seccion}>{t('sugerida.itinerario')}</Text>
               <Text style={estilos.ayuda}>{t('sugerida.itinerarioAyuda')}</Text>
               <View style={estilos.paradas}>

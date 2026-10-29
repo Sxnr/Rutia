@@ -11,7 +11,7 @@ class GenerarRutaEntrada(BaseModel):
 
     tiempo_horas: float = Field(gt=0, le=12, examples=[4])
     presupuesto_clp: int = Field(ge=0, le=1_000_000, examples=[15000])
-    intereses: list[str] = Field(min_length=1, max_length=6, examples=[["museos", "gastronomia"]])
+    intereses: list[str] = Field(min_length=1, max_length=4, examples=[["museos", "restaurantes"]])
     usuario_id: int | None = Field(default=None, examples=[None])  # TODO(Hito 3): sale del token
     incluir_visitados: bool = False
 

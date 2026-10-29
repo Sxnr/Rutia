@@ -17,7 +17,8 @@ Todo es bilingüe: los textos de la app están en `src/i18n/` y los de los lugar
 ## Requisitos
 
 * **Node.js 22 o superior** (también sirve 20.19.4 o superior).
-* **Expo Go** en el celular, Android o iPhone. El proyecto usa **Expo SDK 57**; Expo Go solo abre proyectos de la versión que soporta, así que actualízalo desde la tienda.
+* **Expo Go** en un celular **Android**, actualizado desde Google Play. El proyecto usa **Expo SDK 57** y Expo Go solo abre proyectos de la versión que soporta.
+* **iPhone:** la Expo Go de la App Store no abre proyectos SDK 57. Probarla en iPhone exige una cuenta de Apple Developer (`eas go` y TestFlight); para el curso, usa Android o el navegador.
 * El **backend levantado** (ver el [README principal](../README.md)).
 
 ## Levantar la app
@@ -38,7 +39,7 @@ Todo es bilingüe: los textos de la app están en `src/i18n/` y los de los lugar
    npx expo start
    ```
 
-3. **Ábrela en el celular**, conectado a la **misma red wifi** que el notebook: en Android, escanea el código QR con Expo Go; en iPhone, con la cámara.
+3. **Ábrela en el celular Android**, conectado a la **misma red wifi** que el notebook: abre Expo Go y escanea el código QR que muestra la terminal.
 
 La app usa sola la IP del notebook que corre Expo, con el puerto 8000. Si no conecta, por ejemplo en modo túnel o en un emulador, copia `.env.example` como `.env` y escribe ahí la dirección del backend.
 
@@ -91,8 +92,10 @@ Reglas:
 ## Pendiente para el Hito 3
 
 * **Sesión con token (JWT):** hoy la app guarda el usuario y envía `usuario_id` en cada petición.
-* **Editar datos del perfil:** la API todavía no tiene `PUT /usuarios/{id}`.
+* **Pantallas de la Ley 21.719:** corregir nombre, correo e idioma, descargar mis datos y eliminar la cuenta. La API ya las tiene: `PUT` y `DELETE /usuarios/{id}`, `GET /usuarios/{id}/datos`.
+* **Reordenar la ruta sugerida antes de guardarla**, con `POST /rutas/recalcular`.
+* **Elegir cuántos lugares** (de 2 a 5) al crear la ruta: la API ya recibe `cantidad`.
 * **Mapa de la ruta** con las paradas.
 * **Uso sin conexión**, al menos para la última ruta guardada.
-* **Pruebas en celulares reales**, Android y iPhone, y ajustes visuales.
+* **Pruebas en más celulares Android** y ajustes visuales.
 * **Publicación** con EAS Build, si se pide.

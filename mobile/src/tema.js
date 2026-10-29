@@ -30,9 +30,7 @@ export const sombra = {
 // Ícono por código de categoría (los nombres llegan traducidos desde la API)
 export const ICONOS_CATEGORIA = {
   museos: '🏛️',
-  gastronomia: '🍽️',
-  historico: '🏰',
   parques: '🌳',
-  shopping: '🛍️',
-  vida_nocturna: '🌃',
+  patrimonio: '🏰',
+  restaurantes: '🍽️',
 }

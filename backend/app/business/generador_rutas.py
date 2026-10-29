@@ -12,8 +12,12 @@ import math
 from dataclasses import dataclass, field
 from typing import Any
 
-# Supuesto de traslado a pie por el centro de Santiago: 1 km ≈ 15 minutos (4 km/h).
-MINUTOS_TRASLADO_POR_KM = 15
+# --- Traslado estimado a pie (supuestos declarados del equipo) ---
+# Las calles no son rectas: la distancia real se estima como la línea recta × 1,3.
+FACTOR_CALLES = 1.3
+# Velocidad de caminata de un turista: 4 km/h.
+VELOCIDAD_CAMINATA_KMH = 4
+# Resultado: 1 km en línea recta ≈ 1,3 km caminando ≈ 19,5 minutos.
 
 # --- Cantidad de lugares: la promesa de Rutia es "pocos lugares" ---
 CANTIDAD_MIN = 2
@@ -58,9 +62,11 @@ def distancia_km(a, b) -> float:
 
 
 def minutos_traslado(desde, hasta) -> int:
+    """Minutos caminando entre dos lugares: línea recta × factor de calles, a 4 km/h."""
     if desde is None:
         return 0
-    return math.ceil(distancia_km(desde, hasta) * MINUTOS_TRASLADO_POR_KM)
+    km_caminando = distancia_km(desde, hasta) * FACTOR_CALLES
+    return math.ceil(km_caminando / VELOCIDAD_CAMINATA_KMH * 60)
 
 
 def generar_ruta(candidatos: list, minutos_disponibles: int, presupuesto_clp: int, cantidad: int) -> ResultadoRuta:

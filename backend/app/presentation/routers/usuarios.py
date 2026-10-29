@@ -13,7 +13,7 @@ from app.presentation.dependencias import Idioma, servicio_usuarios
 from app.presentation.schemas.comunes import respuestas_error
 from app.presentation.schemas.datos_personales import DatosPersonalesSalida
 from app.presentation.schemas.usuarios import (
-    EliminarCuentaEntrada,
+    ConfirmarContrasena,
     LoginEntrada,
     UsuarioActualizar,
     UsuarioEntrada,
@@ -46,25 +46,28 @@ def obtener(usuario_id: IdUsuario, servicio: Servicio):
 
 
 @router.put("/usuarios/{usuario_id}", response_model=UsuarioSalida,
-            summary="Corregir nombre, correo o idioma (derecho de rectificación)",
-            responses=respuestas_error(400, 404, 409))
+            summary="Corregir nombre, correo o idioma con la contraseña (derecho de rectificación)",
+            responses=respuestas_error(400, 401, 404, 409, 429))
 def actualizar(usuario_id: IdUsuario, datos: UsuarioActualizar, servicio: Servicio):
-    return conversores.usuario(servicio.actualizar(usuario_id, datos.nombre, datos.email, datos.idioma))
+    usuario = servicio.actualizar(usuario_id, datos.nombre, datos.email, datos.idioma, datos.password)
+    return conversores.usuario(usuario)
 
 
 @router.delete("/usuarios/{usuario_id}", status_code=status.HTTP_204_NO_CONTENT,
                summary="Eliminar la cuenta con sus rutas y visitas (derecho de supresión)",
                responses=respuestas_error(400, 401, 404, 429))
-def eliminar(usuario_id: IdUsuario, datos: EliminarCuentaEntrada, servicio: Servicio):
+def eliminar(usuario_id: IdUsuario, datos: ConfirmarContrasena, servicio: Servicio):
     servicio.eliminar(usuario_id, datos.password)
     return Response(status_code=status.HTTP_204_NO_CONTENT)
 
 
-@router.get("/usuarios/{usuario_id}/datos", response_model=DatosPersonalesSalida,
-            summary="Descargar todos mis datos en JSON (derecho de portabilidad)",
-            responses=respuestas_error(400, 404))
-def exportar(usuario_id: IdUsuario, servicio: Servicio, idioma: Idioma, response: Response):
-    usuario, rutas, visitas = servicio.exportar(usuario_id)
+# POST y no GET: la contraseña viaja en el cuerpo. En la URL quedaría guardada en registros e historiales.
+@router.post("/usuarios/{usuario_id}/datos", response_model=DatosPersonalesSalida,
+             summary="Descargar todos mis datos en JSON con la contraseña (derecho de portabilidad)",
+             responses=respuestas_error(400, 401, 404, 429))
+def exportar(usuario_id: IdUsuario, datos: ConfirmarContrasena, servicio: Servicio, idioma: Idioma,
+             response: Response):
+    usuario, rutas, visitas = servicio.exportar(usuario_id, datos.password)
     # El navegador o el celular lo ofrecen como archivo descargable
     response.headers["Content-Disposition"] = 'attachment; filename="rutia-mis-datos.json"'
     return conversores.datos_personales(usuario, rutas, visitas, idioma, datetime.now(timezone.utc))

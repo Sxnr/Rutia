@@ -9,7 +9,8 @@ from app.presentation.schemas.lugares import LugarSalida
 class GenerarRutaEntrada(BaseModel):
     model_config = ConfigDict(extra="forbid")
 
-    tiempo_horas: float = Field(gt=0, le=12, examples=[4])
+    # Hasta 8 horas, como el selector del Hito 1 (sección 7.3): más de 5 lugares no caben en la promesa
+    tiempo_horas: float = Field(gt=0, le=8, examples=[4])
     presupuesto_clp: int = Field(ge=0, le=1_000_000, examples=[15000])
     intereses: list[str] = Field(min_length=1, max_length=4, examples=[["museos", "restaurantes"]])
     # Opcional: cuántos lugares quiere el turista. Si no viene, se sugiere según su tiempo.
@@ -24,7 +25,7 @@ class RecalcularEntrada(BaseModel):
     model_config = ConfigDict(extra="forbid")
 
     lugares: list[int] = Field(min_length=1, max_length=10, examples=[[3, 1, 2]])
-    tiempo_horas: float | None = Field(default=None, gt=0, le=12, examples=[4])
+    tiempo_horas: float | None = Field(default=None, gt=0, le=8, examples=[4])
     presupuesto_clp: int | None = Field(default=None, ge=0, le=1_000_000, examples=[15000])
 
 
@@ -63,7 +64,7 @@ class RutaEntrada(BaseModel):
     usuario_id: int = Field(examples=[1])  # TODO(Hito 3): sale del token
     nombre: str = Field(min_length=1, max_length=80, examples=["Mi tarde en el centro"])
     lugares: list[int] = Field(min_length=1, max_length=10, examples=[[1, 2, 3]])
-    tiempo_horas: float | None = Field(default=None, gt=0, le=12, examples=[4])
+    tiempo_horas: float | None = Field(default=None, gt=0, le=8, examples=[4])
     presupuesto_clp: int | None = Field(default=None, ge=0, le=1_000_000, examples=[15000])
 
 
@@ -74,7 +75,7 @@ class RutaActualizar(BaseModel):
 
     nombre: str = Field(min_length=1, max_length=80)
     lugares: list[int] = Field(min_length=1, max_length=10)
-    tiempo_horas: float | None = Field(default=None, gt=0, le=12)
+    tiempo_horas: float | None = Field(default=None, gt=0, le=8)
     presupuesto_clp: int | None = Field(default=None, ge=0, le=1_000_000)
 
 

@@ -20,8 +20,8 @@ def lugar(id, costo, duracion, lat, lon, categoria="museos"):
 
 # Los lugares de museos y restaurantes del catálogo inicial (mismos datos que db/catalogo/lugares.csv)
 BELLAS_ARTES = lugar(1, 0, 60, -33.4353, -70.6438)
-MAC = lugar(2, 1000, 50, -33.436, -70.643)
-EMPORIO = lugar(3, 4500, 40, -33.433, -70.640, "restaurantes")
+MAC = lugar(2, 0, 50, -33.436, -70.643)
+EMPORIO = lugar(3, 4590, 40, -33.433, -70.640, "restaurantes")
 PATIO = lugar(4, 8000, 70, -33.425, -70.634, "restaurantes")
 GAM = lugar(9, 0, 45, -33.443, -70.639)
 CATALOGO_DANIEL = [BELLAS_ARTES, MAC, EMPORIO, PATIO, GAM]
@@ -57,7 +57,7 @@ def test_caso_daniel_4_horas_15000_museos_y_restaurantes():
 
     ids = [p.lugar.id for p in resultado.paradas]
     assert ids == [1, 2, 3, 9]  # empieza por el gratis de menor id y sigue por cercanía
-    assert resultado.costo_total_clp == 5500
+    assert resultado.costo_total_clp == 4590
     assert resultado.duracion_total_min <= 240
     assert resultado.paradas[0].traslado_min == 0
     assert [p.orden for p in resultado.paradas] == [1, 2, 3, 4]
@@ -111,6 +111,6 @@ def test_traslado_usa_factor_de_calles_y_4_km_por_hora():
 def test_calcular_itinerario_respeta_el_orden_recibido():
     resultado = calcular_itinerario([GAM, BELLAS_ARTES, EMPORIO])
     assert [p.lugar.id for p in resultado.paradas] == [9, 1, 3]
-    assert resultado.costo_total_clp == 4500
+    assert resultado.costo_total_clp == 4590
     traslados = sum(p.traslado_min for p in resultado.paradas)
     assert resultado.duracion_total_min == 45 + 60 + 40 + traslados

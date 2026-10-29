@@ -1,7 +1,8 @@
 """Servicio de usuarios: registro, login y derechos sobre los datos personales (Ley 21.719).
 
-Derechos implementados: acceso (GET /usuarios/{id}), rectificación (PUT),
-supresión (DELETE, con contraseña) y portabilidad (GET /usuarios/{id}/datos).
+Derechos implementados: acceso (GET /usuarios/{id}), rectificación (PUT /usuarios/{id}),
+supresión (DELETE /usuarios/{id}) y portabilidad (POST /usuarios/{id}/datos).
+Rectificar, suprimir y descargar los datos piden la contraseña actual.
 
 TODO(Hito 3): el login todavía no entrega un token. Por ahora el cliente
 envía usuario_id en cada petición; en el Hito 3 se reemplaza por un token
@@ -57,9 +58,10 @@ class UsuariosServicio:
             raise NoEncontrado("USUARIO_NO_ENCONTRADO", id=usuario_id)
         return usuario
 
-    def actualizar(self, usuario_id: int, nombre: str, email: str, idioma: str) -> Usuario:
-        """Rectificación: el usuario corrige su nombre, correo o idioma."""
+    def actualizar(self, usuario_id: int, nombre: str, email: str, idioma: str, contrasena: str) -> Usuario:
+        """Rectificación: el usuario corrige su nombre, correo o idioma. Pide la contraseña."""
         usuario = self.obtener(usuario_id)
+        self._confirmar_contrasena(usuario, contrasena)
         email = email.strip().lower()
         otro = self.usuarios.obtener_por_email(email)
         if otro and otro.id != usuario_id:
@@ -69,14 +71,22 @@ class UsuariosServicio:
     def eliminar(self, usuario_id: int, contrasena: str) -> None:
         """Supresión: borra la cuenta y, en cascada, sus rutas y visitas. Pide la contraseña."""
         usuario = self.obtener(usuario_id)
-        limitador_login.verificar(usuario.email)  # la contraseña tampoco se puede adivinar por aquí
+        self._confirmar_contrasena(usuario, contrasena)
+        self.usuarios.borrar(usuario)
+
+    def exportar(self, usuario_id: int, contrasena: str) -> tuple[Usuario, list[Ruta], list[Visita]]:
+        """Portabilidad: todos los datos del usuario, para entregarlos en un archivo JSON. Pide la contraseña."""
+        usuario = self.obtener(usuario_id)
+        self._confirmar_contrasena(usuario, contrasena)
+        return usuario, self.rutas.listar_de_usuario(usuario_id), self.visitas.listar_de_usuario(usuario_id)
+
+    def _confirmar_contrasena(self, usuario: Usuario, contrasena: str) -> None:
+        """Confirma que quien actúa sobre la cuenta conoce su contraseña.
+
+        Usa el mismo límite de intentos del login: la contraseña tampoco se puede adivinar por aquí.
+        """
+        limitador_login.verificar(usuario.email)
         if not contrasenas.verificar(contrasena, usuario.password_hash):
             limitador_login.registrar_fallo(usuario.email)
             raise NoAutorizado("CONTRASENA_INCORRECTA")
         limitador_login.reiniciar(usuario.email)
-        self.usuarios.borrar(usuario)
-
-    def exportar(self, usuario_id: int) -> tuple[Usuario, list[Ruta], list[Visita]]:
-        """Portabilidad: todos los datos del usuario, para entregarlos en un archivo JSON."""
-        usuario = self.obtener(usuario_id)
-        return usuario, self.rutas.listar_de_usuario(usuario_id), self.visitas.listar_de_usuario(usuario_id)

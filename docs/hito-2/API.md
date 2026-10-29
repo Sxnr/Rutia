@@ -5,7 +5,7 @@
 - **Formato:** JSON en el cuerpo de peticiones y respuestas.
 - **Idioma:** cabecera `Accept-Language: es` (por defecto) o `en`. Cambia los nombres, descripciones, horarios, categorías y mensajes de error.
 - **Documentación interactiva:** `http://localhost:8000/docs` (generada por FastAPI desde el código).
-- **Autenticación:** sin tokens en este hito; `usuario_id` viaja en la petición. Eliminar una cuenta exige la contraseña. Los tokens se agregan en el Hito 3.
+- **Autenticación:** sin tokens en este hito; `usuario_id` viaja en la petición. Corregir, descargar o eliminar los datos de una cuenta exige su contraseña. Los tokens se agregan en el Hito 3.
 
 ## Códigos de estado
 
@@ -48,7 +48,7 @@ Todos los errores usan el mismo formato:
 | Lugares | `POST /lugares` | Cuerpo: lugar completo (ver ejemplo) | 201 + `Location` | 400 · 409 slug duplicado · 422 categoría inexistente |
 | Lugares | `PUT /lugares/{id}` | Cuerpo: lugar completo (reemplaza) | 200 | 400 · 404 · 409 · 422 |
 | Lugares | `DELETE /lugares/{id}` | — | 204 | 400 · 404 · 409 está en una ruta guardada |
-| Rutas | `POST /rutas/generar` | `{tiempo_horas, presupuesto_clp, intereses[], cantidad?, usuario_id?, incluir_visitados?}` | 200 ruta propuesta (no se guarda) | 400 · 404 usuario · 422 categoría inexistente |
+| Rutas | `POST /rutas/generar` | `{tiempo_horas (hasta 8), presupuesto_clp, intereses[], cantidad?, usuario_id?, incluir_visitados?}` | 200 ruta propuesta (no se guarda) | 400 · 404 usuario · 422 categoría inexistente |
 | Rutas | `POST /rutas/recalcular` | `{lugares[] en el nuevo orden, tiempo_horas?, presupuesto_clp?}` | 200 traslados y totales recalculados (no se guarda) | 400 · 422 lugar inexistente o repetido |
 | Rutas | `POST /rutas` | `{usuario_id, nombre, lugares[], tiempo_horas?, presupuesto_clp?}` | 201 + `Location` | 400 · 404 usuario · 422 lugar inexistente o repetido |
 | Rutas | `GET /usuarios/{id}/rutas` | — | 200 lista resumida | 400 · 404 |
@@ -58,9 +58,9 @@ Todos los errores usan el mismo formato:
 | Usuarios | `POST /usuarios` | `{nombre, email, password, idioma}` | 201 + `Location` | 400 · 409 correo registrado |
 | Usuarios | `POST /usuarios/login` | `{email, password}` | 200 datos públicos del usuario | 400 · 401 · 429 |
 | Usuarios | `GET /usuarios/{id}` | — (derecho de acceso) | 200 | 400 · 404 |
-| Usuarios | `PUT /usuarios/{id}` | `{nombre, email, idioma}` (derecho de rectificación) | 200 | 400 · 404 · 409 correo de otro usuario |
+| Usuarios | `PUT /usuarios/{id}` | `{nombre, email, idioma, password}` (derecho de rectificación) | 200 | 400 · 401 · 404 · 409 correo de otro usuario · 429 |
 | Usuarios | `DELETE /usuarios/{id}` | `{password}` (derecho de supresión: borra también sus rutas y visitas) | 204 | 400 · 401 · 404 · 429 |
-| Usuarios | `GET /usuarios/{id}/datos` | — (derecho de portabilidad: archivo JSON descargable) | 200 `{exportado_en, usuario, rutas, visitas}` | 400 · 404 |
+| Usuarios | `POST /usuarios/{id}/datos` | `{password}` (derecho de portabilidad: archivo JSON descargable) | 200 `{exportado_en, usuario, rutas, visitas}` | 400 · 401 · 404 · 429 |
 | Visitas | `POST /usuarios/{id}/visitas` | `{lugar_id, ruta_id?}` | 201 | 400 · 404 usuario · 422 lugar o ruta inválidos |
 | Visitas | `GET /usuarios/{id}/visitas` | — | 200 (más recientes primero) | 400 · 404 |
 | Visitas | `DELETE /visitas/{id}` | — | 204 | 400 · 404 |
@@ -106,11 +106,11 @@ Respuesta (resumida):
   "presupuesto_clp": 15000,
   "cantidad_objetivo": 4,
   "duracion_total_min": 229,
-  "costo_total_clp": 5500,
+  "costo_total_clp": 4590,
   "paradas": [
     { "orden": 1, "traslado_min": 0, "lugar": { "id": 1, "nombre": "Museo Nacional de Bellas Artes", "costo_clp": 0, "duracion_min": 60 } },
-    { "orden": 2, "traslado_min": 3, "lugar": { "id": 2, "nombre": "Museo de Arte Contemporáneo", "costo_clp": 1000, "duracion_min": 50 } },
-    { "orden": 3, "traslado_min": 9, "lugar": { "id": 3, "nombre": "Emporio La Rosa", "costo_clp": 4500, "duracion_min": 40 } },
+    { "orden": 2, "traslado_min": 3, "lugar": { "id": 2, "nombre": "Museo de Arte Contemporáneo", "costo_clp": 0, "duracion_min": 50 } },
+    { "orden": 3, "traslado_min": 9, "lugar": { "id": 3, "nombre": "Emporio La Rosa", "costo_clp": 4590, "duracion_min": 40 } },
     { "orden": 4, "traslado_min": 22, "lugar": { "id": 9, "nombre": "Centro Cultural Gabriela Mistral (GAM)", "costo_clp": 0, "duracion_min": 45 } }
   ],
   "mensaje": null
@@ -128,13 +128,21 @@ Respuesta (resumida):
 
 La respuesta trae las paradas en ese orden con sus traslados y totales nuevos, más `excede_tiempo` y `excede_presupuesto`. Si alguno es `true`, el `mensaje` lo avisa. La app nunca suma costos ni tiempos: siempre pregunta al servidor.
 
+### Descargar mis datos · `POST /usuarios/{id}/datos` → 200
+
+```json
+{ "password": "clave-segura-123" }
+```
+
+Es POST y no GET porque la contraseña viaja en el cuerpo: en la URL quedaría guardada en registros e historiales. La respuesta trae la cabecera `Content-Disposition: attachment`, así que el navegador o el celular la ofrece como archivo `rutia-mis-datos.json`. Corregir los datos con `PUT /usuarios/{id}` también pide `password` en el cuerpo.
+
 ### Eliminar la cuenta · `DELETE /usuarios/{id}` → 204
 
 ```json
 { "password": "clave-segura-123" }
 ```
 
-Si la contraseña no es correcta, responde 401. Después de 5 intentos fallidos en 15 minutos, responde 429.
+Si la contraseña no es correcta, responde 401. Después de 5 intentos fallidos en 15 minutos, contando login, corrección, descarga y eliminación, responde 429.
 
 ## Cómo elige las paradas
 

@@ -23,6 +23,10 @@ def _eliminar(cliente, usuario_id, password):
     return cliente.request("DELETE", f"/api/v1/usuarios/{usuario_id}", json={"password": password})
 
 
+def _descargar(cliente, usuario_id, password):
+    return cliente.post(f"/api/v1/usuarios/{usuario_id}/datos", json={"password": password})
+
+
 # ---------------------------------------------------------------- registro y login
 
 def test_registro_normaliza_email_y_no_devuelve_contrasena(cliente):
@@ -90,7 +94,7 @@ def test_el_bloqueo_se_levanta_al_pasar_la_ventana():
 def test_rectificar_nombre_correo_e_idioma(cliente, nuevo_usuario):
     usuario = nuevo_usuario()
     r = cliente.put(f"/api/v1/usuarios/{usuario['id']}", json={
-        "nombre": "Daniel Miller", "email": "Nuevo.Correo@Ejemplo.com", "idioma": "en",
+        "nombre": "Daniel Miller", "email": "Nuevo.Correo@Ejemplo.com", "idioma": "en", "password": "clave-segura-123",
     })
     assert r.status_code == 200, r.text
     assert r.json()["email"] == "nuevo.correo@ejemplo.com" and r.json()["idioma"] == "en"
@@ -100,8 +104,21 @@ def test_rectificar_nombre_correo_e_idioma(cliente, nuevo_usuario):
 
 def test_rectificar_con_correo_de_otro_responde_409(cliente, nuevo_usuario):
     yo, otra = nuevo_usuario(), nuevo_usuario()
-    r = cliente.put(f"/api/v1/usuarios/{yo['id']}", json={"nombre": "Yo", "email": otra["email"], "idioma": "es"})
+    r = cliente.put(f"/api/v1/usuarios/{yo['id']}", json={
+        "nombre": "Yo", "email": otra["email"], "idioma": "es", "password": "clave-segura-123",
+    })
     assert r.status_code == 409
+
+
+def test_rectificar_pide_la_contrasena_y_sin_ella_no_cambia_nada(cliente, nuevo_usuario):
+    usuario = nuevo_usuario()
+    datos = {"nombre": "Intruso", "email": "intruso@ejemplo.com", "idioma": "en"}
+    url = f"/api/v1/usuarios/{usuario['id']}"
+    assert cliente.put(url, json=datos).status_code == 400  # falta la contraseña: formato
+    r = cliente.put(url, json={**datos, "password": "incorrecta"})
+    assert r.status_code == 401 and r.json()["error"]["codigo"] == "CONTRASENA_INCORRECTA"
+    sin_cambios = cliente.get(url).json()
+    assert sin_cambios["email"] == usuario["email"] and sin_cambios["nombre"] == usuario["nombre"]
 
 
 def test_descargar_mis_datos_en_json(cliente, nuevo_usuario):
@@ -109,7 +126,7 @@ def test_descargar_mis_datos_en_json(cliente, nuevo_usuario):
     cliente.post("/api/v1/rutas", json={"usuario_id": usuario["id"], "nombre": "Para exportar", "lugares": [1, 2]})
     cliente.post(f"/api/v1/usuarios/{usuario['id']}/visitas", json={"lugar_id": 1})
 
-    r = cliente.get(f"/api/v1/usuarios/{usuario['id']}/datos")
+    r = _descargar(cliente, usuario["id"], "clave-segura-123")
     assert r.status_code == 200
     assert "attachment" in r.headers["content-disposition"]
     datos = r.json()
@@ -117,6 +134,14 @@ def test_descargar_mis_datos_en_json(cliente, nuevo_usuario):
     assert [ruta["nombre"] for ruta in datos["rutas"]] == ["Para exportar"]
     assert len(datos["visitas"]) == 1
     assert "password_hash" not in r.text
+
+
+def test_descargar_mis_datos_pide_la_contrasena(cliente, nuevo_usuario):
+    usuario = nuevo_usuario()
+    r = _descargar(cliente, usuario["id"], "incorrecta")
+    assert r.status_code == 401 and r.json()["error"]["codigo"] == "CONTRASENA_INCORRECTA"
+    assert cliente.post(f"/api/v1/usuarios/{usuario['id']}/datos", json={}).status_code == 400
+    assert cliente.get(f"/api/v1/usuarios/{usuario['id']}/datos").status_code == 405  # ya no es GET
 
 
 def test_eliminar_cuenta_pide_la_contrasena_y_borra_todo(cliente, nuevo_usuario):

@@ -118,12 +118,12 @@ Tabla completa de rutas, parámetros, códigos de estado y ejemplos en **[docs/h
 | Lugares (CRUD) | `GET/POST /api/v1/lugares` · `GET/PUT/DELETE /api/v1/lugares/{id}` |
 | Rutas guardadas (CRUD) | `POST /api/v1/rutas` · `GET/PUT/DELETE /api/v1/rutas/{id}` · `GET /api/v1/usuarios/{id}/rutas` |
 | Generar y recalcular ruta | `POST /api/v1/rutas/generar` · `POST /api/v1/rutas/recalcular` |
-| Usuarios (CRUD) | `POST /api/v1/usuarios` · `POST /api/v1/usuarios/login` · `GET/PUT/DELETE /api/v1/usuarios/{id}` · `GET /api/v1/usuarios/{id}/datos` |
+| Usuarios (CRUD) | `POST /api/v1/usuarios` · `POST /api/v1/usuarios/login` · `GET/PUT/DELETE /api/v1/usuarios/{id}` · `POST /api/v1/usuarios/{id}/datos` |
 | Visitas | `POST/GET /api/v1/usuarios/{id}/visitas` · `DELETE /api/v1/visitas/{id}` |
 
 - **Idioma:** todas las respuestas salen en español o en inglés según la cabecera `Accept-Language`.
 - **Códigos de error:** los errores de formato responden **400** y las reglas de negocio no cumplidas, **422**.
-- **Ley 21.719:** los usuarios pueden ver, corregir, descargar y eliminar sus datos.
+- **Ley 21.719:** los usuarios pueden ver, corregir, descargar y eliminar sus datos; corregir, descargar y eliminar piden la contraseña.
 
 ## 🗂️ Catálogo de lugares
 
@@ -137,9 +137,10 @@ Las fotos provienen de Wikimedia Commons con licencias libres; autoría y licenc
 
 ## ⚠️ Limitaciones conocidas (Hito 2)
 
-* **Sin tokens de sesión.** El login verifica la contraseña, pero el cliente envía `usuario_id` en cada petición. Para eliminar una cuenta se pide la contraseña. En el Hito 3 se reemplaza por un token firmado.
+* **Sin tokens de sesión.** El login verifica la contraseña, pero el cliente envía `usuario_id` en cada petición. Para corregir, descargar o eliminar los datos de una cuenta se pide la contraseña. En el Hito 3 se reemplaza por un token firmado.
 * **El límite de intentos vive en la memoria del servidor:** 5 contraseñas incorrectas en 15 minutos. Se reinicia si el servidor se reinicia.
 * **El costo y el horario se verificaron a mano** y pueden cambiar; cada lugar guarda su fuente y la fecha de verificación.
+* **Las coordenadas de los lugares son aproximadas** (3 decimales, unos 100 m). Afinarlas con OpenStreetMap mejora el cálculo de los traslados.
 * **El tiempo de traslado es una estimación** a pie: línea recta × 1,3 a 4 km/h, unos 19,5 minutos por km. No es una ruta real por calles.
 
 ## 📱 App móvil (inicio del Hito 3)

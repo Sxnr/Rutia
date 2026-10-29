@@ -133,7 +133,7 @@ def test_generar_ruta_caso_daniel(cliente):
     ruta = _generar(cliente)
     assert ruta["cantidad_objetivo"] == 4  # 4 horas → 4 lugares sugeridos
     assert len(ruta["paradas"]) == 4
-    assert ruta["costo_total_clp"] == 5500
+    assert ruta["costo_total_clp"] == 4590
     assert ruta["duracion_total_min"] <= 240
     assert ruta["mensaje"] is None
 

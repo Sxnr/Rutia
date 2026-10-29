@@ -55,8 +55,8 @@ MENSAJES: dict[str, dict[str, str]] = {
     },
     # Errores generales
     "VALIDACION": {
-        "es": "Revisa los datos enviados.",
-        "en": "Please check the data you sent.",
+        "es": "Revisa el formato de los datos enviados.",
+        "en": "Please check the format of the data you sent.",
     },
     "RUTA_HTTP_NO_EXISTE": {
         "es": "La dirección pedida no existe en la API.",
@@ -130,11 +130,17 @@ def mensaje(codigo: str, idioma: str, /, **datos) -> str:
         return texto
 
 
+def _limpiar(valor):
+    """0.0 → 0 y 1000000 → 1000000: los límites se muestran como los escribiría una persona."""
+    return int(valor) if isinstance(valor, float) and valor.is_integer() else valor
+
+
 def mensaje_validacion(tipo: str, idioma: str, contexto: dict | None, por_defecto: str) -> str:
     plantillas = MENSAJES_VALIDACION.get(tipo)
     if not plantillas:
         return por_defecto if idioma == "en" else "Valor no válido."
+    datos = {clave: _limpiar(valor) for clave, valor in (contexto or {}).items()}
     try:
-        return plantillas[idioma].format(**(contexto or {}))
+        return plantillas[idioma].format(**datos)
     except (KeyError, IndexError):
         return plantillas[idioma]

@@ -17,7 +17,7 @@ Servicio = Annotated[UsuariosServicio, Depends(servicio_usuarios)]
 
 
 @router.post("/usuarios", response_model=UsuarioSalida, status_code=status.HTTP_201_CREATED,
-             summary="Registrar un usuario", responses=respuestas_error(409, 422))
+             summary="Registrar un usuario", responses=respuestas_error(400, 409))
 def registrar(datos: UsuarioEntrada, servicio: Servicio, response: Response):
     usuario = servicio.registrar(datos.nombre, datos.email, datos.password, datos.idioma)
     response.headers["Location"] = f"/api/v1/usuarios/{usuario.id}"
@@ -25,12 +25,12 @@ def registrar(datos: UsuarioEntrada, servicio: Servicio, response: Response):
 
 
 @router.post("/usuarios/login", response_model=UsuarioSalida, summary="Iniciar sesión",
-             responses=respuestas_error(401, 422))
+             responses=respuestas_error(400, 401))
 def iniciar_sesion(datos: LoginEntrada, servicio: Servicio):
     return conversores.usuario(servicio.iniciar_sesion(datos.email, datos.password))
 
 
 @router.get("/usuarios/{usuario_id}", response_model=UsuarioSalida, summary="Obtener un usuario",
-            responses=respuestas_error(404))
+            responses=respuestas_error(400, 404))
 def obtener(usuario_id: Annotated[int, Path(gt=0)], servicio: Servicio):
     return conversores.usuario(servicio.obtener(usuario_id))

@@ -24,7 +24,7 @@ def listar_categorias(servicio: Servicio, idioma: Idioma):
 
 
 @router.get("/lugares", response_model=PaginaLugares, summary="Listar lugares (con filtros)",
-            responses=respuestas_error(422))
+            responses=respuestas_error(400, 422))
 def listar_lugares(
     servicio: Servicio,
     idioma: Idioma,
@@ -41,13 +41,13 @@ def listar_lugares(
 
 
 @router.get("/lugares/{lugar_id}", response_model=LugarSalida, summary="Obtener un lugar",
-            responses=respuestas_error(404))
+            responses=respuestas_error(400, 404))
 def obtener_lugar(lugar_id: IdLugar, servicio: Servicio, idioma: Idioma):
     return conversores.lugar(servicio.obtener(lugar_id), idioma)
 
 
 @router.post("/lugares", response_model=LugarSalida, status_code=status.HTTP_201_CREATED,
-             summary="Crear un lugar", responses=respuestas_error(409, 422))
+             summary="Crear un lugar", responses=respuestas_error(400, 409, 422))
 def crear_lugar(datos: LugarEntrada, servicio: Servicio, idioma: Idioma, response: Response):
     lugar = servicio.crear(datos.model_dump())
     response.headers["Location"] = f"/api/v1/lugares/{lugar.id}"
@@ -55,13 +55,13 @@ def crear_lugar(datos: LugarEntrada, servicio: Servicio, idioma: Idioma, respons
 
 
 @router.put("/lugares/{lugar_id}", response_model=LugarSalida,
-            summary="Reemplazar un lugar completo", responses=respuestas_error(404, 409, 422))
+            summary="Reemplazar un lugar completo", responses=respuestas_error(400, 404, 409, 422))
 def actualizar_lugar(lugar_id: IdLugar, datos: LugarEntrada, servicio: Servicio, idioma: Idioma):
     return conversores.lugar(servicio.actualizar(lugar_id, datos.model_dump()), idioma)
 
 
 @router.delete("/lugares/{lugar_id}", status_code=status.HTTP_204_NO_CONTENT,
-               summary="Borrar un lugar", responses=respuestas_error(404, 409))
+               summary="Borrar un lugar", responses=respuestas_error(400, 404, 409))
 def borrar_lugar(lugar_id: IdLugar, servicio: Servicio):
     servicio.borrar(lugar_id)
     return Response(status_code=status.HTTP_204_NO_CONTENT)

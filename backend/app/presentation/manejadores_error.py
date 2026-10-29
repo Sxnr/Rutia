@@ -2,7 +2,10 @@
 
     { "error": { "codigo": "...", "mensaje": "...", "detalles": [...] } }
 
-Aquí, y solo aquí, se decide qué código HTTP corresponde a cada error de negocio.
+Aquí, y solo aquí, se decide qué código HTTP corresponde a cada error.
+Validación en dos niveles del servidor (documento del Hito 1, sección 5):
+- Presentación: formato y tipos (campo faltante, texto donde va número, negativo) → 400.
+- Negocio: reglas de Rutia (categoría inexistente, lugar repetido en una ruta) → 422.
 """
 import logging
 
@@ -42,6 +45,7 @@ async def _error_rutia(request: Request, exc: ErrorRutia) -> JSONResponse:
 
 
 async def _error_validacion(request: Request, exc: RequestValidationError) -> JSONResponse:
+    """Datos con formato inválido (los revisa Pydantic en la capa de presentación) → 400."""
     idioma = _idioma(request)
     detalles = []
     for error in exc.errors():
@@ -53,7 +57,7 @@ async def _error_validacion(request: Request, exc: RequestValidationError) -> JS
             "campo": ".".join(partes) or "cuerpo",
             "mensaje": mensaje_validacion(error.get("type", ""), idioma, error.get("ctx"), error.get("msg", "")),
         })
-    return _respuesta(422, "VALIDACION", mensaje("VALIDACION", idioma), detalles)
+    return _respuesta(400, "VALIDACION", mensaje("VALIDACION", idioma), detalles)
 
 
 async def _error_http(request: Request, exc: StarletteHTTPException) -> JSONResponse:

@@ -156,4 +156,4 @@ npm run dev                        # http://localhost:5173  ·  ?debug=1 muestra
 ## 📄 Documentos
 
 * Hito 1: [Propuesta (PDF)](./docs/hito-1/propuesta.pdf) · [Láminas (PDF)](./docs/hito-1/presentacion.pdf) · [Arquitectura técnica](./docs/hito-1/arquitectura-tecnica.png) · [Arquitectura de información](./docs/hito-1/Arquitectura-informacion.png)
-* Hito 2: [Tabla de la API](./docs/hito-2/API.md) · [Modelo de datos](./db/modelo-datos.md) · Documento técnico (PDF, por subir)
+* Hito 2: [Tabla de la API](./docs/hito-2/API.md) · [Modelo de datos](./db/modelo-datos.md) · [Documento técnico (PDF)](./docs/hito-2/documento-tecnico.pdf)

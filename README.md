@@ -169,6 +169,8 @@ npm run dev                        # http://localhost:5173  ·  ?debug=1 muestra
 
 ## 📄 Documentos
 
+🎬 **[Mira el video promocional de Rutia (1:09)](https://youtu.be/qMhTEmsm-T8)**
+
 * Hito 1: [Propuesta (PDF)](./docs/hito-1/propuesta.pdf) · [Láminas (PDF)](./docs/hito-1/presentacion.pdf) · [Arquitectura técnica](./docs/hito-1/arquitectura-tecnica.png) · [Arquitectura de información](./docs/hito-1/Arquitectura-informacion.png)
 * Hito 2: [Tabla de la API](./docs/hito-2/API.md) · [Modelo de datos](./db/modelo-datos.md) · [Documento técnico (PDF)](./docs/hito-2/documento-tecnico.pdf) · [Láminas (PDF)](./docs/hito-2/presentacion.pdf)
-* Hito 3: [Video promocional (MP4, 1:09)](./docs/hito-3/video-promocional.mp4)
+* Hito 3: [Video promocional en YouTube (1:09)](https://youtu.be/qMhTEmsm-T8) · [copia en MP4](./docs/hito-3/video-promocional.mp4)

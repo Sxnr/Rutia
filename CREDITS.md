@@ -34,3 +34,11 @@ Cada ficha de lugar ("Detalle del lugar") muestra un pie de foto discreto con el
 - **CC BY 2.0** (La Chascona): exige **solo atribución**.
 - El icono de la app (`src/assets/rutia-icon.svg`) y el logo (`src/assets/rutia-logo.svg`)
   son assets del proyecto, no fotos de terceros.
+
+## Video promocional (Hito 3)
+
+`docs/hito-3/video-promocional.mp4` (1:09, hecho con Remotion a partir de una grabación real de la app).
+
+- **Música:** «Laserpack», Kevin MacLeod (incompetech.com). Licencia Creative Commons BY 4.0.
+- **Fotos de los lugares:** las mismas de Wikimedia Commons de la tabla de arriba, con sus autores y licencias
+  (CC BY-SA 4.0, CC BY-SA 3.0 y CC BY 2.0). Los créditos aparecen también al final del video.

@@ -16,6 +16,13 @@ Proyecto de INGT1003 (Universidad Mayor). Equipo: Francisco Carrera (@Sxnr) y Ge
 - backend/app/data: modelos y repositorios. Único lugar con consultas.
 Cada capa solo llama a la de abajo.
 
+## App móvil (mobile/, Expo SDK 57, JavaScript)
+- src/app: pantallas (expo-router). No calculan costos ni duraciones: todo viene de la API.
+- src/estado: idioma, sesión y ruta (React Context).
+- src/api: único lugar que hace fetch. Las pantallas llaman api.xxx().
+- src/i18n: todo texto visible, con la misma clave en es.js y en.js.
+- Lógica sin React Native (api, i18n, utilidades) con imports con extensión .js, para probarla con node:test.
+
 ## Convenciones
 - Código y comentarios en español; nombres en español sin tildes.
 - Todo texto visible al usuario es bilingüe ES/EN (cabecera Accept-Language).
@@ -36,4 +43,6 @@ Cada capa solo llama a la de abajo.
 - Backend: cd backend && source .venv/bin/activate && uvicorn app.main:app --reload
 - Pruebas: cd backend && pytest
 - Base desde cero: cd backend && python -m scripts.crear_base
+- App móvil: cd mobile && npm install && npx expo start (backend con --host 0.0.0.0)
+- Pruebas de la app: cd mobile && npm test
 - Prototipo: cd prototipo-web && npm run dev

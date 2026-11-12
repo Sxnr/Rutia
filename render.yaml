@@ -1,0 +1,23 @@
+# Blueprint de Render: publica el backend de Rutia con HTTPS.
+# Render lee este archivo al crear el servicio (New → Blueprint) y lo vuelve a aplicar en cada push a main.
+# La contraseña de la base NO va aquí: DATABASE_URL se escribe a mano en el panel de Render (sync: false).
+services:
+  - type: web
+    name: rutia-api
+    runtime: python
+    plan: free
+    region: oregon
+    branch: main
+    buildCommand: pip install -r backend/requirements.txt
+    # Se arranca desde backend/ para que Python encuentre el paquete app; las fotos quedan en ../db/catalogo/fotos
+    startCommand: cd backend && uvicorn app.main:app --host 0.0.0.0 --port $PORT
+    healthCheckPath: /api/v1/health
+    envVars:
+      - key: PYTHON_VERSION
+        value: 3.12.8
+      - key: DATABASE_URL
+        sync: false
+      - key: PUBLIC_BASE_URL
+        value: https://rutia-api.onrender.com
+      - key: LOG_LEVEL
+        value: INFO

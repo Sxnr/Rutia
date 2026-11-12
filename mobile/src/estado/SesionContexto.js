@@ -43,9 +43,25 @@ export function ProveedorSesion({ children }) {
     await borrar(CLAVE)
   }, [])
 
+  // Rectificación: la API devuelve el usuario corregido y se guarda como la sesión nueva
+  const corregirDatos = useCallback(
+    async ({ nombre, email, idioma, password }) =>
+      recordar(await api.corregirDatos(usuario.id, { nombre: nombre.trim(), email: email.trim(), idioma, password })),
+    [usuario, recordar],
+  )
+
+  // Supresión: si la API la confirma, la sesión se cierra
+  const eliminarCuenta = useCallback(
+    async (password) => {
+      await api.eliminarCuenta(usuario.id, password)
+      await cerrarSesion()
+    },
+    [usuario, cerrarSesion],
+  )
+
   const valor = useMemo(
-    () => ({ usuario, cargando, iniciarSesion, registrarse, cerrarSesion }),
-    [usuario, cargando, iniciarSesion, registrarse, cerrarSesion],
+    () => ({ usuario, cargando, iniciarSesion, registrarse, cerrarSesion, corregirDatos, eliminarCuenta }),
+    [usuario, cargando, iniciarSesion, registrarse, cerrarSesion, corregirDatos, eliminarCuenta],
   )
   return <Contexto.Provider value={valor}>{children}</Contexto.Provider>
 }

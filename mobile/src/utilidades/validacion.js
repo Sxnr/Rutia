@@ -48,6 +48,21 @@ export function validarRegistro({ nombre, email, password, password2 }) {
   return resultado(errores)
 }
 
+// Corregir mis datos: nombre y correo válidos, y la contraseña actual para confirmar
+export function validarCorreccion({ nombre, email, password }) {
+  const errores = {}
+  const limpio = (nombre || '').trim()
+  if (!limpio || limpio.length > LIMITES.nombreMax) errores.nombre = 'validacion.nombreRequerido'
+  if (!PATRON_EMAIL.test((email || '').trim())) errores.email = 'validacion.emailInvalido'
+  if (!password) errores.password = 'validacion.passwordRequerida'
+  return resultado(errores)
+}
+
+// Descargar o eliminar mis datos: solo hace falta la contraseña actual
+export function validarContrasena({ password }) {
+  return resultado(password ? {} : { password: 'validacion.passwordRequerida' })
+}
+
 export function validarNombreRuta(nombre) {
   const limpio = (nombre || '').trim()
   return resultado(!limpio || limpio.length > LIMITES.nombreMax ? { nombre: 'validacion.nombreRuta' } : {})

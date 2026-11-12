@@ -2,6 +2,17 @@
 
 > Para el turista de larga distancia al que le cuesta decidir qué visitar en Santiago entre tantas alternativas, Rutia entrega en segundos una ruta con pocos lugares, elegidos según su tiempo, presupuesto e intereses.
 
+## 📱 Usar Rutia
+
+1. **Instala la app:** descarga `rutia-v1.0.0.apk` del [último release](https://github.com/Sxnr/Rutia/releases/latest) en un Android y ábrelo.
+2. **Entra con el usuario de prueba** (ficticio, con la ruta de Daniel guardada): `demo@rutia.test` / `rutia-demo-2026`.
+3. **Crea una ruta:** 4 horas, $15.000, Museos y Restaurantes → 4 lugares, 3 h 49 min y $4.590.
+
+La app usa el backend publicado en `https://rutia-api.onrender.com/api/v1` ([estado](https://rutia-api.onrender.com/api/v1/health)).
+Paso a paso, datos de prueba y fallas frecuentes en el **[manual de uso e instalación](./docs/hito-3/manual.md)**.
+
+🎬 **[Video promocional (1:09)](https://youtu.be/qMhTEmsm-T8)**
+
 ## 👥 Integrantes
 
 * **Francisco Carrera** - [@Sxnr](https://github.com/Sxnr)
@@ -15,7 +26,8 @@ Decisión firmada en la [Propuesta del Hito 1](./docs/hito-1/propuesta.pdf), sec
 |---|---|---|
 | Backend (API) | Python + FastAPI + SQLAlchemy | ✅ Hito 2 · carpeta [`backend/`](./backend) |
 | Base de datos | PostgreSQL (alojado en Supabase) | ✅ Hito 2 · carpeta [`db/`](./db) |
-| App móvil | React Native + Expo (SDK 57) | 🚧 Hito 3 · inicio en [`mobile/`](./mobile), conectado a la API |
+| App móvil | React Native + Expo (SDK 57), APK de Android | ✅ Hito 3 · carpeta [`mobile/`](./mobile) |
+| Publicación | Backend en Render (HTTPS) + APK en los releases de GitHub | ✅ Hito 3 · [`render.yaml`](./render.yaml) |
 
 Arquitectura: **monolito en tres capas** (presentación → negocio → datos).
 
@@ -173,4 +185,4 @@ npm run dev                        # http://localhost:5173  ·  ?debug=1 muestra
 
 * Hito 1: [Propuesta (PDF)](./docs/hito-1/propuesta.pdf) · [Láminas (PDF)](./docs/hito-1/presentacion.pdf) · [Arquitectura técnica](./docs/hito-1/arquitectura-tecnica.png) · [Arquitectura de información](./docs/hito-1/Arquitectura-informacion.png)
 * Hito 2: [Tabla de la API](./docs/hito-2/API.md) · [Modelo de datos](./db/modelo-datos.md) · [Documento técnico (PDF)](./docs/hito-2/documento-tecnico.pdf) · [Láminas (PDF)](./docs/hito-2/presentacion.pdf)
-* Hito 3: [Video promocional en YouTube (1:09)](https://youtu.be/qMhTEmsm-T8) · [copia en MP4](./docs/hito-3/video-promocional.mp4)
+* Hito 3: [Video promocional en YouTube (1:09)](https://youtu.be/qMhTEmsm-T8) · [copia en MP4](./docs/hito-3/video-promocional.mp4) · [Manual de uso e instalación](./docs/hito-3/manual.md) · [Plan y resultados de QA](./docs/hito-3/qa.md)

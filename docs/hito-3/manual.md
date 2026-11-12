@@ -82,7 +82,8 @@ Pruebas: `cd backend && pytest` (49) y `cd mobile && npm test` (23, con el backe
   5 minutos para que el plan gratuito no se duerma.
 - **APK:** lo compila GitHub Actions (`.github/workflows/apk-android.yml`), sin cuenta de Expo. Al subir una
   etiqueta de versión (`git tag v1.0.0 && git push origin v1.0.0`), el workflow genera el proyecto Android,
-  compila el APK apuntando al backend publicado y crea el release con el APK adjunto. En cada pull request que
+  compila el APK apuntando al backend publicado y crea el release con el APK adjunto. También se puede lanzar a mano desde GitHub: Actions → APK Android →
+  Run workflow, con «publicar» marcado. En cada pull request que
   toca `mobile/` también compila, y deja el APK como artefacto para probarlo. Como alternativa, `eas.json`
   permite compilarlo con EAS Build (`npx eas-cli build -p android --profile preview`, cuenta gratuita de Expo).
 

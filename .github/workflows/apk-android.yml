@@ -1,6 +1,8 @@
 # Compila el APK de Rutia en GitHub, sin cuenta de Expo.
 # - En un pull request que toca mobile/: compila y deja el APK como artefacto (para probar).
 # - Al subir una etiqueta v* (por ejemplo v1.0.0): compila y crea el release con el APK adjunto.
+# - A mano (Actions → APK Android → Run workflow, con «publicar» marcado): compila y crea el release
+#   v<versión de app.json> sobre main, con su etiqueta.
 name: APK Android
 
 on:
@@ -9,6 +11,11 @@ on:
   push:
     tags: ['v*']
   workflow_dispatch:
+    inputs:
+      publicar:
+        description: 'Crear el release con el APK (etiqueta v + versión de app.json)'
+        type: boolean
+        default: false
 
 permissions:
   contents: write # para crear el release
@@ -60,12 +67,14 @@ jobs:
           path: mobile/${{ env.APK }}
 
       - name: Crear el release
-        if: startsWith(github.ref, 'refs/tags/v')
+        if: startsWith(github.ref, 'refs/tags/v') || inputs.publicar
         env:
           GH_TOKEN: ${{ github.token }}
         run: |
-          gh release create "$GITHUB_REF_NAME" "$APK" \
-            --title "Rutia $GITHUB_REF_NAME" \
+          ETIQUETA="${APK#rutia-}"
+          ETIQUETA="${ETIQUETA%.apk}"
+          gh release create "$ETIQUETA" "$APK" --target "$GITHUB_SHA" \
+            --title "Rutia $ETIQUETA" \
             --notes "App Android de Rutia. Descarga \`$APK\`, ábrelo en el celular y acepta instalar desde el navegador.
 
           Usuario de prueba (ficticio): \`demo@rutia.test\` / \`rutia-demo-2026\`.

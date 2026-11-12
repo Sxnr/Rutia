@@ -12,7 +12,9 @@
       "adaptiveIcon": {
         "backgroundColor": "#142C50",
         "foregroundImage": "./assets/images/android-icon-foreground.png"
-      }
+      },
+      "package": "com.sxnr.rutia",
+      "versionCode": 1
     },
     "web": {
       "output": "single",

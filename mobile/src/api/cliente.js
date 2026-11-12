@@ -56,6 +56,7 @@ export function crearCliente({ baseUrl, obtenerIdioma = () => 'es', tiempoMaximo
     get: (ruta) => pedir('GET', ruta),
     post: (ruta, cuerpo) => pedir('POST', ruta, cuerpo ?? {}),
     put: (ruta, cuerpo) => pedir('PUT', ruta, cuerpo ?? {}),
-    delete: (ruta) => pedir('DELETE', ruta),
+    // DELETE con cuerpo solo cuando hace falta (eliminar la cuenta pide la contraseña)
+    delete: (ruta, cuerpo) => pedir('DELETE', ruta, cuerpo),
   }
 }

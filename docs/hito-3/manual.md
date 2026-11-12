@@ -80,8 +80,11 @@ Pruebas: `cd backend && pytest` (49) y `cd mobile && npm test` (23, con el backe
 - **Backend:** Render lee `render.yaml` (New → Blueprint → este repositorio). `DATABASE_URL` se escribe en el
   panel de Render, nunca en el repositorio. Un monitor de disponibilidad consulta `/api/v1/health` cada
   5 minutos para que el plan gratuito no se duerma.
-- **APK:** desde `mobile/`, `npx eas-cli build -p android --profile preview` (cuenta gratuita de Expo).
-  El perfil `preview` de `eas.json` apunta la app al backend publicado. El APK se adjunta a un release de GitHub.
+- **APK:** lo compila GitHub Actions (`.github/workflows/apk-android.yml`), sin cuenta de Expo. Al subir una
+  etiqueta de versión (`git tag v1.0.0 && git push origin v1.0.0`), el workflow genera el proyecto Android,
+  compila el APK apuntando al backend publicado y crea el release con el APK adjunto. En cada pull request que
+  toca `mobile/` también compila, y deja el APK como artefacto para probarlo. Como alternativa, `eas.json`
+  permite compilarlo con EAS Build (`npx eas-cli build -p android --profile preview`, cuenta gratuita de Expo).
 
 ## 4. Fallas frecuentes
 

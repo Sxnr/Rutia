@@ -88,6 +88,20 @@ describe('cliente HTTP contra el backend', { skip: !backendDisponible && `backen
     assert.equal((await api.visitas(usuario.id)).length, 0)
   })
 
+  test('derechos de la Ley 21.719: corregir y descargar piden la contraseña', async () => {
+    await assert.rejects(
+      api.corregirDatos(usuario.id, { nombre: 'Otro', email: usuario.email, idioma: 'es', password: 'mala' }),
+      (e) => e.status === 401,
+    )
+    const corregido = await api.corregirDatos(usuario.id, { nombre: 'Prueba Corregida', email: usuario.email, idioma: 'en', password: 'clave-segura-123' })
+    assert.equal(corregido.nombre, 'Prueba Corregida')
+    assert.equal(corregido.idioma, 'en')
+
+    const mios = await api.descargarDatos(usuario.id, 'clave-segura-123')
+    assert.equal(mios.usuario.email, usuario.email)
+    assert.ok(!JSON.stringify(mios).includes('password_hash'))
+  })
+
   test('los errores llegan con código y mensaje traducido', async () => {
     idioma = 'en'
     await assert.rejects(api.lugar(99999), (e) => {
@@ -102,6 +116,13 @@ describe('cliente HTTP contra el backend', { skip: !backendDisponible && `backen
       return true
     })
   })
+})
+
+test('eliminar la cuenta con contraseña borra al usuario', { skip: !backendDisponible && 'backend no disponible' }, async () => {
+  const efimero = await api.registrarse({ nombre: 'Para borrar', email: `borrar-${Date.now()}@ejemplo.com`, password: 'clave-segura-123' })
+  await assert.rejects(api.eliminarCuenta(efimero.id, 'mala'), (e) => e.status === 401)
+  assert.equal(await api.eliminarCuenta(efimero.id, 'clave-segura-123'), null) // 204
+  await assert.rejects(api.iniciarSesion({ email: efimero.email, password: 'clave-segura-123' }), (e) => e.status === 401)
 })
 
 test('sin backend: error SIN_CONEXION en vez de una excepción rara', async () => {

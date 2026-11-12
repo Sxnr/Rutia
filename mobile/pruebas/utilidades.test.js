@@ -6,7 +6,7 @@ import { TEXTOS, traducir } from '../src/i18n/traducir.js'
 import { mensajeDeError } from '../src/utilidades/errores.js'
 import { formatearCosto, formatearDuracion, formatearFecha, formatearHoras, formatearPesos } from '../src/utilidades/formato.js'
 import { urlImagen } from '../src/utilidades/imagenes.js'
-import { leerMonto, validarLogin, validarNombreRuta, validarPreferencias, validarRegistro } from '../src/utilidades/validacion.js'
+import { leerMonto, validarContrasena, validarCorreccion, validarLogin, validarNombreRuta, validarPreferencias, validarRegistro } from '../src/utilidades/validacion.js'
 
 test('formato de pesos en español e inglés', () => {
   assert.equal(formatearPesos(15000), '$15.000')
@@ -46,6 +46,14 @@ test('validación de login y registro', () => {
   assert.deepEqual(Object.keys(registro.errores).sort(), ['email', 'nombre', 'password', 'password2'])
   assert.equal(validarRegistro({ nombre: 'Daniel', email: 'd@e.cl', password: 'clave-segura', password2: 'clave-segura' }).valido, true)
   assert.equal(validarNombreRuta('   ').valido, false)
+})
+
+test('corregir, descargar y eliminar mis datos piden la contraseña', () => {
+  const correccion = validarCorreccion({ nombre: '', email: 'sin-arroba', password: '' })
+  assert.deepEqual(Object.keys(correccion.errores).sort(), ['email', 'nombre', 'password'])
+  assert.equal(validarCorreccion({ nombre: 'Daniel', email: 'd@e.cl', password: 'clave' }).valido, true)
+  assert.equal(validarContrasena({ password: '' }).valido, false)
+  assert.equal(validarContrasena({ password: 'clave' }).valido, true)
 })
 
 test('leer montos escritos con símbolos', () => {

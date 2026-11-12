@@ -47,6 +47,12 @@ export function crearApiRutia(cliente) {
       cliente.post('/usuarios', { nombre, email, password, idioma }),
     iniciarSesion: ({ email, password }) => cliente.post('/usuarios/login', { email, password }),
 
+    // Derechos de la Ley 21.719: los tres piden la contraseña actual
+    corregirDatos: (usuarioId, { nombre, email, idioma, password }) =>
+      cliente.put(`/usuarios/${usuarioId}`, { nombre, email, idioma, password }),
+    descargarDatos: (usuarioId, password) => cliente.post(`/usuarios/${usuarioId}/datos`, { password }),
+    eliminarCuenta: (usuarioId, password) => cliente.delete(`/usuarios/${usuarioId}`, { password }),
+
     // Visitas
     marcarVisitado: ({ usuarioId, lugarId, rutaId = null }) =>
       cliente.post(`/usuarios/${usuarioId}/visitas`, { lugar_id: lugarId, ruta_id: rutaId }),

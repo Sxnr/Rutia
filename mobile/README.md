@@ -98,4 +98,4 @@ Reglas:
 * **Mapa de la ruta** con las paradas.
 * **Uso sin conexión**, al menos para la última ruta guardada.
 * **Pruebas en más celulares Android** y ajustes visuales.
-* **Publicación** con EAS Build, si se pide.
+* **Publicación:** el APK lo compila GitHub Actions y lo adjunta al release (ver `docs/hito-3/manual.md`).

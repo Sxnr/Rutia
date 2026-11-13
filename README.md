@@ -1,5 +1,7 @@
 # Rutia 🇨🇱
 
+[![Pruebas](https://github.com/Sxnr/Rutia/actions/workflows/pruebas.yml/badge.svg)](https://github.com/Sxnr/Rutia/actions/workflows/pruebas.yml) [![APK Android](https://github.com/Sxnr/Rutia/actions/workflows/apk-android.yml/badge.svg)](https://github.com/Sxnr/Rutia/actions/workflows/apk-android.yml)
+
 > Para el turista de larga distancia al que le cuesta decidir qué visitar en Santiago entre tantas alternativas, Rutia entrega en segundos una ruta con pocos lugares, elegidos según su tiempo, presupuesto e intereses.
 
 ## 📱 Usar Rutia

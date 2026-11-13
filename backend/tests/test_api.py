@@ -42,6 +42,11 @@ def test_health(cliente):
     assert cliente.get("/api/v1/health").json() == {"estado": "ok", "base_de_datos": "ok"}
 
 
+def test_health_acepta_head(cliente):
+    # Los monitores de disponibilidad consultan con HEAD: debe responder 200, no 405
+    assert cliente.head("/api/v1/health").status_code == 200
+
+
 def test_las_cuatro_categorias_en_dos_idiomas(cliente):
     es = cliente.get("/api/v1/categorias").json()
     en = cliente.get("/api/v1/categorias", headers={"Accept-Language": "en"}).json()

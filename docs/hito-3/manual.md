@@ -73,7 +73,7 @@ npm install
 npx expo start                    # escanea el QR con Expo Go, en la misma red wifi
 ```
 
-Pruebas: `cd backend && pytest` (49) y `cd mobile && npm test` (23, con el backend levantado).
+Pruebas: `cd backend && pytest` (50) y `cd mobile && npm test` (23, con el backend levantado).
 
 ## 3. Publicar el backend y compilar el APK (mantención)
 

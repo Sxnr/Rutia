@@ -300,7 +300,7 @@
             "description": "Turista con 4 horas, $15.000 e interés en museos y restaurantes (caso de uso del Hito 1). Sin 'cantidad', el servidor busca 4 lugares por las 4 horas.",
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"tiempo_horas\": 4,\n  \"presupuesto_clp\": 15000,\n  \"intereses\": [\"museos\", \"restaurantes\"],\n  \"usuario_id\": {{usuario_id}}\n}",
+              "raw": "{\n  \"tiempo_horas\": 4,\n  \"presupuesto_clp\": 15000,\n  \"intereses\": [\"museos\", \"restaurantes\"]\n}",
               "options": {
                 "raw": {
                   "language": "json"

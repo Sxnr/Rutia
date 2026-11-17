@@ -66,3 +66,8 @@ Anotar en cada caso: ✅ pasa · ❌ falla (con qué pasó) · ⚠️ pasa con u
 - Celular y versión de Android: Realme 9i; Android 13
 - Quién probó: Gerzon Toro
 - Casos que fallaron y qué se corrigió: 1. Caso I3, aúnno corregido
+
+### Nota de revisión (Francisco Carrera)
+
+- **I3:** que la pantalla no gire es esperado. La app está fijada en vertical a propósito (`"orientation": "portrait"` en `mobile/app.json`), así que el caso, tal como lo escribimos en el plan, pedía algo que la app no promete. Se mantiene el resultado anotado en la prueba.
+- **Letra grande del sistema** (la otra mitad de I3): no quedó registrada por separado. Queda como verificación pendiente en las limitaciones del informe.

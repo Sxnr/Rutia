@@ -150,17 +150,18 @@ cd backend && python -m scripts.cargar_catalogo --validar
 
 Las fotos provienen de Wikimedia Commons con licencias libres; autoría y licencia en [CREDITS.md](./CREDITS.md).
 
-## ⚠️ Limitaciones conocidas (Hito 2)
+## ⚠️ Limitaciones conocidas
 
-* **Sin tokens de sesión.** El login verifica la contraseña, pero el cliente envía `usuario_id` en cada petición. Para corregir, descargar o eliminar los datos de una cuenta se pide la contraseña. En el Hito 3 se reemplaza por un token firmado.
+* **Sin tokens de sesión.** El login verifica la contraseña, pero el cliente envía `usuario_id` en cada petición. Para corregir, descargar o eliminar los datos de una cuenta se pide la contraseña. El siguiente paso es un token firmado.
 * **El límite de intentos vive en la memoria del servidor:** 5 contraseñas incorrectas en 15 minutos. Se reinicia si el servidor se reinicia.
 * **El costo y el horario se verificaron a mano** y pueden cambiar; cada lugar guarda su fuente y la fecha de verificación.
 * **Las coordenadas de los lugares son aproximadas** (3 decimales, unos 100 m). Afinarlas con OpenStreetMap mejora el cálculo de los traslados.
 * **El tiempo de traslado es una estimación** a pie: línea recta × 1,3 a 4 km/h, unos 19,5 minutos por km. No es una ruta real por calles.
+* **La app es solo Android y solo vertical**, y se instala desde el release, fuera de Google Play. Más detalle en la sección 10 de la [documentación final](./docs/hito-3/documentacion-final.pdf).
 
-## 📱 App móvil (inicio del Hito 3)
+## 📱 App móvil para desarrollo
 
-Las pantallas del prototipo, en React Native con Expo y conectadas a esta API. Con el backend levantado con `--host 0.0.0.0`:
+Para usar la app basta el APK (ver [Usar Rutia](#-usar-rutia)). Para modificarla, con el backend levantado con `--host 0.0.0.0`:
 
 ```bash
 cd mobile
@@ -187,4 +188,4 @@ npm run dev                        # http://localhost:5173  ·  ?debug=1 muestra
 
 * Hito 1: [Propuesta (PDF)](./docs/hito-1/propuesta.pdf) · [Láminas (PDF)](./docs/hito-1/presentacion.pdf) · [Arquitectura técnica](./docs/hito-1/arquitectura-tecnica.png) · [Arquitectura de información](./docs/hito-1/Arquitectura-informacion.png)
 * Hito 2: [Tabla de la API](./docs/hito-2/API.md) · [Modelo de datos](./db/modelo-datos.md) · [Documento técnico (PDF)](./docs/hito-2/documento-tecnico.pdf) · [Láminas (PDF)](./docs/hito-2/presentacion.pdf)
-* Hito 3: [Video promocional en YouTube (1:09)](https://youtu.be/qMhTEmsm-T8) · [copia en MP4](./docs/hito-3/video-promocional.mp4) · [Manual de uso e instalación](./docs/hito-3/manual.md) · [Plan y resultados de QA](./docs/hito-3/qa.md)
+* Hito 3: [Documentación final (PDF)](./docs/hito-3/documentacion-final.pdf) · [Video promocional en YouTube (1:09)](https://youtu.be/qMhTEmsm-T8) · [copia en MP4](./docs/hito-3/video-promocional.mp4) · [Manual de uso e instalación](./docs/hito-3/manual.md) · [Plan y resultados de QA](./docs/hito-3/qa.md)
